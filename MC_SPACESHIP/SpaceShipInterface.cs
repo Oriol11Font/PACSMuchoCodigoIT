@@ -10,11 +10,17 @@ using System.Windows.Forms;
 
 namespace MC_SPACESHIP
 {
-    public partial class Form1 : Form
+    public partial class SpaceShipInterface : Form
     {
-        public Form1()
+        public SpaceShipInterface()
         {
             InitializeComponent();
         }
+
+        //COMBOBOX AMB ELS PLANETES A ESCOLLIR
+
+        //DEMANAR LA CLAU I EL CODI A LA BBDD 
+
+        //ENVIAR TCP IP EL CODI ENCRIPTADA
     }
 }

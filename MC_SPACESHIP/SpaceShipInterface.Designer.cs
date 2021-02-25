@@ -1,7 +1,7 @@
 ﻿
-namespace MC_PLANET
+namespace MC_SPACESHIP
 {
-    partial class Form1
+    partial class SpaceShipInterface
     {
         /// <summary>
         /// Variable del diseñador necesaria.

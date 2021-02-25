@@ -1,0 +1,6 @@
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\bin\Debug\PACS_MuchoCodigoIT.exe.config
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\bin\Debug\PACS_MuchoCodigoIT.exe
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\bin\Debug\PACS_MuchoCodigoIT.pdb
+C:\DLL\PACS_MuchoCodigoIT.exe.config
+C:\DLL\PACS_MuchoCodigoIT.exe
+C:\DLL\PACS_MuchoCodigoIT.pdb

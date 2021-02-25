@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace PACS_Utils
 {
-    class RSASKeysService
+    class RSAKeysService
     {
+        public void GenerateRsaKeys () {
+        }
+
+        public void EncryptedCode(String message, String KeyPublica) {
+        }
+
+        public void DencryptedCode (String EncryptMessage, String codePlanet) {
+        }
     }
 }

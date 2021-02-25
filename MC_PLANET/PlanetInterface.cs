@@ -10,11 +10,19 @@ using System.Windows.Forms;
 
 namespace MC_PLANET
 {
-    public partial class Form1 : Form
+    public partial class PlanetInterface : Form
     {
-        public Form1()
+        public PlanetInterface()
         {
             InitializeComponent();
         }
+
+        //GENERAR CODI
+
+        //LLEGIR CLAU ENVIADA PER LA NAU
+
+        //DESNCRIPTAR LA CLAU
+
+
     }
 }
