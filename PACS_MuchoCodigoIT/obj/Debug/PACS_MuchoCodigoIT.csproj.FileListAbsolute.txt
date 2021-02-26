@@ -4,3 +4,14 @@ C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_M
 C:\DLL\PACS_MuchoCodigoIT.exe.config
 C:\DLL\PACS_MuchoCodigoIT.exe
 C:\DLL\PACS_MuchoCodigoIT.pdb
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\PACS_MuchoCodigoIT.exe.config
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\PACS_MuchoCodigoIT.exe
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\PACS_MuchoCodigoIT.pdb
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.csprojAssemblyReference.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.Properties.Resources.resources
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.csproj.GenerateResource.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.csproj.CoreCompileInputs.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.csproj.CopyComplete
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.exe
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.pdb
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\obj\Debug\PACS_MuchoCodigoIT.Form1.resources
