@@ -86,5 +86,14 @@
   <ItemGroup>
     <None Include="Resources\bb5541b1d203719b1fac2c4784301e63.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PACS_CustomControls\PACS_CustomControls.csproj">
+      <Project>{B0A24DE8-7F77-420F-B87D-24BD2A15D610}</Project>
+      <Name>PACS_CustomControls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ComandamentPlaneta.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

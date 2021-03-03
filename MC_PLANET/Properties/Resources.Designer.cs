@@ -73,6 +73,16 @@ namespace MC_PLANET.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ComandamentPlaneta {
+            get {
+                object obj = ResourceManager.GetObject("ComandamentPlaneta", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap istockphoto_1240164077_612x612 {
             get {
                 object obj = ResourceManager.GetObject("istockphoto-1240164077-612x612", resourceCulture);

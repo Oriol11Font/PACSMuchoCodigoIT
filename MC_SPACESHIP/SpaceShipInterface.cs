@@ -17,6 +17,11 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
+        private void SpaceShipInterface_Load(object sender, EventArgs e)
+        {
+
+        }
+
         //COMBOBOX AMB ELS PLANETES A ESCOLLIR
 
         //DEMANAR LA CLAU I EL CODI A LA BBDD 

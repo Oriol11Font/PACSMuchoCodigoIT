@@ -18,9 +18,14 @@ namespace MC_PLANET
         }
 
         //GENERAR CODI
-        private CreateKey()
+        private void CreateKey()
         {
+            
+        }
 
+        private void genKey_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = textBox1.Text + "HOLA" + Environment.NewLine;
         }
         //LLEGIR CLAU ENVIADA PER LA NAU
 

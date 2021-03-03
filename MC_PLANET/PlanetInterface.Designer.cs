@@ -29,24 +29,82 @@ namespace MC_PLANET
         /// </summary>
         private void InitializeComponent()
         {
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.circularButton1 = new PACS_CustomControls.CircularButton();
+            this.genKey = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(36)))), ((int)(((byte)(39)))));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.textBox1.Location = new System.Drawing.Point(21, 16);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(493, 445);
+            this.textBox1.TabIndex = 0;
+            // 
+            // circularButton1
+            // 
+            this.circularButton1.BackColor = System.Drawing.Color.Transparent;
+            this.circularButton1.BtnLabel = "OUT";
+            this.circularButton1.Location = new System.Drawing.Point(976, 209);
+            this.circularButton1.Name = "circularButton1";
+            this.circularButton1.Size = new System.Drawing.Size(169, 158);
+            this.circularButton1.TabIndex = 2;
+            // 
+            // genKey
+            // 
+            this.genKey.Location = new System.Drawing.Point(976, 468);
+            this.genKey.Margin = new System.Windows.Forms.Padding(4);
+            this.genKey.Name = "genKey";
+            this.genKey.Size = new System.Drawing.Size(171, 90);
+            this.genKey.TabIndex = 3;
+            this.genKey.Text = "GenerateKey";
+            this.genKey.UseVisualStyleBackColor = true;
+            this.genKey.Click += new System.EventHandler(this.genKey_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Location = new System.Drawing.Point(146, 114);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(536, 485);
+            this.panel1.TabIndex = 4;
             // 
             // PlanetInterface
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.BackgroundImage = global::MC_PLANET.Properties.Resources.bb5541b1d203719b1fac2c4784301e63;
+            this.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.BackgroundImage = global::MC_PLANET.Properties.Resources.ComandamentPlaneta;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1237, 721);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.genKey);
+            this.Controls.Add(this.circularButton1);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "PlanetInterface";
             this.Text = "Form1";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox textBox1;
+        private PACS_CustomControls.CircularButton circularButton1;
+        private System.Windows.Forms.Button genKey;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
