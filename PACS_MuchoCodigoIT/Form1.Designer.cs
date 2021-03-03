@@ -29,13 +29,33 @@ namespace PACS_MuchoCodigoIT
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.circularButton1 = new PACS_CustomControls.CircularButton();
+            this.SuspendLayout();
+            // 
+            // circularButton1
+            // 
+            this.circularButton1.BackColor = System.Drawing.Color.Transparent;
+            this.circularButton1.BtnLabel = "ON / OFF SERVER";
+            this.circularButton1.Location = new System.Drawing.Point(306, 187);
+            this.circularButton1.Name = "circularButton1";
+            this.circularButton1.Size = new System.Drawing.Size(160, 135);
+            this.circularButton1.TabIndex = 0;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.circularButton1);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private PACS_CustomControls.CircularButton circularButton1;
     }
 }
 

@@ -6,9 +6,9 @@ using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace LibreriaClases
+namespace PACS_Utils
 {
-    public class DataAccessClass
+    public class DataAccessService
     {
         private SqlConnection _conn;
 
