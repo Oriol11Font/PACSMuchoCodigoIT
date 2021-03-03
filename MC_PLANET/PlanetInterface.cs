@@ -18,7 +18,10 @@ namespace MC_PLANET
         }
 
         //GENERAR CODI
+        private CreateKey()
+        {
 
+        }
         //LLEGIR CLAU ENVIADA PER LA NAU
 
         //DESNCRIPTAR LA CLAU

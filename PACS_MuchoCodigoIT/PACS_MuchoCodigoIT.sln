@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PACS_Utils", "..\PACS_Utils
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PACS_CustomControls", "..\PACS_CustomControls\PACS_CustomControls.csproj", "{B0A24DE8-7F77-420F-B87D-24BD2A15D610}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PACS_Objects", "..\PACS_Objects\PACS_Objects.csproj", "{5D417289-0402-4DB0-AC37-5BDD499EB679}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B0A24DE8-7F77-420F-B87D-24BD2A15D610}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A24DE8-7F77-420F-B87D-24BD2A15D610}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0A24DE8-7F77-420F-B87D-24BD2A15D610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D417289-0402-4DB0-AC37-5BDD499EB679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D417289-0402-4DB0-AC37-5BDD499EB679}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D417289-0402-4DB0-AC37-5BDD499EB679}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D417289-0402-4DB0-AC37-5BDD499EB679}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

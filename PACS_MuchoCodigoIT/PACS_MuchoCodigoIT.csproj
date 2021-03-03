@@ -80,6 +80,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MC_PLANET\MC_PLANET.csproj">
+      <Project>{64669c4c-fd22-49ce-871e-ce6a7c477eea}</Project>
+      <Name>MC_PLANET</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MC_SPACESHIP\MC_SPACESHIP.csproj">
+      <Project>{1ba177b7-5fca-4c8e-9e92-34148878cc4d}</Project>
+      <Name>MC_SPACESHIP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PACS_CustomControls\PACS_CustomControls.csproj">
       <Project>{b0a24de8-7f77-420f-b87d-24bd2a15d610}</Project>
       <Name>PACS_CustomControls</Name>

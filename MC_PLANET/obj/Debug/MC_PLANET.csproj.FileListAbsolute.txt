@@ -1,12 +1,3 @@
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.exe.config
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.exe
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.pdb
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_PLANET.exe.config
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_PLANET.exe
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_PLANET.pdb
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.PlanetInterface.resources
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.Properties.Resources.resources
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.csproj.GenerateResource.cache
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.csproj.CoreCompileInputs.cache
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.exe
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\obj\Debug\MC_PLANET.pdb
