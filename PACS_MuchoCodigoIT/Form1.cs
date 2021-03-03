@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MC_PLANET;
+using MC_SPACESHIP;
 
 namespace PACS_MuchoCodigoIT
 {
@@ -15,6 +17,18 @@ namespace PACS_MuchoCodigoIT
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PlanetInterface form = new PlanetInterface();
+            form.Show();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SpaceShipInterface form = new SpaceShipInterface();
+            form.Show();
         }
     }
 }

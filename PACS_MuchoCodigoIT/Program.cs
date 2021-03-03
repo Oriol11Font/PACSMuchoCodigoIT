@@ -18,7 +18,7 @@ namespace PACS_MuchoCodigoIT
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PlanetInterface());
+            Application.Run(new Form1());
         }
     }
 }

@@ -63,6 +63,16 @@ namespace MC_PLANET.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BackGroundPlanet {
+            get {
+                object obj = ResourceManager.GetObject("BackGroundPlanet", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bb5541b1d203719b1fac2c4784301e63 {
             get {
                 object obj = ResourceManager.GetObject("bb5541b1d203719b1fac2c4784301e63", resourceCulture);

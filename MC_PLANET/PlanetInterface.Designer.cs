@@ -30,9 +30,9 @@ namespace MC_PLANET
         private void InitializeComponent()
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.circularButton1 = new PACS_CustomControls.CircularButton();
             this.genKey = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.circularButton1 = new PACS_CustomControls.CircularButton();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,15 +49,6 @@ namespace MC_PLANET
             this.textBox1.Size = new System.Drawing.Size(493, 445);
             this.textBox1.TabIndex = 0;
             // 
-            // circularButton1
-            // 
-            this.circularButton1.BackColor = System.Drawing.Color.Transparent;
-            this.circularButton1.BtnLabel = "OUT";
-            this.circularButton1.Location = new System.Drawing.Point(976, 209);
-            this.circularButton1.Name = "circularButton1";
-            this.circularButton1.Size = new System.Drawing.Size(169, 158);
-            this.circularButton1.TabIndex = 2;
-            // 
             // genKey
             // 
             this.genKey.Location = new System.Drawing.Point(976, 468);
@@ -72,6 +63,7 @@ namespace MC_PLANET
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Location = new System.Drawing.Point(146, 114);
@@ -79,12 +71,21 @@ namespace MC_PLANET
             this.panel1.Size = new System.Drawing.Size(536, 485);
             this.panel1.TabIndex = 4;
             // 
+            // circularButton1
+            // 
+            this.circularButton1.BackColor = System.Drawing.Color.Transparent;
+            this.circularButton1.BtnLabel = "OUT";
+            this.circularButton1.Location = new System.Drawing.Point(978, 132);
+            this.circularButton1.Name = "circularButton1";
+            this.circularButton1.Size = new System.Drawing.Size(169, 158);
+            this.circularButton1.TabIndex = 2;
+            // 
             // PlanetInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.BackgroundImage = global::MC_PLANET.Properties.Resources.ComandamentPlaneta;
+            this.BackgroundImage = global::MC_PLANET.Properties.Resources.BackGroundPlanet;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
             this.Controls.Add(this.panel1);

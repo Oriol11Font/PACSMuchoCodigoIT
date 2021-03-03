@@ -10,3 +10,4 @@ C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPA
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.exe
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.pdb
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.SpaceShipInterface.resources
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.csprojAssemblyReference.cache
