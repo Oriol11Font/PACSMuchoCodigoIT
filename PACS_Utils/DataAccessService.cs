@@ -13,7 +13,7 @@ namespace PACS_Utils
         private SqlConnection _conn;
 
         // TODO: guardar la connection string en el app.config
-        private static string _connectionString = @"Data Source=den1.mssql7.gear.host ;Initial Catalog=securecode;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
+        private static string _connectionString = @"Data Source=den1.mssql7.gear.host ;Initial Catalog=muchocodigodtb;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
 
         private static readonly Configuration Config =
             ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

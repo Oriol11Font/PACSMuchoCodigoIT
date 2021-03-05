@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PACS_Utils
 {
-    class RSAKeysService
+    public class RSAKeysService
     {
         RSACryptoServiceProvider RSA;
         CspParameters cspp;

@@ -59,18 +59,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -81,19 +81,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\istockphoto-1240164077-612x612.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bb5541b1d203719b1fac2c4784301e63.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\PACS_CustomControls\PACS_CustomControls.csproj">
       <Project>{B0A24DE8-7F77-420F-B87D-24BD2A15D610}</Project>
       <Name>PACS_CustomControls</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ComandamentPlaneta.jpg" />
+    <ProjectReference Include="..\PACS_Objects\PACS_Objects.csproj">
+      <Project>{5d417289-0402-4db0-ac37-5bdd499eb679}</Project>
+      <Name>PACS_Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PACS_Utils\PACS_Utils.csproj">
+      <Project>{133ac914-c80d-4348-902e-8535bbc8bae3}</Project>
+      <Name>PACS_Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\BackGroundPlanet.jpg" />

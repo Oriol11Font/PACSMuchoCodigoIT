@@ -14,7 +14,7 @@ using System.Net.NetworkInformation;
 
 namespace PACS_Utils
 {
-    class TCPIPSystemService
+    public class TCPIPSystemService
     {
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 

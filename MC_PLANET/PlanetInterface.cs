@@ -27,6 +27,11 @@ namespace MC_PLANET
         {
             textBox1.Text = textBox1.Text + "HOLA" + Environment.NewLine;
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
         //LLEGIR CLAU ENVIADA PER LA NAU
 
         //DESNCRIPTAR LA CLAU

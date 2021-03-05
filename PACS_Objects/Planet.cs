@@ -1,22 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace PACS_Objects
 {
     public class Planet
     {
-        int idPlanet;
-        int CodePlanet;
+        int IdPlanet;
+        string CodePlanet;
         string NamePlanet;
+        string IpPlanet;
+        string PortPlanet;
         
-        public void insert (int id, int Code, string Name)
+        public void insert (int id, string Code, string Name, string Ip, string Port)
         {
-            idPlanet = id;
+            IdPlanet = id;
             CodePlanet = Code;
             NamePlanet = Name;
+            IpPlanet = Ip;
+            PortPlanet = Port;
         }
+
+        public int getId()
+        {
+            return IdPlanet;
+        }
+
+        public string getCode()
+        {
+            return CodePlanet;
+        }
+
+        public string getName()
+        {
+            return NamePlanet;
+        }
+
+        public string getIp()
+        {
+            return IpPlanet;
+        }
+        public string getPort()
+        {
+            return PortPlanet;
+        }
+
     }
 }

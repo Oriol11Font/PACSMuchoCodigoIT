@@ -69,5 +69,15 @@ namespace MC_SPACESHIP.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BackGroundSpaceShip1 {
+            get {
+                object obj = ResourceManager.GetObject("BackGroundSpaceShip1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -83,5 +83,19 @@
   <ItemGroup>
     <None Include="Resources\BackGroundSpaceShip.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PACS_CustomControls\PACS_CustomControls.csproj">
+      <Project>{b0a24de8-7f77-420f-b87d-24bd2a15d610}</Project>
+      <Name>PACS_CustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PACS_Objects\PACS_Objects.csproj">
+      <Project>{5d417289-0402-4db0-ac37-5bdd499eb679}</Project>
+      <Name>PACS_Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PACS_Utils\PACS_Utils.csproj">
+      <Project>{133ac914-c80d-4348-902e-8535bbc8bae3}</Project>
+      <Name>PACS_Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
