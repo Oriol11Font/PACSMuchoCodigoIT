@@ -16,7 +16,7 @@ namespace MC_SPACESHIP
 
         DataAccessService dt = new DataAccessService();
         TCPIPSystemService tcp = new TCPIPSystemService();
-        Planet planet = new Planet();
+        Planet planet;
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
@@ -36,7 +36,7 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
-                printPanel(tcp.checkXarxa(planet.getIp(), 5));
+                printPanel(tcp.checkXarxa("8.8.8.8", 5));
             }
         }
 
@@ -49,9 +49,9 @@ namespace MC_SPACESHIP
 
                 var dr = ds.Tables[0].Rows[0];
 
-                planet.insert(Int32.Parse(dr.ItemArray.GetValue(0).ToString()), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(1).ToString());
+                planet = new Planet(Int32.Parse(dr.ItemArray.GetValue(0).ToString()), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(), dr.ItemArray.GetValue(3).ToString(), dr.ItemArray.GetValue(4).ToString());
 
-                printPanel("[INFO] - Contected to " + planet.getCode() + " | " + planet.getName() + " Address: " + planet.getIp() +" - Ready to CHECK");
+                printPanel("[SYSTEM] - Selected Planet: " + planet.getCode() + " | " + planet.getName() + " Address: " + planet.getIp() +" - Ready to CHECK");
             }
         }
 

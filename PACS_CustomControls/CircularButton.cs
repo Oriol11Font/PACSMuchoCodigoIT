@@ -8,16 +8,9 @@ namespace PACS_CustomControls
         private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
         private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
 
-        public string BtnLabel
-        {
-            get { return lblButton.Text; }
-            set { lblButton.Text = value; }
-        }
-
         public CircularButton()
         {
             InitializeComponent();
-            lblButton.Text = "OUT";
             pictrButton.SizeMode = PictureBoxSizeMode.StretchImage;
             pictrButton.ImageLocation = buttonOFF;
         }

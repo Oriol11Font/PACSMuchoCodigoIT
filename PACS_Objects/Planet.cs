@@ -8,8 +8,8 @@ namespace PACS_Objects
         string NamePlanet;
         string IpPlanet;
         string PortPlanet;
-        
-        public void insert (int id, string Code, string Name, string Ip, string Port)
+
+        public Planet (int id, string Code, string Name, string Ip, string Port)
         {
             IdPlanet = id;
             CodePlanet = Code;
