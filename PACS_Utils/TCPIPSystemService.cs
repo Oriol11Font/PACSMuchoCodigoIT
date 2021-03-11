@@ -25,7 +25,7 @@ namespace PACS_Utils
                 Listener = new TcpListener(IPAddress.Any, numPort);
                 Listener.Start();
 
-                return "[INFO] - Server ON";
+                return "[SYSTEM] - Server ON";
             }
             catch
             {
@@ -39,7 +39,7 @@ namespace PACS_Utils
             {
                 Listener.Stop();
 
-                return "[INFO] - Server OFF";
+                return "[SYSTEM] - Server OFF";
             } 
             catch 
             {
@@ -48,7 +48,7 @@ namespace PACS_Utils
             
         }
 
-        private string WaitingForResponse (TcpListener Listener)
+        public string WaitingForResponse (TcpListener Listener)
         {
             if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
@@ -88,7 +88,7 @@ namespace PACS_Utils
                 NetworkStream ns = client.GetStream();
                 ns.Write(dades, 0, dades.Length);
 
-                return "[INFO] - Message Succesfully sended!";
+                return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
             {
@@ -123,7 +123,7 @@ namespace PACS_Utils
                 }
                 else
                 {
-                    return "[INFO] - Succesfully connected!";
+                    return "[SYSTEM] - Succesfully connected!";
                 }
 
             }

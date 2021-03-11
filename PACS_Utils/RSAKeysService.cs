@@ -36,7 +36,7 @@ namespace PACS_Utils
                 string sqlInsert = "INSERT INTO dbo.PlanetKeys (idPlanet, XMLKey) VALUES (" + id + ", '" + publicKey + "');";
                 dtb.RunQuery(sqlInsert);
 
-                return "[INFO] - Keys Created Succesfully!";
+                return "[SYSTEM] - Keys Created Succesfully!";
             }
             catch
             {

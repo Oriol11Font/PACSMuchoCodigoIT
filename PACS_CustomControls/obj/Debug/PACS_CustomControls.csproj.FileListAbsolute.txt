@@ -1,0 +1,8 @@
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\bin\Debug\PACS_CustomControls.dll
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\bin\Debug\PACS_CustomControls.pdb
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.csprojAssemblyReference.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.CircularButton.resources
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.csproj.GenerateResource.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.csproj.CoreCompileInputs.cache
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.dll
+C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_CustomControls\obj\Debug\PACS_CustomControls.pdb

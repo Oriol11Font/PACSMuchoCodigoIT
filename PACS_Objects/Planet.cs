@@ -7,9 +7,9 @@ namespace PACS_Objects
         string CodePlanet;
         string NamePlanet;
         string IpPlanet;
-        string PortPlanet;
+        int PortPlanet;
 
-        public Planet (int id, string Code, string Name, string Ip, string Port)
+        public Planet (int id, string Code, string Name, string Ip, int Port)
         {
             IdPlanet = id;
             CodePlanet = Code;
@@ -37,7 +37,7 @@ namespace PACS_Objects
         {
             return IpPlanet;
         }
-        public string getPort()
+        public int getPort()
         {
             return PortPlanet;
         }

@@ -34,9 +34,9 @@
             // 
             // pictrButton
             // 
-            this.pictrButton.Location = new System.Drawing.Point(3, 3);
+            this.pictrButton.Location = new System.Drawing.Point(17, 3);
             this.pictrButton.Name = "pictrButton";
-            this.pictrButton.Size = new System.Drawing.Size(101, 88);
+            this.pictrButton.Size = new System.Drawing.Size(107, 161);
             this.pictrButton.TabIndex = 0;
             this.pictrButton.TabStop = false;
             this.pictrButton.Click += new System.EventHandler(this.pictrButton_Click);
@@ -48,7 +48,7 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.pictrButton);
             this.Name = "CircularButton";
-            this.Size = new System.Drawing.Size(107, 97);
+            this.Size = new System.Drawing.Size(140, 167);
             ((System.ComponentModel.ISupportInitialize)(this.pictrButton)).EndInit();
             this.ResumeLayout(false);
 
