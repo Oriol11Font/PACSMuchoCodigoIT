@@ -1,6 +1,5 @@
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\bin\Debug\PACS_Objects.dll
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\bin\Debug\PACS_Objects.pdb
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\obj\Debug\PACS_Objects.csprojAssemblyReference.cache
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\obj\Debug\PACS_Objects.csproj.CoreCompileInputs.cache
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\obj\Debug\PACS_Objects.dll
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Objects\obj\Debug\PACS_Objects.pdb
