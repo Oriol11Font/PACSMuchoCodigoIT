@@ -1,46 +1,45 @@
-﻿
-namespace PACS_Objects
+﻿namespace PACS_Objects
 {
     public class Planet
     {
-        int IdPlanet;
-        string CodePlanet;
-        string NamePlanet;
-        string IpPlanet;
-        string PortPlanet;
-        
-        public void insert (int id, string Code, string Name, string Ip, string Port)
+        private string _codePlanet;
+        private int _idPlanet;
+        private string _ipPlanet;
+        private string _namePlanet;
+        private string _portPlanet;
+
+        public void Insert(int id, string code, string name, string ip, string port)
         {
-            IdPlanet = id;
-            CodePlanet = Code;
-            NamePlanet = Name;
-            IpPlanet = Ip;
-            PortPlanet = Port;
+            _idPlanet = id;
+            _codePlanet = code;
+            _namePlanet = name;
+            _ipPlanet = ip;
+            _portPlanet = port;
         }
 
-        public int getId()
+        public int GetId()
         {
-            return IdPlanet;
+            return _idPlanet;
         }
 
-        public string getCode()
+        public string GetCode()
         {
-            return CodePlanet;
+            return _codePlanet;
         }
 
-        public string getName()
+        public string GetName()
         {
-            return NamePlanet;
+            return _namePlanet;
         }
 
-        public string getIp()
+        public string GetIp()
         {
-            return IpPlanet;
-        }
-        public string getPort()
-        {
-            return PortPlanet;
+            return _ipPlanet;
         }
 
+        public string GetPort()
+        {
+            return _portPlanet;
+        }
     }
 }

@@ -3,36 +3,32 @@ using System.Windows.Forms;
 
 namespace PACS_CustomControls
 {
-    public partial class CircularButton: UserControl
+    public partial class CircularButton : UserControl
     {
-        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
-        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
-
-        public string BtnLabel
-        {
-            get { return lblButton.Text; }
-            set { lblButton.Text = value; }
-        }
+        private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
 
         public CircularButton()
         {
             InitializeComponent();
             lblButton.Text = "OUT";
             pictrButton.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictrButton.ImageLocation = buttonOFF;
+            pictrButton.ImageLocation = _buttonOff;
         }
 
-        
+        public string BtnLabel
+        {
+            get => lblButton.Text;
+            set => lblButton.Text = value;
+        }
+
 
         private void pictrButton_Click(object sender, EventArgs e)
         {
-            if (pictrButton.ImageLocation == buttonON)
-            {
-               pictrButton.ImageLocation = buttonOFF;
-            } else
-            {
-               pictrButton.ImageLocation = buttonON;
-            }
+            if (pictrButton.ImageLocation == _buttonOn)
+                pictrButton.ImageLocation = _buttonOff;
+            else
+                pictrButton.ImageLocation = _buttonOn;
         }
     }
 }

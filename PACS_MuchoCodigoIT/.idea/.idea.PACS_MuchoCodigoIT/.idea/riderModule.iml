@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../../../MC_PLANET" />
+    <content url="file://$MODULE_DIR$/../../../MC_SPACESHIP" />
+    <content url="file://$MODULE_DIR$/../../../PACS_CustomControls" />
+    <content url="file://$MODULE_DIR$/../.." />
+    <content url="file://$MODULE_DIR$/../../../PACS_Objects" />
+    <content url="file://$MODULE_DIR$/../../../PACS_Utils" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -10,13 +10,14 @@ namespace PACS_Utils
 {
     public class DataAccessService
     {
-        private SqlConnection _conn;
-
         // TODO: guardar la connection string en el app.config
-        private static string _connectionString = @"Data Source=den1.mssql7.gear.host ;Initial Catalog=muchocodigodtb;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
+        private static readonly string ConnectionString =
+            @"Data Source=den1.mssql7.gear.host;Initial Catalog=muchocodigodtb;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
 
         private static readonly Configuration Config =
             ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+        private SqlConnection _conn;
 
         #region methods
 
@@ -30,7 +31,7 @@ namespace PACS_Utils
             // TODO: connection to the database with the specified connectionString stored encrypted in the app.config file
             try
             {
-                _conn = new SqlConnection(_connectionString);
+                _conn = new SqlConnection(ConnectionString);
             }
             catch (Exception e)
             {
@@ -40,6 +41,31 @@ namespace PACS_Utils
                 // to be changed with a invisible label on the Form that gets displayed when an error happens
                 MessageBox.Show($"La connexió a la base de dades no s'ha pogut realitzar. Excepció {e}",
                     "Error no fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void RunSafeQuery(string query, Dictionary<string, string> parameters)
+        {
+            try
+            {
+                ConnectDb();
+
+                var cm = new SqlCommand(query, _conn);
+
+                foreach (var param in parameters)
+                    cm.Parameters.AddWithValue(param.Key, param.Value);
+
+                _conn.Open();
+
+                cm.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                ErrorMessage(e, "L'execució de la consulta a la base de dades no s'ha executat correctament", null);
+            }
+            finally
+            {
+                _conn?.Close();
             }
         }
 
@@ -202,28 +228,26 @@ namespace PACS_Utils
             return finalStr;
         }
 
-        // TODO
-        private static string CreateSQLTransaction(List<string> queries)
-        {
-            return $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT;";
-        }
+        public string CreateChainedTransaction(List<string> queries) =>
+            $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
+
 
         private void ErrorMessage(Exception e, string message, string title)
-        {
-            if (message == null) message = "Error";
-            if (title == null) title = "Error no fatal ";
-            MessageBox.Show($"{message}: Excepció {e}", title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+            =>
+                MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-        public int getid(string nombretabla, string campoid, string campodesc, string valoredi)
+
+        public int Getid(string nombretabla, string campoid, string campodesc, string valoredi)
         {
-            _conn = new SqlConnection(_connectionString);
+            _conn = new SqlConnection(ConnectionString);
 
             _conn.Open();
 
-            string query = "SELECT " + campoid + " FROM [" + nombretabla + "] WHERE " + campodesc + "= '" + valoredi + "'";
+            var query = "SELECT " + campoid + " FROM [" + nombretabla + "] WHERE " + campodesc + "= '" + valoredi +
+                        "'";
 
-            SqlCommand command = new SqlCommand(query, _conn);
+            var command = new SqlCommand(query, _conn);
 
             //command.CommandType = CommandType.Text;
 
