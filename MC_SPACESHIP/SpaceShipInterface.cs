@@ -46,15 +46,15 @@ namespace MC_SPACESHIP
             {
                 comboPlanet.Items.Add(row["DescPlanet"]);
             }
-        }
-
+        }//AL INICIAR EL FORMULARI
+        
         private void ping_Click(object sender, EventArgs e)
         {
             if (comboPlanet.SelectedItem != null)
             {
                 printPanel(tcp.checkXarxa("8.8.8.8", 5));
             }
-        }
+        }//COMPROVACIO PING AL PLANETA
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -79,7 +79,7 @@ namespace MC_SPACESHIP
                     printPanel("[ERROR] - Error connecting to Server of the Planet");
                 }
             }
-        }
+        }//SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
         private void printPanel (string message)
         {
@@ -96,7 +96,7 @@ namespace MC_SPACESHIP
             {
 
             }
-        }
+        }//PER FER PRINT A LA CONSOLA DE LA PANTALLA
 
         private void StartServer_Click(object sender, EventArgs e)
         {
@@ -131,7 +131,7 @@ namespace MC_SPACESHIP
                 }
             }
             
-        }
+        }//INICIAR SERVIDOR
 
         private void ListenerServer()
         {
@@ -145,42 +145,50 @@ namespace MC_SPACESHIP
                     messageRecived.Text = mssg;
                 }
             }
-        }
-
+        }//BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
         private bool RecivedMessage(string message)
         {
-            bool check = false;
-            string id_message = message.Substring(0, 2);
-            string result = message.Substring(13, 2);
-            switch (id_message)
+            try
             {
-                case "VR":
-                    if (result.Equals("VP"))
-                    {
-                        check = true;
-                        printPanel("[SYSTEM] - Validation in progress...");
-                    }
-                    else if (result.Equals("AD"))
-                    {
-                        check = false;
-                        printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
-                    }
-                    else if (result.Equals("AG"))
-                    {
-                        check = true;
-                        printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
-                    }
-                    break;
-            }
+                //VR12345678901VP
+                bool check = false;
+                string id_message = message.Substring(0, 2);
+                string result = message.Substring(13, 2);
+                switch (id_message)
+                {
+                    case "VR":
+                        if (result.Equals("VP"))
+                        {
+                            check = true;
+                            printPanel("[SYSTEM] - Validation in progress...");
+                        }
+                        else if (result.Equals("AD"))
+                        {
+                            check = false;
+                            printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
+                        }
+                        else if (result.Equals("AG"))
+                        {
+                            check = true;
+                            printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
+                        }
+                        break;
+                }
 
-            return check;
-        }
+                return check;
+            } catch
+            {
+                printPanel(messageRecived.Text.Length.ToString());
+                return false;
+            }
+            
+        }//DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
             RecivedMessage(messageRecived.Text);
-        }
+        }//DETECTA PER INICIAR LA DESCODIFICACIO
 
         //DEMANAR LA CLAU I EL CODI A LA BBDD 
 

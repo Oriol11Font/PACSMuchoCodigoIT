@@ -44,29 +44,29 @@ namespace MC_SPACESHIP
             // comboPlanet
             // 
             this.comboPlanet.FormattingEnabled = true;
-            this.comboPlanet.Location = new System.Drawing.Point(840, 234);
-            this.comboPlanet.Margin = new System.Windows.Forms.Padding(2);
+            this.comboPlanet.Location = new System.Drawing.Point(1120, 288);
+            this.comboPlanet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboPlanet.Name = "comboPlanet";
-            this.comboPlanet.Size = new System.Drawing.Size(113, 21);
+            this.comboPlanet.Size = new System.Drawing.Size(149, 24);
             this.comboPlanet.TabIndex = 2;
             this.comboPlanet.SelectedIndexChanged += new System.EventHandler(this.comboPlanet_SelectedIndexChanged);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(840, 314);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(1120, 386);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 56);
+            this.button1.Size = new System.Drawing.Size(149, 69);
             this.button1.TabIndex = 3;
             this.button1.Text = "Sol·licitar Claus";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(840, 373);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Location = new System.Drawing.Point(1120, 459);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(112, 57);
+            this.button2.Size = new System.Drawing.Size(149, 70);
             this.button2.TabIndex = 4;
             this.button2.Text = "Enviar Codi Verficacio";
             this.button2.UseVisualStyleBackColor = true;
@@ -76,10 +76,10 @@ namespace MC_SPACESHIP
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.SpaceShipConsole);
-            this.panel1.Location = new System.Drawing.Point(103, 102);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Location = new System.Drawing.Point(137, 126);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(663, 382);
+            this.panel1.Size = new System.Drawing.Size(883, 469);
             this.panel1.TabIndex = 5;
             // 
             // SpaceShipConsole
@@ -88,18 +88,19 @@ namespace MC_SPACESHIP
             this.SpaceShipConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SpaceShipConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.SpaceShipConsole.FormattingEnabled = true;
-            this.SpaceShipConsole.Location = new System.Drawing.Point(10, 10);
-            this.SpaceShipConsole.Margin = new System.Windows.Forms.Padding(2);
+            this.SpaceShipConsole.ItemHeight = 16;
+            this.SpaceShipConsole.Location = new System.Drawing.Point(13, 12);
+            this.SpaceShipConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SpaceShipConsole.Name = "SpaceShipConsole";
-            this.SpaceShipConsole.Size = new System.Drawing.Size(640, 351);
+            this.SpaceShipConsole.Size = new System.Drawing.Size(853, 432);
             this.SpaceShipConsole.TabIndex = 0;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(840, 257);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Location = new System.Drawing.Point(1120, 316);
+            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(112, 54);
+            this.button3.Size = new System.Drawing.Size(149, 66);
             this.button3.TabIndex = 6;
             this.button3.Text = "Detectar Planeta";
             this.button3.UseVisualStyleBackColor = true;
@@ -107,19 +108,20 @@ namespace MC_SPACESHIP
             // 
             // messageRecived
             // 
-            this.messageRecived.Location = new System.Drawing.Point(856, 510);
-            this.messageRecived.Margin = new System.Windows.Forms.Padding(2);
+            this.messageRecived.Location = new System.Drawing.Point(1093, 627);
+            this.messageRecived.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.messageRecived.Name = "messageRecived";
-            this.messageRecived.Size = new System.Drawing.Size(76, 20);
+            this.messageRecived.Size = new System.Drawing.Size(203, 22);
             this.messageRecived.TabIndex = 8;
             this.messageRecived.TextChanged += new System.EventHandler(this.messageRecived_TextChanged);
             // 
             // onOffButton
             // 
             this.onOffButton.BackColor = System.Drawing.Color.Transparent;
-            this.onOffButton.Location = new System.Drawing.Point(856, 59);
+            this.onOffButton.Location = new System.Drawing.Point(1120, 72);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4);
             this.onOffButton.Name = "onOffButton";
-            this.onOffButton.Size = new System.Drawing.Size(76, 107);
+            this.onOffButton.Size = new System.Drawing.Size(149, 132);
             this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.onOffButton.TabIndex = 10;
             this.onOffButton.TabStop = false;
@@ -127,11 +129,11 @@ namespace MC_SPACESHIP
             // 
             // SpaceShipInterface
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::MC_SPACESHIP.Properties.Resources.BackGroundSpaceShip1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1011, 586);
+            this.ClientSize = new System.Drawing.Size(1348, 721);
             this.Controls.Add(this.onOffButton);
             this.Controls.Add(this.messageRecived);
             this.Controls.Add(this.button3);
@@ -139,7 +141,7 @@ namespace MC_SPACESHIP
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboPlanet);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "SpaceShipInterface";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.SpaceShipInterface_Load);
