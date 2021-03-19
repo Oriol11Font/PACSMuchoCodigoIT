@@ -6,9 +6,9 @@
         private int _idPlanet;
         private string _ipPlanet;
         private string _namePlanet;
-        private string _portPlanet;
+        private int _portPlanet;
 
-        public void Insert(int id, string code, string name, string ip, string port)
+        public Planet(int id, string code, string name, string ip, int port)
         {
             _idPlanet = id;
             _codePlanet = code;
@@ -36,8 +36,7 @@
         {
             return _ipPlanet;
         }
-
-        public string GetPort()
+        public int getPort()
         {
             return _portPlanet;
         }

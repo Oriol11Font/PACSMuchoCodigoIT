@@ -11,15 +11,8 @@ namespace PACS_CustomControls
         public CircularButton()
         {
             InitializeComponent();
-            lblButton.Text = "OUT";
             pictrButton.SizeMode = PictureBoxSizeMode.StretchImage;
             pictrButton.ImageLocation = _buttonOff;
-        }
-
-        public string BtnLabel
-        {
-            get => lblButton.Text;
-            set => lblButton.Text = value;
         }
 
 

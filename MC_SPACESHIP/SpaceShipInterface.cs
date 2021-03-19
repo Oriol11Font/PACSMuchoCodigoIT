@@ -4,34 +4,53 @@ using System.Data;
 using System.Windows.Forms;
 using PACS_Objects;
 using PACS_Utils;
+using System.Threading;
+using System.Net.Sockets;
 
 namespace MC_SPACESHIP
 {
     public partial class SpaceShipInterface : Form
     {
-        private readonly DataAccessService _dt = new DataAccessService();
-        private readonly Planet _planet = new Planet();
-        private readonly TcpipSystemService _tcp = new TcpipSystemService();
-
         public SpaceShipInterface()
         {
             InitializeComponent();
         }
 
+        Thread t1;
+        bool active;
+        DataAccessService dt = new DataAccessService();
+        TcpipSystemService tcp = new TcpipSystemService();
+        TcpListener Listener;
+        Planet planet;
+        SpaceShip spaceShip;
+
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
-            var sql = "SELECT DescPlanet FROM Planets;";
-            var ds = _dt.GetByQuery(sql);
+            string sqlSpaceShip =
+                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
+            DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
+
+            var dr = ds1.Tables[0].Rows[0];
+
+            spaceShip = new SpaceShip(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
+                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                Int32.Parse(dr.ItemArray.GetValue(3).ToString()));
+
+            string sql = "SELECT DescPlanet FROM Planets;";
+            DataSet ds2 = dt.GetByQuery(sql);
 
             var planets = new List<object>();
 
-            foreach (DataRow row in ds.Tables[0].Rows) comboPlanet.Items.Add(row["DescPlanet"]);
+            foreach (DataRow row in ds2.Tables[0].Rows) comboPlanet.Items.Add(row["DescPlanet"]);
         }
 
         private void ping_Click(object sender, EventArgs e)
         {
-            if (comboPlanet.SelectedItem != null) PrintPanel(_tcp.CheckXarxa(_planet.GetIp(), 5));
+            if (comboPlanet.SelectedItem != null)
+            {
+                PrintPanel(tcp.CheckXarxa("8.8.8.8", 5));
+            }
         }
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
@@ -41,16 +60,27 @@ namespace MC_SPACESHIP
                 var sql =
                     "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
                     comboPlanet.SelectedItem + "';";
-                var ds = _dt.GetByQuery(sql);
+                var ds = dt.GetByQuery(sql);
 
                 var dr = ds.Tables[0].Rows[0];
 
-                _planet.Insert(int.Parse(dr.ItemArray.GetValue(0).ToString()), dr.ItemArray.GetValue(1).ToString(),
-                    dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(1).ToString(),
-                    dr.ItemArray.GetValue(1).ToString());
+                planet = new Planet(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
+                    dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                    dr.ItemArray.GetValue(3).ToString(), int.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                PrintPanel("[INFO] - Contected to " + _planet.GetCode() + " | " + _planet.GetName() + " Address: " +
-                           _planet.GetIp() + " - Ready to CHECK");
+                PrintPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                           " - Address: " + planet.GetIp() + " - Port: " + planet.getPort() + " - Ready to CHECK");
+
+                string mssg = $@"ER{spaceShip.getCode()}DADAD";
+
+                try
+                {
+                    //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
+                }
+                catch
+                {
+                    PrintPanel("[ERROR] - Error connecting to Server of the Planet");
+                }
             }
         }
 
@@ -58,10 +88,44 @@ namespace MC_SPACESHIP
         {
             if (message != "")
             {
-                SpaceShipPanel.Text = SpaceShipPanel.Text + message + Environment.NewLine;
+                if (SpaceShipConsole.Items.Count > 30)
+                {
+                    SpaceShipConsole.Items.Clear();
+                }
+
+                SpaceShipConsole.Items.Add(message);
+            }
+            else
+            {
             }
         }
 
+        private void StartServer_Click(object sender, EventArgs e)
+        {
+            active = true;
+            tcp.StartServer(spaceShip.getPort(), Listener);
+            t1 = new Thread(ListenerServer);
+            t1.Start();
+        }
+
+        private void ListenerServer()
+        {
+            string mssg;
+
+            while (active)
+            {
+                mssg = tcp.WaitingForResponse(Listener);
+                if (mssg != null)
+                {
+                    messageRecived.Text = mssg;
+                }
+            }
+        }
+
+        private void messageRecived_TextChanged(object sender, EventArgs e)
+        {
+            // FUNCIO DEL POL ON DESXIFRAR MISSATGE ENVIAT PER LA BASE DE DADES
+        }
         //DEMANAR LA CLAU I EL CODI A LA BBDD 
 
         //ENVIAR TCP IP EL CODI ENCRIPTADA

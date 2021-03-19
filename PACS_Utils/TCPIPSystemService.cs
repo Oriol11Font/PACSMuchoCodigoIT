@@ -16,7 +16,7 @@ namespace PACS_Utils
                 listener = new TcpListener(IPAddress.Any, numPort);
                 listener.Start();
 
-                return "[INFO] - Server ON";
+                return "[SYSTEM] - Server ON";
             }
             catch
             {
@@ -30,7 +30,7 @@ namespace PACS_Utils
             {
                 listener.Stop();
 
-                return "[INFO] - Server OFF";
+                return "[SYSTEM] - Server OFF";
             }
             catch
             {
@@ -38,11 +38,11 @@ namespace PACS_Utils
             }
         }
 
-        private string WaitingForResponse(TcpListener listener)
+        public string WaitingForResponse(TcpListener Listener)
         {
-            if (listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
+            if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
-                var client = listener.AcceptTcpClient();
+                var client = Listener.AcceptTcpClient();
                 var ns = client.GetStream();
                 if (ns.CanRead)
                 {
@@ -76,7 +76,7 @@ namespace PACS_Utils
                 var ns = client.GetStream();
                 ns.Write(dades, 0, dades.Length);
 
-                return "[INFO] - Message Succesfully sended!";
+                return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
             {
@@ -104,8 +104,13 @@ namespace PACS_Utils
                 }
 
                 if (connErr)
+                {
                     return "[ERROR] - Failed to ping to " + ipToPing + ". [INFO] - " + ping;
-                return "[INFO] - Succesfully connected!";
+                }
+                else
+                {
+                    return "[SYSTEM] - Succesfully connected!";
+                }
             }
             catch
             {

@@ -29,36 +29,26 @@
         private void InitializeComponent()
         {
             this.pictrButton = new System.Windows.Forms.PictureBox();
-            this.lblButton = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictrButton)).BeginInit();
             this.SuspendLayout();
             // 
             // pictrButton
             // 
-            this.pictrButton.Location = new System.Drawing.Point(33, 47);
+            this.pictrButton.Location = new System.Drawing.Point(17, 3);
             this.pictrButton.Name = "pictrButton";
-            this.pictrButton.Size = new System.Drawing.Size(101, 88);
+            this.pictrButton.Size = new System.Drawing.Size(107, 161);
             this.pictrButton.TabIndex = 0;
             this.pictrButton.TabStop = false;
             this.pictrButton.Click += new System.EventHandler(this.pictrButton_Click);
-            // 
-            // lblButton
-            // 
-            this.lblButton.Location = new System.Drawing.Point(3, 27);
-            this.lblButton.Name = "lblButton";
-            this.lblButton.Size = new System.Drawing.Size(168, 17);
-            this.lblButton.TabIndex = 1;
-            this.lblButton.Text = "lblBotton";
             // 
             // CircularButton
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.lblButton);
             this.Controls.Add(this.pictrButton);
             this.Name = "CircularButton";
-            this.Size = new System.Drawing.Size(171, 135);
+            this.Size = new System.Drawing.Size(140, 167);
             ((System.ComponentModel.ISupportInitialize)(this.pictrButton)).EndInit();
             this.ResumeLayout(false);
 
@@ -67,6 +57,5 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictrButton;
-        private System.Windows.Forms.Label lblButton;
     }
 }
