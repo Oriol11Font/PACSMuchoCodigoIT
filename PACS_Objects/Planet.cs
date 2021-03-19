@@ -2,6 +2,7 @@
 {
     public class Planet
     {
+<<<<<<< HEAD
         private string _codePlanet;
         private int _idPlanet;
         private string _ipPlanet;
@@ -9,6 +10,15 @@
         private string _portPlanet;
 
         public void Insert(int id, string code, string name, string ip, string port)
+=======
+        int IdPlanet;
+        string CodePlanet;
+        string NamePlanet;
+        string IpPlanet;
+        int PortPlanet;
+
+        public Planet (int id, string Code, string Name, string Ip, int Port)
+>>>>>>> master
         {
             _idPlanet = id;
             _codePlanet = code;
@@ -36,8 +46,12 @@
         {
             return _ipPlanet;
         }
+<<<<<<< HEAD
 
         public string GetPort()
+=======
+        public int getPort()
+>>>>>>> master
         {
             return _portPlanet;
         }

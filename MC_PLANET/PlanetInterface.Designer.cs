@@ -44,7 +44,11 @@ namespace MC_PLANET
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.textBox1.Location = new System.Drawing.Point(21, 16);
+<<<<<<< HEAD
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+=======
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+>>>>>>> master
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
@@ -53,10 +57,17 @@ namespace MC_PLANET
             // 
             // genKey
             // 
+<<<<<<< HEAD
             this.genKey.Location = new System.Drawing.Point(976, 492);
             this.genKey.Margin = new System.Windows.Forms.Padding(4);
             this.genKey.Name = "genKey";
             this.genKey.Size = new System.Drawing.Size(171, 66);
+=======
+            this.genKey.Location = new System.Drawing.Point(976, 468);
+            this.genKey.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.genKey.Name = "genKey";
+            this.genKey.Size = new System.Drawing.Size(171, 90);
+>>>>>>> master
             this.genKey.TabIndex = 3;
             this.genKey.Text = "Generate Key and encrypted letters";
             this.genKey.UseVisualStyleBackColor = true;
@@ -77,7 +88,10 @@ namespace MC_PLANET
             // circularButton1
             // 
             this.circularButton1.BackColor = System.Drawing.Color.Transparent;
+<<<<<<< HEAD
             this.circularButton1.BtnLabel = "OUT";
+=======
+>>>>>>> master
             this.circularButton1.Location = new System.Drawing.Point(979, 132);
             this.circularButton1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.circularButton1.Name = "circularButton1";
@@ -100,7 +114,10 @@ namespace MC_PLANET
             this.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
+<<<<<<< HEAD
             this.Controls.Add(this.planetCmbx);
+=======
+>>>>>>> master
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.genKey);
             this.Controls.Add(this.circularButton1);
