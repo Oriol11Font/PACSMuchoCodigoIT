@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace PACS_CustomControls
 {
-    public partial class CircularButton: UserControl
+    public partial class CircularButton: Button
     {
         private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
         private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
@@ -14,8 +14,6 @@ namespace PACS_CustomControls
             pictrButton.SizeMode = PictureBoxSizeMode.StretchImage;
             pictrButton.ImageLocation = buttonOFF;
         }
-
-        
 
         private void pictrButton_Click(object sender, EventArgs e)
         {

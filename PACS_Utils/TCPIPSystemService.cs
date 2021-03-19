@@ -18,32 +18,35 @@ namespace PACS_Utils
     {
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
-        public string StartServer (int numPort, TcpListener Listener)
+        public TcpListener StartServer (int numPort, TcpListener Listener)
         {
             try
             {
                 Listener = new TcpListener(IPAddress.Any, numPort);
                 Listener.Start();
 
-                return "[SYSTEM] - Server ON";
+                return Listener;
+                
             }
             catch
             {
-                return "[ERROR] - Failed to start the server";
+                return null;
             }
         }
 
-        public string StopServer (TcpListener Listener)
+        public TcpListener StopServer (TcpListener Listener)
         {
             try
             {
                 Listener.Stop();
 
-                return "[SYSTEM] - Server OFF";
+                return Listener;
+                    
             } 
             catch 
             {
-                return "[ERROR] - Failed to stop the Server Process";
+                return null;
+                    
             }
             
         }
@@ -72,7 +75,7 @@ namespace PACS_Utils
                 }
                 else
                 {
-                    return "Ho sento.No puc llegir aquest stream.";
+                    return "Ho sento. No puc llegir aquest stream.";
                 }
             }
 

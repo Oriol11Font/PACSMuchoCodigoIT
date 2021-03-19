@@ -16,6 +16,8 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
+        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
         Thread t1;
         bool active;
         DataAccessService dt = new DataAccessService();
@@ -26,6 +28,7 @@ namespace MC_SPACESHIP
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
+            onOffButton.ImageLocation = buttonOFF;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
             string sqlSpaceShip = "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
             DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
@@ -97,10 +100,37 @@ namespace MC_SPACESHIP
 
         private void StartServer_Click(object sender, EventArgs e)
         {
-            active = true;
-            tcp.StartServer(spaceShip.getPort(), Listener);
-            t1 = new Thread(ListenerServer);
-            t1.Start();
+            if (active == true)
+            {
+                try
+                {
+                    active = false;
+                    onOffButton.ImageLocation = buttonOFF;
+                    t1.Abort();
+                    Listener = tcp.StopServer(Listener);
+                    printPanel("[SYSTEM] - Server OFF");
+                }
+                catch
+                {
+                    printPanel("[ERROR] - Failed to stop the Server Process");
+                }
+            }
+            else
+            {
+                try
+                {
+                    active = true;
+                    onOffButton.ImageLocation = buttonON;
+                    Listener = tcp.StartServer(spaceShip.getPort(), Listener);
+                    t1 = new Thread(ListenerServer);
+                    t1.Start();
+                    printPanel("[SYSTEM] - Server ON");
+                } catch
+                {
+                    printPanel("[ERROR] - Failed to start the server");
+                }
+            }
+            
         }
 
         private void ListenerServer()
@@ -113,15 +143,45 @@ namespace MC_SPACESHIP
                 if (mssg != null)
                 {
                     messageRecived.Text = mssg;
-
                 }
             }
         }
 
+
+        private bool RecivedMessage(string message)
+        {
+            bool check = false;
+            string id_message = message.Substring(0, 2);
+            string result = message.Substring(13, 2);
+            switch (id_message)
+            {
+                case "VR":
+                    if (result.Equals("VP"))
+                    {
+                        check = true;
+                        printPanel("[SYSTEM] - Validation in progress...");
+                    }
+                    else if (result.Equals("AD"))
+                    {
+                        check = false;
+                        printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
+                    }
+                    else if (result.Equals("AG"))
+                    {
+                        check = true;
+                        printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
+                    }
+                    break;
+            }
+
+            return check;
+        }
+
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
-            // FUNCIO DEL POL ON DESXIFRAR MISSATGE ENVIAT PER LA BASE DE DADES
+            RecivedMessage(messageRecived.Text);
         }
+
         //DEMANAR LA CLAU I EL CODI A LA BBDD 
 
         //ENVIAR TCP IP EL CODI ENCRIPTADA

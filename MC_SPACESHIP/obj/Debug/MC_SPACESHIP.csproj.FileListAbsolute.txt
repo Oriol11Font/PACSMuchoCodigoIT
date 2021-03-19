@@ -1,14 +1,3 @@
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\bin\Debug\MC_SPACESHIP.exe.config
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\bin\Debug\MC_SPACESHIP.exe
 C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\bin\Debug\MC_SPACESHIP.pdb
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_SPACESHIP.exe.config
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_SPACESHIP.exe
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\DLL\MC_SPACESHIP.pdb
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.csprojAssemblyReference.cache
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.Properties.Resources.resources
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.SpaceShipInterface.resources
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.csproj.GenerateResource.cache
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.csproj.CoreCompileInputs.cache
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.csproj.CopyComplete
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.exe
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_SPACESHIP\obj\Debug\MC_SPACESHIP.pdb
