@@ -1,40 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PACS_Utils
 {
-    public class RSAKeysService
+    public class RsaKeysService
     {
-        RSACryptoServiceProvider RSA;
-        CspParameters cspp;
-        DataAccessService dtb;
+        private const string Vocab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        private readonly SecureRandom _secureRandom = new SecureRandom();
+        private CspParameters _cspp = new CspParameters();
+
+        private DataAccessService _dtb;
+
+        private RSACryptoServiceProvider _rsa;
         //CREAR OBJETO PLANET PARA TENER TODO SU INFO EN EL CODIGO
-    
-        public string GenerateRsaKeys (string PlanetCode) {
+
+        public string GenerateRsaKeys(string planetCode)
+        {
             try
             {
-                dtb = new DataAccessService();
-                RSA.Clear();
+                _dtb = new DataAccessService();
+                _rsa.Clear();
 
-                cspp.KeyContainerName = PlanetCode;
-                RSA = new RSACryptoServiceProvider(cspp);
+                _cspp.KeyContainerName = planetCode;
+                _rsa = new RSACryptoServiceProvider(_cspp);
 
-                string publicKey = RSA.ToXmlString(false);
-                RSA.PersistKeyInCsp = true;
+                var publicKey = _rsa.ToXmlString(false);
+                _rsa.PersistKeyInCsp = true;
 
                 // GET ID OF TH PLANET FOR PLANETKEYS TABLE
-                string sql = "SELECT idPlanet FROM dbo.Planets WHERE CodePlanet = '"+PlanetCode+"';";
-                DataSet idPlanet = dtb.GetByQuery(sql);
-                string id = idPlanet.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+                var sql = $@"SELECT idPlanet FROM dbo.Planets WHERE CodePlanet = '{planetCode}';";
+                var idPlanet = _dtb.GetByQuery(sql);
+                var id = idPlanet.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
                 // INSERT INFO PUBLIC KEY OF PLANET TO BBDD
-                string sqlInsert = "INSERT INTO dbo.PlanetKeys (idPlanet, XMLKey) VALUES (" + id + ", '" + publicKey + "');";
-                dtb.RunQuery(sqlInsert);
+                var sqlInsert = $@"INSERT INTO dbo.PlanetKeys (idPlanet, XMLKey) VALUES ({id}, '{publicKey}');";
+                _dtb.RunQuery(sqlInsert);
 
                 return "[SYSTEM] - Keys Created Succesfully!";
             }
@@ -44,41 +46,43 @@ namespace PACS_Utils
             }
         }
 
-        public byte [] EncryptedCode(String MessageToEncrypt, string idPlanet) {
-            
+        public byte[] EncryptedCode(string messageToEncrypt, string idPlanet)
+        {
             try
             {
-                UnicodeEncoding ByteConverter = new UnicodeEncoding();
-                byte[] dataToEncrypt = ByteConverter.GetBytes(MessageToEncrypt);
+                var byteConverter = new UnicodeEncoding();
+                var dataToEncrypt = byteConverter.GetBytes(messageToEncrypt);
 
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                using (var rsa = new RSACryptoServiceProvider())
                 {
-                    string sql = "SELECT XMLKey FROM dbo.PlanetKeys WHERE idPlanet = " + idPlanet + ";";
-                    DataSet PlanetKey = dtb.GetByQuery(sql);
-                    string xmlKey = PlanetKey.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+                    var sql = $@"SELECT XMLKey FROM dbo.PlanetKeys WHERE idPlanet = {idPlanet};";
+                    var planetKey = _dtb.GetByQuery(sql);
+                    var xmlKey = planetKey.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
-                    RSA.FromXmlString(xmlKey);
-                    return RSA.Encrypt(dataToEncrypt, false);
+                    rsa.FromXmlString(xmlKey);
+                    return rsa.Encrypt(dataToEncrypt, false);
                 }
-            } catch
+            }
+            catch
             {
                 return null;
             }
         }
 
-        public string DencryptedCode (byte[] EncryptMessage, String PlanetCode) {
+        public string DencryptedCode(byte[] encryptMessage, string planetCode)
+        {
             try
             {
-                UnicodeEncoding ByteConverter = new UnicodeEncoding();
+                var byteConverter = new UnicodeEncoding();
 
                 var rsa = new RSACryptoServiceProvider();
-                rsa.FromXmlString(GetKeyFromContainer(PlanetCode));
+                rsa.FromXmlString(GetKeyFromContainer(planetCode));
 
-                string DecryptedMessage = ByteConverter.GetString(rsa.Decrypt(EncryptMessage, false));
+                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptMessage, false));
 
-                return DecryptedMessage;
+                return decryptedMessage;
             }
-            catch 
+            catch
             {
                 return null;
             }
@@ -93,6 +97,52 @@ namespace PACS_Utils
             var rsa = new RSACryptoServiceProvider(param);
 
             return rsa.ToXmlString(true);
+        }
+
+        public string GenerateKey(int length)
+        {
+            var key = "";
+            var chars = GetCharList();
+
+            for (var i = 0; i < length; i++)
+            {
+                var pos = _secureRandom.Next(chars.Count);
+                key += chars[pos];
+                chars.Remove(pos);
+            }
+
+            return key;
+        }
+
+        private List<dynamic> GetCharList()
+        {
+            var chars = new List<dynamic>();
+
+            for (var i = 0; i <= 1; i++)
+                foreach (var letter in Vocab)
+                    chars.Add(i == 0 ? letter : char.Parse(letter.ToString().ToLower()));
+
+            for (var i = 0; i <= 9; i++) chars.Add(i);
+
+            return chars;
+        }
+
+        public Dictionary<char, string> GenerateEncryptedChars()
+        {
+            var charsList = new Dictionary<char, string>();
+
+            foreach (var letter in Vocab)
+            {
+                string encryptedNumbers;
+                do
+                {
+                    encryptedNumbers = _secureRandom.Next(999).ToString("D3");
+                } while (charsList.ContainsValue(encryptedNumbers));
+
+                charsList.Add(letter, encryptedNumbers);
+            }
+
+            return charsList;
         }
     }
 }

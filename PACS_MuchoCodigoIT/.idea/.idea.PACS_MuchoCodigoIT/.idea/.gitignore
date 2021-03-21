@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/projectSettingsUpdater.xml
+/.idea.PACS_MuchoCodigoIT.iml
+/contentModel.xml
+# Datasource local storage ignored files
+/../../../../../../../../../../:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\PACS_MuchoCodigoIT\.idea\.idea.PACS_MuchoCodigoIT\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
