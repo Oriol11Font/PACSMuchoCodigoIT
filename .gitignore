@@ -4,9 +4,10 @@
 *.pdb
 *.exe.config
 
-bin/
-obj/
-Debug/
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
 
 # editors
 idea/
+.idea/

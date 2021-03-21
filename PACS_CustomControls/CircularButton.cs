@@ -7,6 +7,7 @@ namespace PACS_CustomControls
     {
         private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
         private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
+        public event EventHandler HandleClick;
 
         public CircularButton()
         {
@@ -18,10 +19,8 @@ namespace PACS_CustomControls
 
         private void pictrButton_Click(object sender, EventArgs e)
         {
-            if (pictrButton.ImageLocation == _buttonOn)
-                pictrButton.ImageLocation = _buttonOff;
-            else
-                pictrButton.ImageLocation = _buttonOn;
+            pictrButton.ImageLocation = pictrButton.ImageLocation == _buttonOn ? _buttonOff : _buttonOn;
+            if (HandleClick != null) HandleClick(this, e);
         }
     }
 }

@@ -31,13 +31,13 @@ namespace PACS_Utils
                 listener.Stop();
                 return "[SYSTEM] - Server OFF";
             }
-            catch 
+            catch
             {
                 return "[ERROR] - Failed to stop the Server Process";
             }
         }
 
-        public string WaitingForResponse (TcpListener Listener)
+        public string WaitingForResponse(TcpListener Listener)
         {
             if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
@@ -108,7 +108,7 @@ namespace PACS_Utils
                 }
                 else
                 {
-                    return "[SYSTEM] - Succesfully connected!";
+                    return "[SYSTEM] - Successfully connected!";
                 }
             }
             catch
