@@ -30,7 +30,6 @@ namespace MC_SPACESHIP
         private void InitializeComponent()
         {
             this.comboPlanet = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.SendCodeButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SpaceShipConsole = new System.Windows.Forms.ListBox();
@@ -51,6 +50,7 @@ namespace MC_SPACESHIP
             // comboPlanet
             // 
             this.comboPlanet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPlanet.Enabled = false;
             this.comboPlanet.FormattingEnabled = true;
             this.comboPlanet.Location = new System.Drawing.Point(1120, 180);
             this.comboPlanet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -59,26 +59,14 @@ namespace MC_SPACESHIP
             this.comboPlanet.TabIndex = 2;
             this.comboPlanet.SelectedIndexChanged += new System.EventHandler(this.comboPlanet_SelectedIndexChanged);
             // 
-            // button1
-            // 
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(3, 72);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(139, 69);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Sol·licitar Claus";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // SendCodeButton
             // 
+            this.SendCodeButton.Enabled = false;
             this.SendCodeButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.SendCodeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
             this.SendCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SendCodeButton.ForeColor = System.Drawing.Color.White;
-            this.SendCodeButton.Location = new System.Drawing.Point(3, 145);
+            this.SendCodeButton.Location = new System.Drawing.Point(3, 72);
             this.SendCodeButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SendCodeButton.Name = "SendCodeButton";
             this.SendCodeButton.Size = new System.Drawing.Size(139, 70);
@@ -113,6 +101,7 @@ namespace MC_SPACESHIP
             // 
             // detecPlanetButton
             // 
+            this.detecPlanetButton.Enabled = false;
             this.detecPlanetButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.detecPlanetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.detecPlanetButton.ForeColor = System.Drawing.Color.White;
@@ -176,7 +165,6 @@ namespace MC_SPACESHIP
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.detecPlanetButton);
-            this.panel3.Controls.Add(this.button1);
             this.panel3.Controls.Add(this.SendCodeButton);
             this.panel3.Location = new System.Drawing.Point(1120, 296);
             this.panel3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -228,7 +216,6 @@ namespace MC_SPACESHIP
 
         #endregion
         private System.Windows.Forms.ComboBox comboPlanet;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button SendCodeButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button detecPlanetButton;

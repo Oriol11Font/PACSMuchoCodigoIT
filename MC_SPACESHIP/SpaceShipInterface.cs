@@ -66,6 +66,9 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
+                detecPlanetButton.Enabled = true;
+                SendCodeButton.Enabled = true;
+
                 var sql =
                     "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
                     comboPlanet.SelectedItem + "';";
@@ -77,13 +80,13 @@ namespace MC_SPACESHIP
                     dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
                     dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
-                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
-
                 string mssg = "ER" + spaceShip.getCode() + "DADAD";
 
                 try
                 {
+                    printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
+
                     //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
                 }
                 catch (Exception ex)
@@ -114,6 +117,11 @@ namespace MC_SPACESHIP
             {
                 try
                 {
+                    detecPlanetButton.Enabled = false;
+                    SendCodeButton.Enabled = false;
+                    comboPlanet.Enabled = false;
+                    SpaceShipConsole.Items.Clear();
+
                     active = false;
                     infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = buttonOFF;
@@ -131,6 +139,7 @@ namespace MC_SPACESHIP
                 try
                 {
                     active = true;
+                    comboPlanet.Enabled = true;
                     infoSpaceShip.Items.Add("SpaceShip:");
                     infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
                     infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
