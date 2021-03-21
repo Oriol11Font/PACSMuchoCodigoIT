@@ -1,0 +1,12 @@
+# build
+*.dll
+*.exe
+*.pdb
+*.exe.config
+
+bin/
+obj/
+Debug/
+
+# editors
+idea/

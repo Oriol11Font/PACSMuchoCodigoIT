@@ -1,20 +1,15 @@
-﻿using MC_PLANET;
-using MC_SPACESHIP;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 
 namespace PACS_MuchoCodigoIT
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
-        /// Punto de entrada principal para la aplicación.
+        ///     Punto de entrada principal para la aplicación.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
