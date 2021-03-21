@@ -105,6 +105,7 @@ namespace MC_SPACESHIP
                 try
                 {
                     active = false;
+                    infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = buttonOFF;
                     t1.Abort();
                     Listener = tcp.StopServer(Listener);
@@ -120,6 +121,10 @@ namespace MC_SPACESHIP
                 try
                 {
                     active = true;
+                    infoSpaceShip.Items.Add("SpaceShip:");
+                    infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
+                    infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
+                    infoSpaceShip.Items.Add("Port: " + spaceShip.getPort());
                     onOffButton.ImageLocation = buttonON;
                     Listener = tcp.StartServer(spaceShip.getPort(), Listener);
                     t1 = new Thread(ListenerServer);
@@ -189,6 +194,11 @@ namespace MC_SPACESHIP
         {
             RecivedMessage(messageRecived.Text);
         }//DETECTA PER INICIAR LA DESCODIFICACIO
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
         //DEMANAR LA CLAU I EL CODI A LA BBDD 
 
