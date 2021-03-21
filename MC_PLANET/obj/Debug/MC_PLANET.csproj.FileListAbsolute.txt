@@ -1,3 +1,0 @@
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.exe.config
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.exe
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\MC_PLANET\bin\Debug\MC_PLANET.pdb
