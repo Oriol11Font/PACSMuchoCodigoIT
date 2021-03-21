@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
-using PACS_Utils;
 using PACS_Objects;
+using PACS_Utils;
 using System.Threading;
 using System.Net.Sockets;
 
@@ -21,7 +21,7 @@ namespace MC_SPACESHIP
         Thread t1;
         bool active;
         DataAccessService dt = new DataAccessService();
-        TCPIPSystemService tcp = new TCPIPSystemService();
+        TcpipSystemService tcp = new TcpipSystemService();
         TcpListener Listener;
         Planet planet;
         SpaceShip spaceShip;
@@ -30,17 +30,20 @@ namespace MC_SPACESHIP
         {
             onOffButton.ImageLocation = buttonOFF;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
-            string sqlSpaceShip = "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
+            string sqlSpaceShip =
+                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
             DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
 
             var dr = ds1.Tables[0].Rows[0];
 
-            spaceShip = new SpaceShip(Int32.Parse(dr.ItemArray.GetValue(0).ToString()), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(), Int32.Parse(dr.ItemArray.GetValue(3).ToString()));
+            spaceShip = new SpaceShip(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
+                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                Int32.Parse(dr.ItemArray.GetValue(3).ToString()));
 
             string sql = "SELECT DescPlanet FROM Planets;";
             DataSet ds2 = dt.GetByQuery(sql);
 
-            List<object> Planets = new List<object>();
+            var planets = new List<object>();
 
             foreach (DataRow row in ds2.Tables[0].Rows)
             {
@@ -52,7 +55,7 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
-                printPanel(tcp.checkXarxa("8.8.8.8", 5));
+                printPanel(tcp.CheckXarxa("8.8.8.8", 5));
             }
         }//COMPROVACIO PING AL PLANETA
 
@@ -60,41 +63,45 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
-                string sql = "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" + comboPlanet.SelectedItem + "';";
-                DataSet ds = dt.GetByQuery(sql);
+                var sql =
+                    "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
+                    comboPlanet.SelectedItem + "';";
+                var ds = dt.GetByQuery(sql);
 
                 var dr = ds.Tables[0].Rows[0];
 
-                planet = new Planet(Int32.Parse(dr.ItemArray.GetValue(0).ToString()), dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(), dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
+                planet = new Planet(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
+                    dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                    dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                printPanel("[SYSTEM] - Selected Planet: " + planet.getCode() + " | " + planet.getName() + " - Address: " + planet.getIp() + " - Port: " + planet.getPort() + " - Ready to CHECK");
+                printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
 
-                string mssg = "ER"+spaceShip.getCode()+"DADAD";
+                string mssg = "ER" + spaceShip.getCode() + "DADAD";
 
                 try
                 {
                     //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     printPanel("[ERROR] - Error connecting to Server of the Planet");
                 }
             }
         }//SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
-        private void printPanel (string message)
+        private void printPanel(string message)
         {
             if (message != "")
             {
+                SpaceShipConsole.Text = SpaceShipConsole.Text + message + Environment.NewLine;
+
                 if (SpaceShipConsole.Items.Count > 30)
                 {
                     SpaceShipConsole.Items.Clear();
                 }
 
                 SpaceShipConsole.Items.Add(message);
-
-            } else
-            {
-
             }
         }//PER FER PRINT A LA CONSOLA DE LA PANTALLA
 

@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Threading;
-using System.Net.NetworkInformation;
 
 namespace PACS_Utils
 {
-    public class TCPIPSystemService
+    public class TcpipSystemService
     {
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
@@ -48,29 +39,28 @@ namespace PACS_Utils
                 return null;
                     
             }
-            
         }
 
         public string WaitingForResponse (TcpListener Listener)
         {
             if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
-                TcpClient client = Listener.AcceptTcpClient();
-                NetworkStream ns = client.GetStream();
+                var client = Listener.AcceptTcpClient();
+                var ns = client.GetStream();
                 if (ns.CanRead)
                 {
-                    byte[] buffer = new byte[1024]; // NEW BUFFER
-                    StringBuilder missatge = new StringBuilder();
-                    int numberOfBytesRead = 0;
+                    var buffer = new byte[1024]; // NEW BUFFER
+                    var missatge = new StringBuilder();
+                    var numberOfBytesRead = 0;
                     // POSSIBLE MESSAGE BIGGER THAN BUFFER
                     do
                     {
                         numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
                         missatge.AppendFormat("{0}",
-                        Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
-                    }
-                    while (ns.DataAvailable); // READ ALL MESSAGE
-                    string mssg = "" + missatge;
+                            Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
+                    } while (ns.DataAvailable); // READ ALL MESSAGE
+
+                    var mssg = "" + missatge;
                     return mssg;
                 }
                 else
@@ -82,13 +72,13 @@ namespace PACS_Utils
             return null;
         }
 
-        public string SendMessageToServer (string mssg, string ServerIP, int PortIP)
+        public string SendMessageToServer(string mssg, string serverIp, int portIp)
         {
             try
             {
-                TcpClient client = new TcpClient(ServerIP, PortIP);
-                Byte[] dades = Encoding.ASCII.GetBytes(mssg);
-                NetworkStream ns = client.GetStream();
+                var client = new TcpClient(serverIp, portIp);
+                var dades = Encoding.ASCII.GetBytes(mssg);
+                var ns = client.GetStream();
                 ns.Write(dades, 0, dades.Length);
 
                 return "[SYSTEM] - Message Succesfully sended!";
@@ -99,40 +89,37 @@ namespace PACS_Utils
             }
         }
 
-        public string checkXarxa(string IPToPing, int Repeat)
+        public string CheckXarxa(string ipToPing, int repeat)
         {
             try
             {
-                String ping = "";
-                bool connErr = false;
+                var ping = "";
+                var connErr = false;
 
-                for (int i = 0; i < Repeat; i++)
+                for (var i = 0; i < repeat; i++)
                 {
-                    Ping myPing = new Ping();
-                    PingReply reply = myPing.Send(IPToPing, 1000);
+                    var myPing = new Ping();
+                    var reply = myPing.Send(ipToPing, 1000);
                     if (reply != null)
-                    {
                         if (reply.Status != IPStatus.Success)
                         {
                             connErr = true;
                             ping = reply.Status.ToString();
                         }
-                    }
                 }
 
                 if (connErr)
                 {
-                    return "[ERROR] - Failed to ping to " + IPToPing + ". [INFO] - " + ping;
+                    return "[ERROR] - Failed to ping to " + ipToPing + ". [INFO] - " + ping;
                 }
                 else
                 {
                     return "[SYSTEM] - Succesfully connected!";
                 }
-
             }
             catch
             {
-                return "[ERROR] - We can't ping to " + IPToPing;
+                return "[ERROR] - We can't ping to " + ipToPing;
             }
         }
     }
