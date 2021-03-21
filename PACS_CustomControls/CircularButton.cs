@@ -5,8 +5,13 @@ namespace PACS_CustomControls
 {
     public partial class CircularButton : UserControl
     {
+<<<<<<< HEAD
         private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
         private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
+=======
+        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+>>>>>>> master
 
         public CircularButton()
         {

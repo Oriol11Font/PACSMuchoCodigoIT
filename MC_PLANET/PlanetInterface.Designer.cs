@@ -77,6 +77,7 @@ namespace MC_PLANET
             // circularButton1
             // 
             this.circularButton1.BackColor = System.Drawing.Color.Transparent;
+            this.circularButton1.BtnLabel = "OUT";
             this.circularButton1.Location = new System.Drawing.Point(979, 132);
             this.circularButton1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.circularButton1.Name = "circularButton1";

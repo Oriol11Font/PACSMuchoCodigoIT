@@ -36,7 +36,8 @@
         {
             return _ipPlanet;
         }
-        public int getPort()
+
+        public int GetPort()
         {
             return _portPlanet;
         }
