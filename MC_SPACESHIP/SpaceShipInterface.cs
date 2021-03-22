@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 using PACS_Objects;
 using PACS_Utils;
@@ -18,16 +19,20 @@ namespace MC_SPACESHIP
 
         readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
         readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
-        
+
         readonly DataAccessService dt = new DataAccessService();
         readonly TcpipSystemService tcp = new TcpipSystemService();
         readonly RsaKeysService rsa = new RsaKeysService();
+
+        private Point _lastLocation;
+        private bool _mouseDown;
 
         Thread t1;
         TcpListener Listener;
         Planet planet;
         SpaceShip spaceShip;
         bool active;
+
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
@@ -52,15 +57,16 @@ namespace MC_SPACESHIP
             {
                 comboPlanet.Items.Add(row["DescPlanet"]);
             }
-        }//AL INICIAR EL FORMULARI
-        
+        } //AL INICIAR EL FORMULARI
+
         private void ping_Click(object sender, EventArgs e)
         {
             if (comboPlanet.SelectedItem != null)
             {
                 printPanel(tcp.CheckXarxa("8.8.8.8", 5));
+                tcp.SendMessageToServer("ajaja", "127.0.0.1", planet.GetPort());
             }
-        }//COMPROVACIO PING AL PLANETA
+        } //COMPROVACIO PING AL PLANETA
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -85,7 +91,7 @@ namespace MC_SPACESHIP
                 try
                 {
                     printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
-                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
+                               " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
 
                     //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
                 }
@@ -94,7 +100,7 @@ namespace MC_SPACESHIP
                     printPanel("[ERROR] - Error connecting to Server of the Planet");
                 }
             }
-        }//SELECIO DEL PLANETA QUE ES VOL ACCEDIR
+        } //SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
         private void printPanel(string message)
         {
@@ -109,7 +115,7 @@ namespace MC_SPACESHIP
 
                 SpaceShipConsole.Items.Add(message);
             }
-        }//PER FER PRINT A LA CONSOLA DE LA PANTALLA
+        } //PER FER PRINT A LA CONSOLA DE LA PANTALLA
 
         private void StartServer_Click(object sender, EventArgs e)
         {
@@ -149,13 +155,13 @@ namespace MC_SPACESHIP
                     t1 = new Thread(ListenerServer);
                     t1.Start();
                     printPanel("[SYSTEM] - Server ON");
-                } catch
+                }
+                catch
                 {
                     printPanel("[ERROR] - Failed to start the server");
                 }
             }
-            
-        }//INICIAR SERVIDOR
+        } //INICIAR SERVIDOR
 
         private void ListenerServer()
         {
@@ -169,7 +175,7 @@ namespace MC_SPACESHIP
                     messageRecived.Text = mssg;
                 }
             }
-        }//BUSTIA DE MISSATGES PER PART DEL SERVIDOR
+        } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
         private bool RecivedMessage(string message)
         {
@@ -197,22 +203,23 @@ namespace MC_SPACESHIP
                             check = true;
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
                         }
+
                         break;
                 }
 
                 return check;
-            } catch
+            }
+            catch
             {
                 printPanel(messageRecived.Text.Length.ToString());
                 return false;
             }
-            
-        }//DESCODIFICADOR DE MISSATGES DE VERIFICACIO
+        } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
             RecivedMessage(messageRecived.Text);
-        }//DETECTA PER INICIAR LA DESCODIFICACIO
+        } //DETECTA PER INICIAR LA DESCODIFICACIO
 
         private void getCodeAndSend()
         {
@@ -226,20 +233,45 @@ namespace MC_SPACESHIP
                 tcp.SendMessageToServer(encryptedCode.ToString(), planet.GetIp(), planet.GetPort());
 
                 printPanel("[SYSTEM] - Key validation send it, waiting for response...");
-            } catch {
+            }
+            catch
+            {
                 printPanel("[ERROR] - Key validation error, problem with connecting to server");
             }
-
-        }//DEMANAR LA CLAU I EL CODI A LA BBDD I ENVIARLO
+        } //DEMANAR LA CLAU I EL CODI A LA BBDD I ENVIARLO
 
         private void offButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }//TANCA LA PAGINA DE LA NAU
+        } //TANCA LA PAGINA DE LA NAU
 
         private void SendCodeButton_Click(object sender, EventArgs e)
         {
             getCodeAndSend();
-        }//BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
+        } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
+
+        private void panel4_MouseDown(object sender, MouseEventArgs e)
+        {
+            _mouseDown = true;
+            _lastLocation = e.Location;
+        }
+
+        private void panel4_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_mouseDown)
+            {
+                //ChangeBorderColor(Color.Red);
+                Location = new Point(
+                    Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
+
+                Update();
+            }
+        }
+
+        private void panel4_MouseUp(object sender, MouseEventArgs e)
+        {
+            _mouseDown = false;
+            //ChangeBorderColor(Color.Yellow);
+        }
     }
 }

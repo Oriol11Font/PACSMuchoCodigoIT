@@ -81,6 +81,20 @@ namespace MC_PLANET
 
         private void HandleMessage(String msg)
         {
+            var msgType = msg.Substring(0, 2).ToUpper();
+            switch (msgType)
+            {
+                case "ER":
+                {
+                    PrintPanel($@"[SYSTEM] Rebut missatge de validació d'entrada: {msg}");
+                    break;
+                }
+                default:
+                {
+                    PrintPanel($@"[SYSTEM] S'ha rebut un missatge però en un format erroni: {msg}");
+                    break;
+                }
+            }
         }
 
         //LLEGIR CLAU ENVIADA PER LA NAU
@@ -104,6 +118,7 @@ namespace MC_PLANET
                 _tcp = new TcpipSystemService();
                 _listener = _tcp.StartServer(_planet.GetPort(), _listener);
                 _listenerThread = new Thread(ListenerServer);
+                _listenerThread.Start();
                 PrintPanel(
                     $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
             }
@@ -113,6 +128,8 @@ namespace MC_PLANET
                 //_listenerThread.Join();
                 _tcp = null;
                 _listener = null;
+                PrintPanel(
+                    @"[SYSTEM] - Stopped server");
             }
         }
 

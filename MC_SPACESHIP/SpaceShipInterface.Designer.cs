@@ -24,8 +24,8 @@ namespace MC_SPACESHIP
         #region Código generado por el Diseñador de Windows Forms
 
         /// <summary>
-        /// Método necesario para admitir el Diseñador. No se puede modificar
-        /// el contenido de este método con el editor de código.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -40,11 +40,12 @@ namespace MC_SPACESHIP
             this.infoSpaceShip = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.OffButton = new System.Windows.Forms.PictureBox();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.OffButton)).BeginInit();
             this.SuspendLayout();
             // 
             // comboPlanet
@@ -88,7 +89,7 @@ namespace MC_SPACESHIP
             // 
             // SpaceShipConsole
             // 
-            this.SpaceShipConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
+            this.SpaceShipConsole.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
             this.SpaceShipConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SpaceShipConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.SpaceShipConsole.FormattingEnabled = true;
@@ -138,7 +139,7 @@ namespace MC_SPACESHIP
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.infoSpaceShip);
             this.panel2.Location = new System.Drawing.Point(1120, 210);
@@ -149,7 +150,7 @@ namespace MC_SPACESHIP
             // 
             // infoSpaceShip
             // 
-            this.infoSpaceShip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
+            this.infoSpaceShip.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
             this.infoSpaceShip.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.infoSpaceShip.ForeColor = System.Drawing.SystemColors.Menu;
             this.infoSpaceShip.FormattingEnabled = true;
@@ -162,7 +163,7 @@ namespace MC_SPACESHIP
             // 
             // panel3
             // 
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.detecPlanetButton);
             this.panel3.Controls.Add(this.SendCodeButton);
@@ -184,6 +185,17 @@ namespace MC_SPACESHIP
             this.OffButton.TabStop = false;
             this.OffButton.Click += new System.EventHandler(this.offButton_Click);
             // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.Transparent;
+            this.panel4.Location = new System.Drawing.Point(-3, 1);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(1353, 26);
+            this.panel4.TabIndex = 1;
+            this.panel4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
+            this.panel4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
+            this.panel4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseUp);
+            // 
             // SpaceShipInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -191,6 +203,7 @@ namespace MC_SPACESHIP
             this.BackgroundImage = global::MC_SPACESHIP.Properties.Resources.BackGroundSpaceShip1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.OffButton);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -205,13 +218,12 @@ namespace MC_SPACESHIP
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.SpaceShipInterface_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.OffButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -226,6 +238,7 @@ namespace MC_SPACESHIP
         private System.Windows.Forms.ListBox infoSpaceShip;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox OffButton;
+        private System.Windows.Forms.Panel panel4;
     }
 }
 
