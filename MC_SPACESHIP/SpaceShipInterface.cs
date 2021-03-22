@@ -174,6 +174,7 @@ namespace MC_SPACESHIP
                     onOffButton.ImageLocation = buttonON;
                     Listener = tcp.StartServer(spaceShip.getPort(), Listener);
                     t1 = new Thread(ListenerServer);
+                    t1.IsBackground = true;
                     t1.Start();
                     printPanel("[SYSTEM] - Server ON");
                 }

@@ -32,9 +32,10 @@ namespace MC_PLANET
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlanetInterface));
             this.genKey = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.PlanetConsole = new System.Windows.Forms.ListBox();
             this.planetCmbx = new System.Windows.Forms.ComboBox();
             this.onOffButton = new System.Windows.Forms.PictureBox();
-            this.PlanetConsole = new System.Windows.Forms.ListBox();
+            this.txtb_msg = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
             this.SuspendLayout();
@@ -62,6 +63,19 @@ namespace MC_PLANET
             this.panel1.Size = new System.Drawing.Size(536, 485);
             this.panel1.TabIndex = 4;
             // 
+            // PlanetConsole
+            // 
+            this.PlanetConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(36)))), ((int)(((byte)(39)))));
+            this.PlanetConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
+            this.PlanetConsole.FormattingEnabled = true;
+            this.PlanetConsole.ItemHeight = 16;
+            this.PlanetConsole.Location = new System.Drawing.Point(12, 16);
+            this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PlanetConsole.Name = "PlanetConsole";
+            this.PlanetConsole.Size = new System.Drawing.Size(508, 448);
+            this.PlanetConsole.TabIndex = 1;
+            // 
             // planetCmbx
             // 
             this.planetCmbx.FormattingEnabled = true;
@@ -84,18 +98,13 @@ namespace MC_PLANET
             this.onOffButton.TabStop = false;
             this.onOffButton.Click += new System.EventHandler(this.OnOffButton_Click);
             // 
-            // PlanetConsole
+            // txtb_msg
             // 
-            this.PlanetConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(36)))), ((int)(((byte)(39)))));
-            this.PlanetConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
-            this.PlanetConsole.FormattingEnabled = true;
-            this.PlanetConsole.ItemHeight = 16;
-            this.PlanetConsole.Location = new System.Drawing.Point(12, 16);
-            this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.PlanetConsole.Name = "PlanetConsole";
-            this.PlanetConsole.Size = new System.Drawing.Size(508, 448);
-            this.PlanetConsole.TabIndex = 1;
+            this.txtb_msg.Location = new System.Drawing.Point(1014, 565);
+            this.txtb_msg.Name = "txtb_msg";
+            this.txtb_msg.Size = new System.Drawing.Size(100, 22);
+            this.txtb_msg.TabIndex = 12;
+            this.txtb_msg.TextChanged += new System.EventHandler(this.txtb_msg_TextChanged);
             // 
             // PlanetInterface
             // 
@@ -105,6 +114,7 @@ namespace MC_PLANET
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.txtb_msg);
             this.Controls.Add(this.onOffButton);
             this.Controls.Add(this.planetCmbx);
             this.Controls.Add(this.panel1);
@@ -116,6 +126,7 @@ namespace MC_PLANET
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -126,6 +137,7 @@ namespace MC_PLANET
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox onOffButton;
         private System.Windows.Forms.ListBox PlanetConsole;
+        private System.Windows.Forms.TextBox txtb_msg;
     }
 }
 
