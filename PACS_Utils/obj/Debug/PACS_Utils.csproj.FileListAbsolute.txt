@@ -1,2 +1,0 @@
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Utils\bin\Debug\PACS_Utils.dll
-C:\Users\oriol\OneDrive\Documents\Repositories - GitHub\PACSMuchoCodigoIT\PACS_Utils\bin\Debug\PACS_Utils.pdb
