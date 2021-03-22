@@ -104,7 +104,7 @@ namespace PACS_Utils
 
         public bool CheckXarxa(string ipToPing, int repeat)
         {
-           
+            bool check = true;
             try
             {
                 for (var i = 0; i < repeat; i++)
@@ -114,10 +114,10 @@ namespace PACS_Utils
                     if (reply != null)
                         if (reply.Status != IPStatus.Success)
                         {
-                            return true;                            
+                            check = false;                            
                         }
                 }
-                return false;
+                return check;
             }
             catch
             {

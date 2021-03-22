@@ -82,7 +82,7 @@ namespace MC_PLANET
             while (_active)
             {
                 var msg = _tcp.WaitingForResponse(_listener);
-                if (msg != null) HandleMessage(msg);
+                if (msg != null) { txtb_msg.Text = msg; };
             }
         }
 
@@ -192,6 +192,7 @@ namespace MC_PLANET
                 _tcp = new TcpipSystemService();
                 _listener = _tcp.StartServer(_planet.GetPort(), _listener);
                 _listenerThread = new Thread(ListenerServer);
+                _listenerThread.IsBackground = true;
                 _listenerThread.Start();
                 PrintPanel(
                     $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
@@ -207,6 +208,11 @@ namespace MC_PLANET
                 PrintPanel(
                     @"[SYSTEM] - Stopped server");
             }
+        }
+
+        private void txtb_msg_TextChanged(object sender, EventArgs e)
+        {
+            HandleMessage(txtb_msg.Text);
         }
     }
 }
