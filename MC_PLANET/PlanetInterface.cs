@@ -19,6 +19,7 @@ namespace MC_PLANET
         private Thread _listenerThread;
         private bool _active;
         private Planet _planet;
+        private SpaceShip _spaceShip;
 
         public PlanetInterface()
         {
@@ -86,7 +87,54 @@ namespace MC_PLANET
             {
                 case "ER":
                 {
-                    PrintPanel($@"[SYSTEM] Rebut missatge de validació d'entrada: {msg}");
+                    try
+                    {
+                        PrintPanel($@"[SYSTEM] Rebut missatge de validació d'entrada: {msg}");
+
+                        if (msg.Length == 26)
+                        {
+                            var shipCode = msg.Substring(2, 12);
+                            var deliveryCode = msg.Substring(14, 12);
+
+                            Dictionary<string, string> sqlParams = new Dictionary<string, string>();
+
+                            sqlParams.Add("codespaceship", shipCode);
+                            var spaceshipRows =
+                                _dataAccess.GetByQuery(
+                                    "SELECT CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = @codespaceship",
+                                    sqlParams).Tables[0].Rows;
+                            var spaceship = spaceshipRows[0].ItemArray;
+
+                            sqlParams.Clear();
+
+                            sqlParams.Add("codedelivery", deliveryCode);
+                            var deliveryRows =
+                                _dataAccess.GetByQuery("SELECT * FROM DeliveryData WHERE CodeDelivery = @codedelivery",
+                                    sqlParams).Tables[0].Rows;
+                            var delivery = deliveryRows[0].ItemArray;
+
+                            var response =
+                                $@"VR{spaceship[0]}{(spaceshipRows.Count == 1 && deliveryRows.Count == 1 ? "VP" : "AD")}";
+                            PrintPanel(response);
+
+                            // codigo valido: ERX-WingsR0001abcdefghijkc
+
+                            _tcp.SendMessageToServer(
+                                response,
+                                spaceship[1].ToString(),
+                                int.Parse(spaceship[2].ToString()));
+                        }
+                        else
+                        {
+                            PrintPanel($@"[SYSTEM] El missatge de validació d'entrada no té 26 caràcters de longitud");
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.ToString());
+                        PrintPanel($@"[SYSTEM] Error on handling entrance petition");
+                    }
+
                     break;
                 }
                 default:
