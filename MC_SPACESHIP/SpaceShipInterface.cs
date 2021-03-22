@@ -26,6 +26,8 @@ namespace MC_SPACESHIP
 
         private Point _lastLocation;
         private bool _mouseDown;
+        bool check = false;
+        bool[] validations = {false, false};
 
         Thread t1;
         TcpListener Listener;
@@ -63,8 +65,27 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
-                printPanel(tcp.CheckXarxa("8.8.8.8", 5));
-                tcp.SendMessageToServer("ajaja", "127.0.0.1", planet.GetPort());
+                try
+                {
+                    if (tcp.CheckXarxa("8.8.8.8", 5))
+                    {
+                        printPanel("[SYSTEM] - Stable connection with" + planet.GetName());
+                        tcp.SendMessageToServer("ER"+ spaceShip.getCode() + "CCCCCCCCCCCC", planet.GetIp(), planet.GetPort());
+     
+                    }
+                    else
+                    {
+                        printPanel("[ERROR] - Failed connection to " + planet.GetName() + " : " +  planet.GetIp());
+                    }
+                    
+                    
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
             }
         } //COMPROVACIO PING AL PLANETA
 
@@ -72,8 +93,8 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
-                detecPlanetButton.Enabled = true;
-                SendCodeButton.Enabled = true;
+                btn_detectPlanet.Enabled = true;
+                //btn_SendCode.Enabled = true;
 
                 var sql =
                     "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
@@ -123,8 +144,8 @@ namespace MC_SPACESHIP
             {
                 try
                 {
-                    detecPlanetButton.Enabled = false;
-                    SendCodeButton.Enabled = false;
+                    btn_detectPlanet.Enabled = false;
+                    btn_SendCode.Enabled = false;
                     comboPlanet.Enabled = false;
                     SpaceShipConsole.Items.Clear();
 
@@ -177,12 +198,11 @@ namespace MC_SPACESHIP
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
-        private bool RecivedMessage(string message)
+        private void RecivedMessage(string message)
         {
             try
             {
-                //VR12345678901VP
-                bool check = false;
+                //VR12345678901VP          
                 string id_message = message.Substring(0, 2);
                 string result = message.Substring(13, 2);
                 switch (id_message)
@@ -190,36 +210,61 @@ namespace MC_SPACESHIP
                     case "VR":
                         if (result.Equals("VP"))
                         {
-                            check = true;
+                            if (validations[0])
+                            {
+                                validations[1] = true;
+                            } else
+                            {
+                                validations[0] = true;
+                            }
+
                             printPanel("[SYSTEM] - Validation in progress...");
                         }
                         else if (result.Equals("AD"))
                         {
-                            check = false;
+                            if (validations[0])
+                            {
+                                validations[1] = false;
+                            }
+                            else
+                            {
+                                validations[0] = false;
+                            }
                             printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
                         }
                         else if (result.Equals("AG"))
                         {
-                            check = true;
-                            printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
+                            printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
                         }
 
                         break;
                 }
-
-                return check;
             }
             catch
             {
                 printPanel(messageRecived.Text.Length.ToString());
-                return false;
+                check = false;
             }
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
             RecivedMessage(messageRecived.Text);
+            validationNextStep();
+
         } //DETECTA PER INICIAR LA DESCODIFICACIO
+
+        private void validationNextStep()
+        {
+            if (validations[0])
+            {
+                btn_SendCode.Enabled = true;
+                if (validations[1])
+                {
+                    btn_SendFiles.Enabled = true;
+                }
+            }
+        }
 
         private void getCodeAndSend()
         {

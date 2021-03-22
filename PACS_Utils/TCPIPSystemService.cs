@@ -102,13 +102,11 @@ namespace PACS_Utils
             }
         }
 
-        public string CheckXarxa(string ipToPing, int repeat)
+        public bool CheckXarxa(string ipToPing, int repeat)
         {
+           
             try
             {
-                var ping = "";
-                var connErr = false;
-
                 for (var i = 0; i < repeat; i++)
                 {
                     var myPing = new Ping();
@@ -116,23 +114,14 @@ namespace PACS_Utils
                     if (reply != null)
                         if (reply.Status != IPStatus.Success)
                         {
-                            connErr = true;
-                            ping = reply.Status.ToString();
+                            return true;                            
                         }
                 }
-
-                if (connErr)
-                {
-                    return "[ERROR] - Failed to ping to " + ipToPing + ". [INFO] - " + ping;
-                }
-                else
-                {
-                    return "[SYSTEM] - Successfully connected!";
-                }
+                return false;
             }
             catch
             {
-                return "[ERROR] - We can't ping to " + ipToPing;
+                return false;
             }
         }
     }
