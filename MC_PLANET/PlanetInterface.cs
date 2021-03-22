@@ -12,7 +12,7 @@ namespace MC_PLANET
 {
     public partial class PlanetInterface : Form
     {
-        private readonly RsaKeysService _keysService = new RsaKeysService();
+        private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
         private readonly DataAccessService _dataAccess = new DataAccessService();
         private TcpipSystemService _tcp;
         private TcpListener _listener;
@@ -26,13 +26,13 @@ namespace MC_PLANET
             InitializeComponent();
         }
 
-        private void genKey_Click(object sender, EventArgs e)
+        private void GenerateValidationCode(int idPlanet)
         {
-            var validationCode = _keysService.GenerateKey(12);
+            var validationCode = _rsaKeysService.GenerateKey(12);
 
             var sqlParams = new Dictionary<string, string>();
             sqlParams.Add("validationcode", validationCode);
-            sqlParams.Add("idplanet", planetCmbx.SelectedValue.ToString());
+            sqlParams.Add("idplanet", idPlanet.ToString());
             _dataAccess.RunSafeQuery(@"
                 BEGIN TRANSACTION
                 UPDATE dbo.InnerEncryption SET ValidationCode = @validationcode WHERE idPlanet = @idplanet;
@@ -47,7 +47,7 @@ namespace MC_PLANET
                     $@"SELECT idInnerEncryption FROM InnerEncryption WHERE idPlanet = {planetCmbx.SelectedValue};")
                 .Tables[0].Rows[0].ItemArray[0].ToString());
 
-            var letters = _keysService.GenerateEncryptedChars();
+            var letters = _rsaKeysService.GenerateEncryptedChars();
 
             sqlParams.Clear();
             sqlParams.Add("idinnerencryption", idinnerencryption.ToString());
@@ -63,6 +63,11 @@ namespace MC_PLANET
 
             PrintPanel(
                 $@"[SYSTEM] Generated Validation Code and encrypted letters for planet {_planet.GetName()}");
+        }
+
+        private void GeneratePlanetKeys(int idPlanet)
+        {
+            PrintPanel(_rsaKeysService.GenerateRsaKeys(idPlanet));
         }
 
         private void PrintPanel(string message)
@@ -113,8 +118,10 @@ namespace MC_PLANET
                                     sqlParams).Tables[0].Rows;
                             var delivery = deliveryRows[0].ItemArray;
 
+                            var validated = spaceshipRows.Count == 1 && deliveryRows.Count == 1;
                             var response =
-                                $@"VR{spaceship[0]}{(spaceshipRows.Count == 1 && deliveryRows.Count == 1 ? "VP" : "AD")}";
+                                $@"VR{spaceship[0]}{(validated ? "VP" : "AD")}";
+
                             PrintPanel(response);
 
                             // codigo valido: ERX-WingsR0001abcdefghijkc
@@ -129,9 +136,8 @@ namespace MC_PLANET
                             PrintPanel($@"[SYSTEM] El missatge de validació d'entrada no té 26 caràcters de longitud");
                         }
                     }
-                    catch (Exception err)
+                    catch
                     {
-                        MessageBox.Show(err.ToString());
                         PrintPanel($@"[SYSTEM] Error on handling entrance petition");
                     }
 
@@ -156,6 +162,11 @@ namespace MC_PLANET
             planetCmbx.DisplayMember = @"DescPlanet";
 
             planetCmbx_ValueMemberChanged(null, null);
+
+            var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
+
+            GenerateValidationCode(idPlanet);
+            GeneratePlanetKeys(idPlanet);
         }
 
         private void CircularButton_Click(object sender, EventArgs e)

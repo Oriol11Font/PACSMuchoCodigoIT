@@ -58,7 +58,6 @@ namespace MC_PLANET
             this.genKey.TabIndex = 3;
             this.genKey.Text = "Generate Key and encrypted letters";
             this.genKey.UseVisualStyleBackColor = true;
-            this.genKey.Click += new System.EventHandler(this.genKey_Click);
             // 
             // panel1
             // 
