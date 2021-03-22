@@ -2,22 +2,37 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace PACS_Utils
 {
     public class TcpipSystemService
     {
+        /*private TcpListener _listener;
+        private Thread _listenerThread;
+
+        public TcpListener Listener
+        {
+            get => _listener;
+            set => _listener = value;
+        }
+
+        public Thread ListenerThread
+        {
+            get => _listenerThread;
+            set => _listenerThread = value;
+        }*/
+
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
-        public TcpListener StartServer (int numPort, TcpListener Listener)
+        public TcpListener StartServer(int numPort, TcpListener listener)
         {
             try
             {
-                Listener = new TcpListener(IPAddress.Any, numPort);
-                Listener.Start();
+                listener = new TcpListener(IPAddress.Any, numPort);
+                listener.Start();
 
-                return Listener;
-                
+                return listener;
             }
             catch
             {
@@ -25,23 +40,21 @@ namespace PACS_Utils
             }
         }
 
-        public TcpListener StopServer (TcpListener Listener)
+        public TcpListener StopServer(TcpListener Listener)
         {
             try
             {
                 Listener.Stop();
 
                 return Listener;
-                    
-            } 
-            catch 
+            }
+            catch
             {
                 return null;
-                    
             }
         }
 
-        public string WaitingForResponse (TcpListener Listener)
+        public string WaitingForResponse(TcpListener Listener)
         {
             if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
@@ -114,7 +127,7 @@ namespace PACS_Utils
                 }
                 else
                 {
-                    return "[SYSTEM] - Succesfully connected!";
+                    return "[SYSTEM] - Successfully connected!";
                 }
             }
             catch

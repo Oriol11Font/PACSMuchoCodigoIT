@@ -124,6 +124,43 @@ namespace PACS_Utils
             return ds;
         }
 
+        public DataSet GetByQuery(string query, Dictionary<string, string> parameters)
+        {
+            DataSet ds;
+
+            try
+            {
+                // first we call the connectDB method so we now have our public variable conn initialized
+                ConnectDb();
+
+                // we initialize too our DataSet
+                ds = new DataSet();
+
+                // we initialize the adapter that provides communication between the DataSet and the SQL Database
+                var adapter = new SqlDataAdapter(query, _conn);
+
+                foreach (var param in parameters)
+                    adapter.SelectCommand.Parameters.AddWithValue(param.Key, param.Value);
+
+                _conn.Open();
+
+                adapter.Fill(ds);
+            }
+            catch (Exception e)
+            {
+                // to be changed with a invisible label on the Form that gets displayed when an error happens, although this does the work
+                ErrorMessage(e, "La presa de dades ha fallat", null);
+                ds = null;
+            }
+            finally
+            {
+                // if no exception is thrown the connection will close. Notice it is nearly instant, so it's pretty hard to mess up something
+                _conn?.Close();
+            }
+
+            return ds;
+        }
+
         public DataSet GetByQuery(string query, string dataTableName)
         {
             DataSet ds;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 using PACS_Objects;
 using PACS_Utils;
@@ -16,15 +17,22 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
-        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
-        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+
+        readonly DataAccessService dt = new DataAccessService();
+        readonly TcpipSystemService tcp = new TcpipSystemService();
+        readonly RsaKeysService rsa = new RsaKeysService();
+
+        private Point _lastLocation;
+        private bool _mouseDown;
+
         Thread t1;
-        bool active;
-        DataAccessService dt = new DataAccessService();
-        TcpipSystemService tcp = new TcpipSystemService();
         TcpListener Listener;
         Planet planet;
         SpaceShip spaceShip;
+        bool active;
+
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
@@ -49,20 +57,24 @@ namespace MC_SPACESHIP
             {
                 comboPlanet.Items.Add(row["DescPlanet"]);
             }
-        }//AL INICIAR EL FORMULARI
-        
+        } //AL INICIAR EL FORMULARI
+
         private void ping_Click(object sender, EventArgs e)
         {
             if (comboPlanet.SelectedItem != null)
             {
                 printPanel(tcp.CheckXarxa("8.8.8.8", 5));
+                tcp.SendMessageToServer("ajaja", "127.0.0.1", planet.GetPort());
             }
-        }//COMPROVACIO PING AL PLANETA
+        } //COMPROVACIO PING AL PLANETA
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboPlanet.SelectedItem != null)
             {
+                detecPlanetButton.Enabled = true;
+                SendCodeButton.Enabled = true;
+
                 var sql =
                     "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
                     comboPlanet.SelectedItem + "';";
@@ -74,13 +86,13 @@ namespace MC_SPACESHIP
                     dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
                     dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
-                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
-
                 string mssg = "ER" + spaceShip.getCode() + "DADAD";
 
                 try
                 {
+                    printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                               " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
+
                     //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
                 }
                 catch (Exception ex)
@@ -88,7 +100,7 @@ namespace MC_SPACESHIP
                     printPanel("[ERROR] - Error connecting to Server of the Planet");
                 }
             }
-        }//SELECIO DEL PLANETA QUE ES VOL ACCEDIR
+        } //SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
         private void printPanel(string message)
         {
@@ -103,7 +115,7 @@ namespace MC_SPACESHIP
 
                 SpaceShipConsole.Items.Add(message);
             }
-        }//PER FER PRINT A LA CONSOLA DE LA PANTALLA
+        } //PER FER PRINT A LA CONSOLA DE LA PANTALLA
 
         private void StartServer_Click(object sender, EventArgs e)
         {
@@ -111,6 +123,11 @@ namespace MC_SPACESHIP
             {
                 try
                 {
+                    detecPlanetButton.Enabled = false;
+                    SendCodeButton.Enabled = false;
+                    comboPlanet.Enabled = false;
+                    SpaceShipConsole.Items.Clear();
+
                     active = false;
                     infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = buttonOFF;
@@ -128,6 +145,7 @@ namespace MC_SPACESHIP
                 try
                 {
                     active = true;
+                    comboPlanet.Enabled = true;
                     infoSpaceShip.Items.Add("SpaceShip:");
                     infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
                     infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
@@ -137,13 +155,13 @@ namespace MC_SPACESHIP
                     t1 = new Thread(ListenerServer);
                     t1.Start();
                     printPanel("[SYSTEM] - Server ON");
-                } catch
+                }
+                catch
                 {
                     printPanel("[ERROR] - Failed to start the server");
                 }
             }
-            
-        }//INICIAR SERVIDOR
+        } //INICIAR SERVIDOR
 
         private void ListenerServer()
         {
@@ -157,7 +175,7 @@ namespace MC_SPACESHIP
                     messageRecived.Text = mssg;
                 }
             }
-        }//BUSTIA DE MISSATGES PER PART DEL SERVIDOR
+        } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
         private bool RecivedMessage(string message)
         {
@@ -185,30 +203,75 @@ namespace MC_SPACESHIP
                             check = true;
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
                         }
+
                         break;
                 }
 
                 return check;
-            } catch
+            }
+            catch
             {
                 printPanel(messageRecived.Text.Length.ToString());
                 return false;
             }
-            
-        }//DESCODIFICADOR DE MISSATGES DE VERIFICACIO
+        } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
             RecivedMessage(messageRecived.Text);
-        }//DETECTA PER INICIAR LA DESCODIFICACIO
+        } //DETECTA PER INICIAR LA DESCODIFICACIO
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void getCodeAndSend()
+        {
+            try
+            {
+                string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
+                string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+
+                tcp.SendMessageToServer(encryptedCode.ToString(), planet.GetIp(), planet.GetPort());
+
+                printPanel("[SYSTEM] - Key validation send it, waiting for response...");
+            }
+            catch
+            {
+                printPanel("[ERROR] - Key validation error, problem with connecting to server");
+            }
+        } //DEMANAR LA CLAU I EL CODI A LA BBDD I ENVIARLO
+
+        private void offButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        } //TANCA LA PAGINA DE LA NAU
+
+        private void SendCodeButton_Click(object sender, EventArgs e)
+        {
+            getCodeAndSend();
+        } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
+
+        private void panel4_MouseDown(object sender, MouseEventArgs e)
+        {
+            _mouseDown = true;
+            _lastLocation = e.Location;
         }
 
-        //DEMANAR LA CLAU I EL CODI A LA BBDD 
+        private void panel4_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_mouseDown)
+            {
+                //ChangeBorderColor(Color.Red);
+                Location = new Point(
+                    Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
 
-        //ENVIAR TCP IP EL CODI ENCRIPTADA
+                Update();
+            }
+        }
+
+        private void panel4_MouseUp(object sender, MouseEventArgs e)
+        {
+            _mouseDown = false;
+            //ChangeBorderColor(Color.Yellow);
+        }
     }
 }
