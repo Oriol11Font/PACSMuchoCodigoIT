@@ -72,16 +72,16 @@ namespace MC_PLANET
 
         private void ListenerServer()
         {
-            string mssg;
-
             while (_active)
             {
-                mssg = _tcp.WaitingForResponse(_listener);
-                if (mssg != null)
-                    MessageBox.Show(mssg);
+                var msg = _tcp.WaitingForResponse(_listener);
+                if (msg != null) HandleMessage(msg);
             }
         }
 
+        private void HandleMessage(String msg)
+        {
+        }
 
         //LLEGIR CLAU ENVIADA PER LA NAU
 
@@ -98,15 +98,14 @@ namespace MC_PLANET
 
         private void CircularButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("click");
             _active = !_active;
             if (_active)
             {
                 _tcp = new TcpipSystemService();
-                PrintPanel(_tcp.StartServer(_planet.GetPort(), _listener));
+                _listener = _tcp.StartServer(_planet.GetPort(), _listener);
                 _listenerThread = new Thread(ListenerServer);
-                //PrintPanel(
-                //    $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
+                PrintPanel(
+                    $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
             }
             else
             {

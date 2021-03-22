@@ -16,6 +16,8 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
+        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
         Thread t1;
         bool active;
         DataAccessService dt = new DataAccessService();
@@ -26,6 +28,7 @@ namespace MC_SPACESHIP
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
+            onOffButton.ImageLocation = buttonOFF;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
             string sqlSpaceShip =
                 "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
@@ -42,13 +45,19 @@ namespace MC_SPACESHIP
 
             var planets = new List<object>();
 
-            foreach (DataRow row in ds2.Tables[0].Rows) comboPlanet.Items.Add(row["DescPlanet"]);
-        }
-
+            foreach (DataRow row in ds2.Tables[0].Rows)
+            {
+                comboPlanet.Items.Add(row["DescPlanet"]);
+            }
+        }//AL INICIAR EL FORMULARI
+        
         private void ping_Click(object sender, EventArgs e)
         {
-            if (comboPlanet.SelectedItem != null) PrintPanel(tcp.CheckXarxa(planet.GetIp(), 5));
-        }
+            if (comboPlanet.SelectedItem != null)
+            {
+                printPanel(tcp.CheckXarxa("8.8.8.8", 5));
+            }
+        }//COMPROVACIO PING AL PLANETA
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -65,7 +74,7 @@ namespace MC_SPACESHIP
                     dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
                     dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                PrintPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
                            " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
 
                 string mssg = "ER" + spaceShip.getCode() + "DADAD";
@@ -76,12 +85,12 @@ namespace MC_SPACESHIP
                 }
                 catch (Exception ex)
                 {
-                    PrintPanel("[ERROR] - Error connecting to Server of the Planet");
+                    printPanel("[ERROR] - Error connecting to Server of the Planet");
                 }
             }
-        }
+        }//SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
-        private void PrintPanel(string message)
+        private void printPanel(string message)
         {
             if (message != "")
             {
@@ -94,15 +103,47 @@ namespace MC_SPACESHIP
 
                 SpaceShipConsole.Items.Add(message);
             }
-        }
+        }//PER FER PRINT A LA CONSOLA DE LA PANTALLA
 
         private void StartServer_Click(object sender, EventArgs e)
         {
-            active = true;
-            tcp.StartServer(spaceShip.getPort(), Listener);
-            t1 = new Thread(ListenerServer);
-            t1.Start();
-        }
+            if (active == true)
+            {
+                try
+                {
+                    active = false;
+                    infoSpaceShip.Items.Clear();
+                    onOffButton.ImageLocation = buttonOFF;
+                    t1.Abort();
+                    Listener = tcp.StopServer(Listener);
+                    printPanel("[SYSTEM] - Server OFF");
+                }
+                catch
+                {
+                    printPanel("[ERROR] - Failed to stop the Server Process");
+                }
+            }
+            else
+            {
+                try
+                {
+                    active = true;
+                    infoSpaceShip.Items.Add("SpaceShip:");
+                    infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
+                    infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
+                    infoSpaceShip.Items.Add("Port: " + spaceShip.getPort());
+                    onOffButton.ImageLocation = buttonON;
+                    Listener = tcp.StartServer(spaceShip.getPort(), Listener);
+                    t1 = new Thread(ListenerServer);
+                    t1.Start();
+                    printPanel("[SYSTEM] - Server ON");
+                } catch
+                {
+                    printPanel("[ERROR] - Failed to start the server");
+                }
+            }
+            
+        }//INICIAR SERVIDOR
 
         private void ListenerServer()
         {
@@ -116,12 +157,56 @@ namespace MC_SPACESHIP
                     messageRecived.Text = mssg;
                 }
             }
-        }
+        }//BUSTIA DE MISSATGES PER PART DEL SERVIDOR
+
+        private bool RecivedMessage(string message)
+        {
+            try
+            {
+                //VR12345678901VP
+                bool check = false;
+                string id_message = message.Substring(0, 2);
+                string result = message.Substring(13, 2);
+                switch (id_message)
+                {
+                    case "VR":
+                        if (result.Equals("VP"))
+                        {
+                            check = true;
+                            printPanel("[SYSTEM] - Validation in progress...");
+                        }
+                        else if (result.Equals("AD"))
+                        {
+                            check = false;
+                            printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
+                        }
+                        else if (result.Equals("AG"))
+                        {
+                            check = true;
+                            printPanel("[SYSTEM] - Validation successfully, enjoy your visit");
+                        }
+                        break;
+                }
+
+                return check;
+            } catch
+            {
+                printPanel(messageRecived.Text.Length.ToString());
+                return false;
+            }
+            
+        }//DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
-            // FUNCIO DEL POL ON DESXIFRAR MISSATGE ENVIAT PER LA BASE DE DADES
+            RecivedMessage(messageRecived.Text);
+        }//DETECTA PER INICIAR LA DESCODIFICACIO
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
+
         //DEMANAR LA CLAU I EL CODI A LA BBDD 
 
         //ENVIAR TCP IP EL CODI ENCRIPTADA

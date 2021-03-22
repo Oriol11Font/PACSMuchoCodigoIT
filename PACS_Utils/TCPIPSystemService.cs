@@ -2,38 +2,55 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace PACS_Utils
 {
     public class TcpipSystemService
     {
+        /*private TcpListener _listener;
+        private Thread _listenerThread;
+
+        public TcpListener Listener
+        {
+            get => _listener;
+            set => _listener = value;
+        }
+
+        public Thread ListenerThread
+        {
+            get => _listenerThread;
+            set => _listenerThread = value;
+        }*/
+
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
-        public string StartServer(int numPort, TcpListener listener)
+        public TcpListener StartServer(int numPort, TcpListener listener)
         {
             try
             {
                 listener = new TcpListener(IPAddress.Any, numPort);
                 listener.Start();
 
-                return "[SYSTEM] - Server ON";
+                return listener;
             }
             catch
             {
-                return "[ERROR] - Failed to start the server";
+                return null;
             }
         }
 
-        public string StopServer(TcpListener listener)
+        public TcpListener StopServer(TcpListener Listener)
         {
             try
             {
-                listener.Stop();
-                return "[SYSTEM] - Server OFF";
+                Listener.Stop();
+
+                return Listener;
             }
             catch
             {
-                return "[ERROR] - Failed to stop the Server Process";
+                return null;
             }
         }
 
@@ -59,8 +76,10 @@ namespace PACS_Utils
                     var mssg = "" + missatge;
                     return mssg;
                 }
-
-                return "Ho sento.No puc llegir aquest stream.";
+                else
+                {
+                    return "Ho sento. No puc llegir aquest stream.";
+                }
             }
 
             return null;
