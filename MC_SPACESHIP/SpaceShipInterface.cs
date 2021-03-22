@@ -16,15 +16,18 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
-        private string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
-        private string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        
+        readonly DataAccessService dt = new DataAccessService();
+        readonly TcpipSystemService tcp = new TcpipSystemService();
+        readonly RsaKeysService rsa = new RsaKeysService();
+
         Thread t1;
-        bool active;
-        DataAccessService dt = new DataAccessService();
-        TcpipSystemService tcp = new TcpipSystemService();
         TcpListener Listener;
         Planet planet;
         SpaceShip spaceShip;
+        bool active;
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
@@ -63,6 +66,9 @@ namespace MC_SPACESHIP
         {
             if (comboPlanet.SelectedItem != null)
             {
+                detecPlanetButton.Enabled = true;
+                SendCodeButton.Enabled = true;
+
                 var sql =
                     "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
                     comboPlanet.SelectedItem + "';";
@@ -74,13 +80,13 @@ namespace MC_SPACESHIP
                     dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
                     dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
-                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
-
                 string mssg = "ER" + spaceShip.getCode() + "DADAD";
 
                 try
                 {
+                    printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
+                           " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
+
                     //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
                 }
                 catch (Exception ex)
@@ -111,6 +117,11 @@ namespace MC_SPACESHIP
             {
                 try
                 {
+                    detecPlanetButton.Enabled = false;
+                    SendCodeButton.Enabled = false;
+                    comboPlanet.Enabled = false;
+                    SpaceShipConsole.Items.Clear();
+
                     active = false;
                     infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = buttonOFF;
@@ -128,6 +139,7 @@ namespace MC_SPACESHIP
                 try
                 {
                     active = true;
+                    comboPlanet.Enabled = true;
                     infoSpaceShip.Items.Add("SpaceShip:");
                     infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
                     infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
@@ -202,13 +214,32 @@ namespace MC_SPACESHIP
             RecivedMessage(messageRecived.Text);
         }//DETECTA PER INICIAR LA DESCODIFICACIO
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void getCodeAndSend()
+        {
+            try
+            {
+                string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
+                string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+
+                tcp.SendMessageToServer(encryptedCode.ToString(), planet.GetIp(), planet.GetPort());
+
+                printPanel("[SYSTEM] - Key validation send it, waiting for response...");
+            } catch {
+                printPanel("[ERROR] - Key validation error, problem with connecting to server");
+            }
+
+        }//DEMANAR LA CLAU I EL CODI A LA BBDD I ENVIARLO
+
+        private void offButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
+        }//TANCA LA PAGINA DE LA NAU
 
-        //DEMANAR LA CLAU I EL CODI A LA BBDD 
-
-        //ENVIAR TCP IP EL CODI ENCRIPTADA
+        private void SendCodeButton_Click(object sender, EventArgs e)
+        {
+            getCodeAndSend();
+        }//BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
     }
 }
