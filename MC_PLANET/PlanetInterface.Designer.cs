@@ -30,31 +30,21 @@ namespace MC_PLANET
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlanetInterface));
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.genKey = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.circularButton1 = new PACS_CustomControls.CircularButton();
             this.planetCmbx = new System.Windows.Forms.ComboBox();
+            this.onOffButton = new System.Windows.Forms.PictureBox();
+            this.PlanetConsole = new System.Windows.Forms.ListBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
             this.SuspendLayout();
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (36)))), ((int) (((byte) (39)))));
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.textBox1.Location = new System.Drawing.Point(16, 13);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(370, 362);
-            this.textBox1.TabIndex = 0;
             // 
             // genKey
             // 
-            this.genKey.Location = new System.Drawing.Point(732, 400);
+            this.genKey.Location = new System.Drawing.Point(976, 492);
+            this.genKey.Margin = new System.Windows.Forms.Padding(4);
             this.genKey.Name = "genKey";
-            this.genKey.Size = new System.Drawing.Size(128, 54);
+            this.genKey.Size = new System.Drawing.Size(171, 66);
             this.genKey.TabIndex = 3;
             this.genKey.Text = "Generate Key and encrypted letters";
             this.genKey.UseVisualStyleBackColor = true;
@@ -64,62 +54,77 @@ namespace MC_PLANET
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Controls.Add(this.textBox1);
-            this.panel1.Location = new System.Drawing.Point(110, 93);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Controls.Add(this.PlanetConsole);
+            this.panel1.Location = new System.Drawing.Point(147, 114);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(403, 395);
+            this.panel1.Size = new System.Drawing.Size(536, 485);
             this.panel1.TabIndex = 4;
-            // 
-            // circularButton1
-            // 
-            this.circularButton1.BackColor = System.Drawing.Color.Transparent;
-            this.circularButton1.Location = new System.Drawing.Point(734, 107);
-            this.circularButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.circularButton1.Name = "circularButton1";
-            this.circularButton1.Size = new System.Drawing.Size(127, 128);
-            this.circularButton1.TabIndex = 2;
-            this.circularButton1.HandleClick += new System.EventHandler(this.CircularButton_Click);
             // 
             // planetCmbx
             // 
             this.planetCmbx.FormattingEnabled = true;
-            this.planetCmbx.Location = new System.Drawing.Point(732, 375);
-            this.planetCmbx.Margin = new System.Windows.Forms.Padding(2);
+            this.planetCmbx.Location = new System.Drawing.Point(976, 462);
+            this.planetCmbx.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.planetCmbx.Name = "planetCmbx";
-            this.planetCmbx.Size = new System.Drawing.Size(129, 21);
+            this.planetCmbx.Size = new System.Drawing.Size(171, 24);
             this.planetCmbx.TabIndex = 5;
             this.planetCmbx.SelectionChangeCommitted += new System.EventHandler(this.planetCmbx_ValueMemberChanged);
             // 
+            // onOffButton
+            // 
+            this.onOffButton.BackColor = System.Drawing.Color.Transparent;
+            this.onOffButton.Location = new System.Drawing.Point(989, 132);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4);
+            this.onOffButton.Name = "onOffButton";
+            this.onOffButton.Size = new System.Drawing.Size(149, 132);
+            this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.onOffButton.TabIndex = 11;
+            this.onOffButton.TabStop = false;
+            this.onOffButton.Click += new System.EventHandler(this.OnOffButton_Click);
+            // 
+            // PlanetConsole
+            // 
+            this.PlanetConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(36)))), ((int)(((byte)(39)))));
+            this.PlanetConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
+            this.PlanetConsole.FormattingEnabled = true;
+            this.PlanetConsole.ItemHeight = 16;
+            this.PlanetConsole.Location = new System.Drawing.Point(12, 16);
+            this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.PlanetConsole.Name = "PlanetConsole";
+            this.PlanetConsole.Size = new System.Drawing.Size(508, 448);
+            this.PlanetConsole.TabIndex = 1;
+            // 
             // PlanetInterface
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1011, 586);
+            this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.onOffButton);
             this.Controls.Add(this.planetCmbx);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.genKey);
-            this.Controls.Add(this.circularButton1);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "PlanetInterface";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.PlanetInterface_Load);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         private System.Windows.Forms.ComboBox planetCmbx;
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBox1;
-        private PACS_CustomControls.CircularButton circularButton1;
         private System.Windows.Forms.Button genKey;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.PictureBox onOffButton;
+        private System.Windows.Forms.ListBox PlanetConsole;
     }
 }
 

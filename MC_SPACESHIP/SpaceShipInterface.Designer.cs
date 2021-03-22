@@ -30,22 +30,23 @@ namespace MC_SPACESHIP
         private void InitializeComponent()
         {
             this.comboPlanet = new System.Windows.Forms.ComboBox();
-            this.SendCodeButton = new System.Windows.Forms.Button();
+            this.btn_SendCode = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.SpaceShipConsole = new System.Windows.Forms.ListBox();
-            this.detecPlanetButton = new System.Windows.Forms.Button();
+            this.btn_detectPlanet = new System.Windows.Forms.Button();
             this.messageRecived = new System.Windows.Forms.TextBox();
             this.onOffButton = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.infoSpaceShip = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btn_SendFiles = new System.Windows.Forms.Button();
             this.OffButton = new System.Windows.Forms.PictureBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.OffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).BeginInit();
             this.SuspendLayout();
             // 
             // comboPlanet
@@ -60,21 +61,21 @@ namespace MC_SPACESHIP
             this.comboPlanet.TabIndex = 2;
             this.comboPlanet.SelectedIndexChanged += new System.EventHandler(this.comboPlanet_SelectedIndexChanged);
             // 
-            // SendCodeButton
+            // btn_SendCode
             // 
-            this.SendCodeButton.Enabled = false;
-            this.SendCodeButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.SendCodeButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.SendCodeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SendCodeButton.ForeColor = System.Drawing.Color.White;
-            this.SendCodeButton.Location = new System.Drawing.Point(3, 72);
-            this.SendCodeButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.SendCodeButton.Name = "SendCodeButton";
-            this.SendCodeButton.Size = new System.Drawing.Size(139, 70);
-            this.SendCodeButton.TabIndex = 4;
-            this.SendCodeButton.Text = "Enviar Codi Verficacio";
-            this.SendCodeButton.UseVisualStyleBackColor = true;
-            this.SendCodeButton.Click += new System.EventHandler(this.SendCodeButton_Click);
+            this.btn_SendCode.Enabled = false;
+            this.btn_SendCode.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_SendCode.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+            this.btn_SendCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SendCode.ForeColor = System.Drawing.Color.White;
+            this.btn_SendCode.Location = new System.Drawing.Point(3, 72);
+            this.btn_SendCode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btn_SendCode.Name = "btn_SendCode";
+            this.btn_SendCode.Size = new System.Drawing.Size(139, 70);
+            this.btn_SendCode.TabIndex = 4;
+            this.btn_SendCode.Text = "Enviar Codi Verficacio";
+            this.btn_SendCode.UseVisualStyleBackColor = true;
+            this.btn_SendCode.Click += new System.EventHandler(this.SendCodeButton_Click);
             // 
             // panel1
             // 
@@ -89,7 +90,7 @@ namespace MC_SPACESHIP
             // 
             // SpaceShipConsole
             // 
-            this.SpaceShipConsole.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
+            this.SpaceShipConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
             this.SpaceShipConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.SpaceShipConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.SpaceShipConsole.FormattingEnabled = true;
@@ -100,20 +101,20 @@ namespace MC_SPACESHIP
             this.SpaceShipConsole.Size = new System.Drawing.Size(853, 432);
             this.SpaceShipConsole.TabIndex = 0;
             // 
-            // detecPlanetButton
+            // btn_detectPlanet
             // 
-            this.detecPlanetButton.Enabled = false;
-            this.detecPlanetButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.detecPlanetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.detecPlanetButton.ForeColor = System.Drawing.Color.White;
-            this.detecPlanetButton.Location = new System.Drawing.Point(3, 2);
-            this.detecPlanetButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.detecPlanetButton.Name = "detecPlanetButton";
-            this.detecPlanetButton.Size = new System.Drawing.Size(139, 66);
-            this.detecPlanetButton.TabIndex = 6;
-            this.detecPlanetButton.Text = "Detectar Planeta";
-            this.detecPlanetButton.UseVisualStyleBackColor = true;
-            this.detecPlanetButton.Click += new System.EventHandler(this.ping_Click);
+            this.btn_detectPlanet.Enabled = false;
+            this.btn_detectPlanet.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_detectPlanet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_detectPlanet.ForeColor = System.Drawing.Color.White;
+            this.btn_detectPlanet.Location = new System.Drawing.Point(3, 2);
+            this.btn_detectPlanet.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btn_detectPlanet.Name = "btn_detectPlanet";
+            this.btn_detectPlanet.Size = new System.Drawing.Size(139, 66);
+            this.btn_detectPlanet.TabIndex = 6;
+            this.btn_detectPlanet.Text = "Sol·licitar Accés";
+            this.btn_detectPlanet.UseVisualStyleBackColor = true;
+            this.btn_detectPlanet.Click += new System.EventHandler(this.ping_Click);
             // 
             // messageRecived
             // 
@@ -122,14 +123,13 @@ namespace MC_SPACESHIP
             this.messageRecived.Name = "messageRecived";
             this.messageRecived.Size = new System.Drawing.Size(203, 22);
             this.messageRecived.TabIndex = 8;
-            this.messageRecived.Visible = false;
             this.messageRecived.TextChanged += new System.EventHandler(this.messageRecived_TextChanged);
             // 
             // onOffButton
             // 
             this.onOffButton.BackColor = System.Drawing.Color.Transparent;
             this.onOffButton.Location = new System.Drawing.Point(1120, 72);
-            this.onOffButton.Margin = new System.Windows.Forms.Padding(4);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.onOffButton.Name = "onOffButton";
             this.onOffButton.Size = new System.Drawing.Size(149, 132);
             this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -139,7 +139,7 @@ namespace MC_SPACESHIP
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.infoSpaceShip);
             this.panel2.Location = new System.Drawing.Point(1120, 210);
@@ -150,7 +150,7 @@ namespace MC_SPACESHIP
             // 
             // infoSpaceShip
             // 
-            this.infoSpaceShip.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
+            this.infoSpaceShip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
             this.infoSpaceShip.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.infoSpaceShip.ForeColor = System.Drawing.SystemColors.Menu;
             this.infoSpaceShip.FormattingEnabled = true;
@@ -163,15 +163,31 @@ namespace MC_SPACESHIP
             // 
             // panel3
             // 
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (33)))), ((int) (((byte) (71)))));
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(33)))), ((int)(((byte)(71)))));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel3.Controls.Add(this.detecPlanetButton);
-            this.panel3.Controls.Add(this.SendCodeButton);
+            this.panel3.Controls.Add(this.btn_SendFiles);
+            this.panel3.Controls.Add(this.btn_detectPlanet);
+            this.panel3.Controls.Add(this.btn_SendCode);
             this.panel3.Location = new System.Drawing.Point(1120, 296);
             this.panel3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(149, 222);
             this.panel3.TabIndex = 7;
+            // 
+            // btn_SendFiles
+            // 
+            this.btn_SendFiles.Enabled = false;
+            this.btn_SendFiles.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_SendFiles.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
+            this.btn_SendFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SendFiles.ForeColor = System.Drawing.Color.White;
+            this.btn_SendFiles.Location = new System.Drawing.Point(3, 146);
+            this.btn_SendFiles.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btn_SendFiles.Name = "btn_SendFiles";
+            this.btn_SendFiles.Size = new System.Drawing.Size(139, 70);
+            this.btn_SendFiles.TabIndex = 7;
+            this.btn_SendFiles.Text = "Enviar Arxius Codificats";
+            this.btn_SendFiles.UseVisualStyleBackColor = true;
             // 
             // OffButton
             // 
@@ -218,19 +234,20 @@ namespace MC_SPACESHIP
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.SpaceShipInterface_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.OffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
         private System.Windows.Forms.ComboBox comboPlanet;
-        private System.Windows.Forms.Button SendCodeButton;
+        private System.Windows.Forms.Button btn_SendCode;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button detecPlanetButton;
+        private System.Windows.Forms.Button btn_detectPlanet;
         private System.Windows.Forms.TextBox messageRecived;
         private System.Windows.Forms.ListBox SpaceShipConsole;
         private System.Windows.Forms.PictureBox onOffButton;
@@ -239,6 +256,7 @@ namespace MC_SPACESHIP
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox OffButton;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Button btn_SendFiles;
     }
 }
 

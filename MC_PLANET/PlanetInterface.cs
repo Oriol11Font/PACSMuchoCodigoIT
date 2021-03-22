@@ -14,10 +14,12 @@ namespace MC_PLANET
     {
         private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
         private readonly DataAccessService _dataAccess = new DataAccessService();
+        readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
+        readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
         private TcpipSystemService _tcp;
         private TcpListener _listener;
         private Thread _listenerThread;
-        private bool _active;
+        private bool _active = false;
         private Planet _planet;
         private SpaceShip _spaceShip;
 
@@ -72,8 +74,7 @@ namespace MC_PLANET
 
         private void PrintPanel(string message)
         {
-            if (message != "")
-                textBox1.Text = textBox1.Text + message + Environment.NewLine;
+            PlanetConsole.Items.Add(message);
         }
 
         private void ListenerServer()
@@ -160,36 +161,13 @@ namespace MC_PLANET
             planetCmbx.DataSource = res.Tables[0];
             planetCmbx.ValueMember = @"idPlanet";
             planetCmbx.DisplayMember = @"DescPlanet";
-
+            onOffButton.ImageLocation = buttonOFF;
             planetCmbx_ValueMemberChanged(null, null);
 
             var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
 
             GenerateValidationCode(idPlanet);
             GeneratePlanetKeys(idPlanet);
-        }
-
-        private void CircularButton_Click(object sender, EventArgs e)
-        {
-            _active = !_active;
-            if (_active)
-            {
-                _tcp = new TcpipSystemService();
-                _listener = _tcp.StartServer(_planet.GetPort(), _listener);
-                _listenerThread = new Thread(ListenerServer);
-                _listenerThread.Start();
-                PrintPanel(
-                    $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
-            }
-            else
-            {
-                // stop thread
-                //_listenerThread.Join();
-                _tcp = null;
-                _listener = null;
-                PrintPanel(
-                    @"[SYSTEM] - Stopped server");
-            }
         }
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
@@ -203,6 +181,32 @@ namespace MC_PLANET
                 planetRow[3].ToString(), int.Parse(planetRow[4].ToString()));
 
             PrintPanel($@"[SYSTEM] - Selected Planet {_planet.GetName()}");
+        }
+
+        private void OnOffButton_Click(object sender, EventArgs e)
+        {
+            if (!_active)
+            {
+                _active = true;
+                onOffButton.ImageLocation = buttonON;
+                _tcp = new TcpipSystemService();
+                _listener = _tcp.StartServer(_planet.GetPort(), _listener);
+                _listenerThread = new Thread(ListenerServer);
+                _listenerThread.Start();
+                PrintPanel(
+                    $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
+            }
+            else
+            {
+                _active = false;
+                _listenerThread.Abort();
+                _listener = _tcp.StopServer(_listener);
+                onOffButton.ImageLocation = buttonOFF;
+                //_tcp = null;
+                //_listener = null;
+                PrintPanel(
+                    @"[SYSTEM] - Stopped server");
+            }
         }
     }
 }
