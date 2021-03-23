@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 
 namespace PACS_Utils
 {
@@ -16,27 +18,38 @@ namespace PACS_Utils
         private RSACryptoServiceProvider _rsa;
         //CREAR OBJETO PLANET PARA TENER TODO SU INFO EN EL CODIGO
 
-        public string GenerateRsaKeys(string planetCode)
+        public string GenerateRsaKeys(int planetId)
         {
             try
             {
                 _dtb = new DataAccessService();
-                _rsa.Clear();
+                _rsa?.Clear();
 
-                _cspp.KeyContainerName = planetCode;
+                _cspp.KeyContainerName = planetId.ToString();
                 _rsa = new RSACryptoServiceProvider(_cspp);
 
                 var publicKey = _rsa.ToXmlString(false);
                 _rsa.PersistKeyInCsp = true;
 
+                Dictionary<string, string> sqlParams = new Dictionary<string, string>();
+
                 // GET ID OF TH PLANET FOR PLANETKEYS TABLE
-                var sql = $@"SELECT idPlanet FROM dbo.Planets WHERE CodePlanet = '{planetCode}';";
-                var idPlanet = _dtb.GetByQuery(sql);
-                var id = idPlanet.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+                sqlParams.Add("idplanet", planetId.ToString());
+                var idPlanet = _dtb.GetByQuery("SELECT * FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;",
+                    sqlParams);
+
+                if (idPlanet.Tables[0].Rows.Count > 0)
+                {
+                    _dtb.RunSafeQuery("DELETE FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;", sqlParams);
+                }
 
                 // INSERT INFO PUBLIC KEY OF PLANET TO BBDD
-                var sqlInsert = $@"INSERT INTO dbo.PlanetKeys (idPlanet, XMLKey) VALUES ({id}, '{publicKey}');";
-                _dtb.RunQuery(sqlInsert);
+                sqlParams.Clear();
+                sqlParams.Add("idplanet", planetId.ToString());
+                sqlParams.Add("publickey", publicKey);
+
+                _dtb.RunSafeQuery("INSERT INTO dbo.PlanetKeys (idPlanet, XMLKey) VALUES (@idplanet, @publickey);",
+                    sqlParams);
 
                 return "[SYSTEM] - Keys Created Succesfully!";
             }
@@ -69,7 +82,7 @@ namespace PACS_Utils
             }
         }
 
-        public string DencryptedCode(byte[] encryptMessage, string planetCode)
+        public string DecryptCode(string encryptedMessage, string planetCode)
         {
             try
             {
@@ -77,8 +90,10 @@ namespace PACS_Utils
 
                 var rsa = new RSACryptoServiceProvider();
                 rsa.FromXmlString(GetKeyFromContainer(planetCode));
+                
+                var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
 
-                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptMessage, false));
+                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(dataToDecrypt, false));
 
                 return decryptedMessage;
             }
