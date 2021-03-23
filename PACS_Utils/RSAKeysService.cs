@@ -11,7 +11,7 @@ namespace PACS_Utils
         private readonly SecureRandom _secureRandom = new SecureRandom();
         private CspParameters _cspp = new CspParameters();
 
-        private DataAccessService _dtb;
+        private DataAccessService _dtb = new DataAccessService();
 
         private RSACryptoServiceProvider _rsa;
         //CREAR OBJETO PLANET PARA TENER TODO SU INFO EN EL CODIGO
