@@ -82,7 +82,7 @@ namespace PACS_Utils
             }
         }
 
-        public string DencryptedCode(byte[] encryptMessage, string planetCode)
+        public string DecryptCode(string encryptedMessage, string planetCode)
         {
             try
             {
@@ -90,8 +90,10 @@ namespace PACS_Utils
 
                 var rsa = new RSACryptoServiceProvider();
                 rsa.FromXmlString(GetKeyFromContainer(planetCode));
+                
+                var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
 
-                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptMessage, false));
+                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(dataToDecrypt, false));
 
                 return decryptedMessage;
             }
