@@ -8,6 +8,9 @@ using PACS_Utils;
 using System.Threading;
 using System.Net.Sockets;
 using System.Text;
+using System.IO.Compression;
+using System.IO;
+using System.Linq;
 
 namespace MC_SPACESHIP
 {
@@ -45,6 +48,8 @@ namespace MC_SPACESHIP
             string sqlSpaceShip =
                 "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
             DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
+
+            printPanel(Application.StartupPath);
 
             var dr = ds1.Tables[0].Rows[0];
 
@@ -323,7 +328,7 @@ namespace MC_SPACESHIP
             getCodeAndSend();
         } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
 
-        private void WriteTextSafe(string text)//FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
+        private void WriteTextSafe(string text)
         {
             if (messageRecived.InvokeRequired)
             {
@@ -335,7 +340,7 @@ namespace MC_SPACESHIP
                 messageRecived.Text = "";
                 messageRecived.Text = text;
             }
-        }
+        }//FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
 
         //BARRA MOVIMENT DE LA PANTALLA
         private void panel4_MouseDown(object sender, MouseEventArgs e)
@@ -359,5 +364,60 @@ namespace MC_SPACESHIP
             _mouseDown = false;
             //ChangeBorderColor(Color.Yellow);
         }
+
+        private void decodeFiles ()
+        {
+            string extractPath = Application.StartupPath + "\\ZipFiles";
+            string downloadPath = Application.StartupPath + "\\Downloads";
+
+            List<string> strFiles = Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories).ToList();
+
+            foreach (string fichero in strFiles)
+            {
+                File.Delete(fichero);
+            }
+
+            ZipFile.ExtractToDirectory(downloadPath, extractPath);
+
+            var res = dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = "+planet.GetId()+";");
+            Dictionary<string, string> abcCodes = new Dictionary<string, string>();
+
+            for (int i = 0; i < 24; i++)
+            {
+                var dr = res.Tables[0].Rows[i];
+                abcCodes.Add(dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(0).ToString());
+            }
+
+            string pathFile = Application.StartupPath + "\\ZipFiles\\PacsSol.txt";
+
+            var iStream = new FileStream(pathFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var sr = new StreamReader(iStream);
+
+            foreach (string file in strFiles) 
+            {
+                var oStream = new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Read);
+                
+                var sw = new StreamWriter(oStream);
+
+                string code;
+                string letter;
+
+                while (sr.Peek() >= 0)
+                {
+                    code = sr.ReadLine();
+
+                    letter = abcCodes[code];
+
+                    sw.WriteLine(letter); sw.Flush();
+                }
+                sw.Close();
+            }
+            sr.Close();
+        }//FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
+
+        private void btn_SendFiles_Click(object sender, EventArgs e)
+        {
+
+        }//FUNCIO PER ENVIAR L'ARXIU DESCODIFICAT AL PLANETA
     }
 }

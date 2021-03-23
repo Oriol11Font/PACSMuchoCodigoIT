@@ -188,6 +188,7 @@ namespace MC_SPACESHIP
             this.btn_SendFiles.TabIndex = 7;
             this.btn_SendFiles.Text = "Enviar Arxius Codificats";
             this.btn_SendFiles.UseVisualStyleBackColor = true;
+            this.btn_SendFiles.Click += new System.EventHandler(this.btn_SendFiles_Click);
             // 
             // OffButton
             // 
