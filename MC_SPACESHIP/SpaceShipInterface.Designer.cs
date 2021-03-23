@@ -129,7 +129,7 @@ namespace MC_SPACESHIP
             // 
             this.onOffButton.BackColor = System.Drawing.Color.Transparent;
             this.onOffButton.Location = new System.Drawing.Point(1120, 72);
-            this.onOffButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4);
             this.onOffButton.Name = "onOffButton";
             this.onOffButton.Size = new System.Drawing.Size(149, 132);
             this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;

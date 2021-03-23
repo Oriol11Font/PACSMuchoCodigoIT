@@ -7,6 +7,7 @@ using PACS_Objects;
 using PACS_Utils;
 using System.Threading;
 using System.Net.Sockets;
+using System.Text;
 
 namespace MC_SPACESHIP
 {
@@ -260,12 +261,31 @@ namespace MC_SPACESHIP
             if (validations[0])
             {
                 btn_SendCode.Enabled = true;
+                btn_detectPlanet.ForeColor = Color.Green;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
                 if (validations[1])
                 {
                     btn_SendFiles.Enabled = true;
+                    btn_SendCode.ForeColor = Color.Green;
+                    btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+
+                    if (validations[2])
+                    {
+                        btn_SendFiles.ForeColor = Color.Green;
+                        btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+                    }
+                } else
+                {
+                    //validations = new bool[] { false, false, false };
+                    //btn_SendCode.ForeColor = Color.Red;
                 }
+            } else
+            {
+                //validations = new bool[] { false, false, false };
+                btn_detectPlanet.ForeColor = Color.Red;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Red;
             }
-        }
+        }//ACTIVANT BOTONS QUAN VAN PASSANT PROCESSOS DE VALIDACIÓ
 
         private void getCodeAndSend()
         {
@@ -276,7 +296,14 @@ namespace MC_SPACESHIP
 
                 byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
 
-                tcp.SendMessageToServer(encryptedCode.ToString(), planet.GetIp(), planet.GetPort());
+                UnicodeEncoding ByteConverter = new UnicodeEncoding();
+
+                
+
+                string message = "VK" + ByteConverter.GetString(encryptedCode);
+                messageRecived.Text = message;
+                //printPanel(message);
+                tcp.SendMessageToServer(message, planet.GetIp(), planet.GetPort());
 
                 printPanel("[SYSTEM] - Key validation send it, waiting for response...");
             }
@@ -296,31 +323,7 @@ namespace MC_SPACESHIP
             getCodeAndSend();
         } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
 
-        private void panel4_MouseDown(object sender, MouseEventArgs e)
-        {
-            _mouseDown = true;
-            _lastLocation = e.Location;
-        }
-
-        private void panel4_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (_mouseDown)
-            {
-                //ChangeBorderColor(Color.Red);
-                Location = new Point(
-                    Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
-
-                Update();
-            }
-        }
-
-        private void panel4_MouseUp(object sender, MouseEventArgs e)
-        {
-            _mouseDown = false;
-            //ChangeBorderColor(Color.Yellow);
-        }
-
-        private void WriteTextSafe(string text)
+        private void WriteTextSafe(string text)//FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
         {
             if (messageRecived.InvokeRequired)
             {
@@ -332,6 +335,29 @@ namespace MC_SPACESHIP
                 messageRecived.Text = "";
                 messageRecived.Text = text;
             }
+        }
+
+        //BARRA MOVIMENT DE LA PANTALLA
+        private void panel4_MouseDown(object sender, MouseEventArgs e)
+        {
+            _mouseDown = true;
+            _lastLocation = e.Location;
+        }
+        private void panel4_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_mouseDown)
+            {
+                //ChangeBorderColor(Color.Red);
+                Location = new Point(
+                    Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
+
+                Update();
+            }
+        }
+        private void panel4_MouseUp(object sender, MouseEventArgs e)
+        {
+            _mouseDown = false;
+            //ChangeBorderColor(Color.Yellow);
         }
     }
 }
