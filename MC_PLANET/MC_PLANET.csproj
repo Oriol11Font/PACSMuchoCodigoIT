@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodificationGenerator.cs" />
     <Compile Include="PlanetInterface.cs">
       <SubType>Form</SubType>
     </Compile>

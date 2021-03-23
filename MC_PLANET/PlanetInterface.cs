@@ -66,6 +66,9 @@ namespace MC_PLANET
 
             PrintPanel(
                 $@"[SYSTEM] Generated Validation Code and encrypted letters for planet {_planet.GetName()}");
+            CodificationGenerator codificationGenerator = new CodificationGenerator();
+            Dictionary<String, String> dict = codificationGenerator.generateCodification();
+            Console.WriteLine(dict["A"]);
         }
 
         private void PrintPanel(string message)
