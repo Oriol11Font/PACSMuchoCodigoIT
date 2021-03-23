@@ -16,6 +16,7 @@ namespace MC_PLANET
         private readonly DataAccessService _dataAccess = new DataAccessService();
         readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
         readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        private delegate void SafeCallDelegate(string text);
         private TcpipSystemService _tcp;
         private TcpListener _listener;
         private Thread _listenerThread;
@@ -77,7 +78,7 @@ namespace MC_PLANET
             while (_active)
             {
                 var msg = _tcp.WaitingForResponse(_listener);
-                if (msg != null) { txtb_msg.Text = msg; };
+                if (msg != null) { WriteTextSafe(msg); };
             }
         }
 
@@ -201,7 +202,25 @@ namespace MC_PLANET
 
         private void txtb_msg_TextChanged(object sender, EventArgs e)
         {
-            HandleMessage(txtb_msg.Text);
+            if (txtb_msg.Text.Length > 2)
+            {
+                HandleMessage(txtb_msg.Text);
+            }
+            
+        }
+
+        private void WriteTextSafe(string text)
+        {
+            if (txtb_msg.InvokeRequired)
+            {
+                var d = new SafeCallDelegate(WriteTextSafe);
+                txtb_msg.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                txtb_msg.Text = "";
+                txtb_msg.Text = text;
+            }
         }
     }
 }

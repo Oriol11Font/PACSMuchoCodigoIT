@@ -24,6 +24,7 @@ namespace MC_SPACESHIP
         readonly TcpipSystemService tcp = new TcpipSystemService();
         readonly RsaKeysService rsa = new RsaKeysService();
 
+        private delegate void SafeCallDelegate(string text);
         private Point _lastLocation;
         private bool _mouseDown;
         bool check = false;
@@ -70,7 +71,7 @@ namespace MC_SPACESHIP
                     if (tcp.CheckXarxa("8.8.8.8", 5))
                     {
                         printPanel("[SYSTEM] - Stable connection with" + planet.GetName());
-                        tcp.SendMessageToServer("ER"+ spaceShip.getCode() + "CCCCCCCCCCCC", planet.GetIp(), planet.GetPort());
+                        tcp.SendMessageToServer("ER"+ spaceShip.getCode() + "DELIVER01TAK", planet.GetIp(), planet.GetPort());
      
                     }
                     else
@@ -192,10 +193,7 @@ namespace MC_SPACESHIP
             while (active)
             {
                 mssg = tcp.WaitingForResponse(Listener);
-                if (mssg != null)
-                {
-                    messageRecived.Text = mssg;
-                }
+                if (mssg != null) { WriteTextSafe(mssg); }
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
@@ -205,7 +203,7 @@ namespace MC_SPACESHIP
             {
                 //VR12345678901VP          
                 string id_message = message.Substring(0, 2);
-                string result = message.Substring(13, 2);
+                string result = message.Substring(14, 2);
                 switch (id_message)
                 {
                     case "VR":
@@ -250,9 +248,11 @@ namespace MC_SPACESHIP
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
-            RecivedMessage(messageRecived.Text);
-            validationNextStep();
-
+            if (messageRecived.Text.Length > 2)
+            {
+                RecivedMessage(messageRecived.Text);
+                validationNextStep();
+            }
         } //DETECTA PER INICIAR LA DESCODIFICACIO
 
         private void validationNextStep()
@@ -318,6 +318,20 @@ namespace MC_SPACESHIP
         {
             _mouseDown = false;
             //ChangeBorderColor(Color.Yellow);
+        }
+
+        private void WriteTextSafe(string text)
+        {
+            if (messageRecived.InvokeRequired)
+            {
+                var d = new SafeCallDelegate(WriteTextSafe);
+                messageRecived.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                messageRecived.Text = "";
+                messageRecived.Text = text;
+            }
         }
     }
 }
