@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
@@ -104,7 +106,7 @@ namespace PACS_Utils
 
         public bool CheckXarxa(string ipToPing, int repeat)
         {
-            bool check = true;
+            var check = true;
             try
             {
                 for (var i = 0; i < repeat; i++)
@@ -114,14 +116,41 @@ namespace PACS_Utils
                     if (reply != null)
                         if (reply.Status != IPStatus.Success)
                         {
-                            check = false;                            
+                            check = false;
                         }
                 }
+
                 return check;
             }
             catch
             {
                 return false;
+            }
+        }
+
+        public string SendFile(string filePath, string ip, int port)
+        {
+            try
+            {
+                var endpoint = new IPEndPoint(long.Parse(ip), port);
+
+                Socket client = new Socket(AddressFamily.InterNetwork,
+                    SocketType.Stream, ProtocolType.Tcp);
+
+                client.Connect(endpoint);
+
+                Console.WriteLine("Sending {0} to the host.", filePath);
+                client.SendFile(filePath);
+
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
+
+                return @"[SYSTEM] S'ha enviat correctament el fitxer";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return @"[ERROR] No s'ha pogut enviar el fitxer";
             }
         }
     }
