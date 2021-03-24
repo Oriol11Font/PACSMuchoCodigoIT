@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,34 +14,51 @@ namespace MC_PLANET
 {
     public partial class PlanetInterface : Form
     {
-        private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
-        private readonly DataAccessService _dataAccess = new DataAccessService();
-        private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
         private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
+        private readonly DataAccessService _dataAccess = new DataAccessService();
+        private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
+        private bool _active;
 
-        private delegate void SafeCallDelegate(string text);
-
-        private TcpipSystemService _tcp;
+        private Dictionary<char, string> _encryptedLetters;
         private TcpListener _listener;
         private Thread _listenerThread;
-        private bool _active;
         private Planet _planet;
         private SpaceShip _spaceShip;
 
-        private Dictionary<char, string> _encryptedLetters;
+        private TcpipSystemService _tcp;
 
         public PlanetInterface()
         {
             InitializeComponent();
         }
 
+        private void PlanetInterface_Load(object sender, EventArgs e)
+        {
+            var res = _dataAccess.GetTable(@"Planets");
+            planetCmbx.DataSource = res.Tables[0];
+            planetCmbx.ValueMember = @"idPlanet";
+            planetCmbx.DisplayMember = @"DescPlanet";
+            onOffButton.ImageLocation = _buttonOff;
+            planetCmbx_ValueMemberChanged(null, null);
+
+            var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
+
+            GenerateValidationCode(idPlanet);
+            GeneratePlanetKeys(idPlanet);
+
+            CreateZip();
+
+            ComprobarArchivoNave();
+        }
+
         private void GenerateValidationCode(int idPlanet)
         {
             var validationCode = _rsaKeysService.GenerateKey(12);
 
-            var sqlParams = new Dictionary<string, string>
+            var sqlParams = new Dictionary<string, dynamic>
             {
-                {"validationcode", validationCode}, {"idplanet", idPlanet.ToString()}
+                {"validationcode", validationCode}, {"idplanet", idPlanet}
             };
             _dataAccess.RunSafeQuery(@"
                 BEGIN TRANSACTION
@@ -89,10 +105,7 @@ namespace MC_PLANET
             while (_active)
             {
                 var msg = _tcp.WaitingForResponse(_listener);
-                if (msg != null)
-                {
-                    WriteTextSafe(msg);
-                }
+                if (msg != null) WriteTextSafe(msg);
             }
         }
 
@@ -113,19 +126,19 @@ namespace MC_PLANET
                             var shipCode = msg.Substring(2, 12);
                             var deliveryCode = msg.Substring(14, 12);
 
-                            var sqlParams = new Dictionary<string, string>
+                            var sqlParams = new Dictionary<string, dynamic>
                             {
                                 {"codespaceship", shipCode}
                             };
 
                             var spaceshipRows =
                                 _dataAccess.GetByQuery(
-                                    "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = @codespaceship",
+                                    "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1, PortSpaceShip2 FROM SpaceShips WHERE CodeSpaceShip = @codespaceship",
                                     sqlParams).Tables[0].Rows;
                             var spaceship = spaceshipRows[0].ItemArray;
                             _spaceShip = new SpaceShip(int.Parse(spaceship[0].ToString()), spaceship[1].ToString(),
                                 spaceship[2].ToString(),
-                                int.Parse(spaceship[3].ToString()));
+                                int.Parse(spaceship[3].ToString()), int.Parse(spaceship[4].ToString()));
 
                             sqlParams.Clear();
 
@@ -135,9 +148,9 @@ namespace MC_PLANET
                                     sqlParams).Tables[0].Rows;
 
                             _tcp.SendMessageToServer(
-                                $@"VR{_spaceShip.getCode()}{(spaceshipRows.Count == 1 && deliveryRows.Count == 1 ? "VP" : "AD")}",
-                                _spaceShip.getIp(),
-                                _spaceShip.getPort());
+                                $@"VR{_spaceShip.GetCode()}{(spaceshipRows.Count == 1 && deliveryRows.Count == 1 ? "VP" : "AD")}",
+                                _spaceShip.GetIp(),
+                                _spaceShip.GetPort1());
                         }
                         else
                         {
@@ -154,23 +167,23 @@ namespace MC_PLANET
                         {
                             var validationCode = msg.Substring(2);
 
-                            var decryptedCode = _rsaKeysService.DecryptCode(validationCode, _planet.GetCode());
+                            var decryptedCode = RsaKeysService.DecryptCode(validationCode, _planet.GetCode());
 
                             var validated = decryptedCode != null;
 
                             _tcp.SendMessageToServer(
-                                $@"VR{_spaceShip.getCode()}{(validated ? "VP" : "AD")}",
-                                _spaceShip.getIp(),
-                                _spaceShip.getPort());
+                                $@"VR{_spaceShip.GetCode()}{(validated ? "VP" : "AD")}",
+                                _spaceShip.GetIp(),
+                                _spaceShip.GetPort1());
 
                             PrintPanel(
-                                $@"[SYSTEM] Codi de validació rebut de la nau {_spaceShip.getCode()} {(validated ? "correctament" : "erròniament")} encriptat"
+                                $@"[SYSTEM] Codi de validació rebut de la nau {_spaceShip.GetCode()} {(validated ? "correctament" : "erròniament")} encriptat"
                             );
 
                             if (validated)
                             {
                                 var zipPath = CreateZip();
-                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.getIp(), _spaceShip.getPort()));
+                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.GetIp(), _spaceShip.GetPort1()));
                             }
                         }
                         else
@@ -205,13 +218,19 @@ namespace MC_PLANET
             var filesDirectory = Path.Combine(Application.StartupPath, @"PacsFiles");
 
             // filtro archivos que no sean los desencriptados
-            var reg = new Regex(@"DecryptedPACS[0-9]+.txt");
-            var fileNames = Directory.GetFiles(filesDirectory).Where(s => reg.IsMatch(s)).ToList();
+            var fileReg = new Regex(@"DecryptedPACS[0-9]+.txt");
+            var numReg = new Regex(@"\d+");
+            var filePaths = Directory.GetFiles(filesDirectory).Where(s => fileReg.IsMatch(s))
+                .OrderBy(file => numReg.Match(file).Value);
 
-            foreach (var fileName in fileNames)
-                PrintPanel(fileName);
+            //MessageBox.Show(string.Join(", ", filePaths));
 
-            JoinTxtFiles(fileNames, Path.Combine(filesDirectory, @"CombinedFile.txt"));
+            var joinedFilePath = Path.Combine(filesDirectory, @"CombinedFile.txt");
+            FileManagement.JoinTxtFiles(filePaths, joinedFilePath);
+
+            // comparar archivo con el que envía la nave
+            FileManagement.IsContentEqual(joinedFilePath,
+                Path.Combine(filesDirectory, @"DecryptedPACS1.txt"));
         }
 
         private string CreateZip()
@@ -227,10 +246,8 @@ namespace MC_PLANET
                 var decryptedFile = Path.Combine(filesPath, $@"DecryptedPACS{i}.txt");
                 var encryptedFile = Path.Combine(filesPath, $@"PACS{i}.txt");
 
-                CreateFile(decryptedFile, GenerateRandomLetters(100000), true);
-                EncryptFile(decryptedFile, encryptedFile);
-
-                // if (File.Exists(decryptedFile)) File.Delete(decryptedFile);
+                FileManagement.CreateFile(decryptedFile, RsaKeysService.GenerateRandomLetters(100000), true);
+                FileManagement.EncryptFile(decryptedFile, encryptedFile, _encryptedLetters);
             }
 
             if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
@@ -239,87 +256,13 @@ namespace MC_PLANET
             return zipFilePath;
         }
 
-        private void CreateFile(string path, string content, bool deleteIfExists)
-        {
-            if (File.Exists(path) && deleteIfExists) File.Delete(path);
-            using (var tw = new StreamWriter(path, true))
-            {
-                tw.Write(content);
-                tw.Flush();
-            }
-        }
-
-        private void EncryptFile(string originFile, string encryptedPath)
-        {
-            var iStream = new FileStream(originFile, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var sr = new StreamReader(iStream);
-
-            using (var sw = File.CreateText(encryptedPath))
-            {
-                var res = sr.Read();
-                while (res != -1)
-                {
-                    sw.Write(_encryptedLetters[(char) res]);
-                    res = sr.Read();
-                }
-
-                sw.Flush();
-                sw.Close();
-            }
-
-            sr.Close();
-            iStream.Close();
-        }
-
-        private string GenerateRandomLetters(int length)
-        {
-            var strBuild = new StringBuilder();
-            var random = new Random();
-
-            for (var i = 0; i < length; i++)
-            {
-                var flt = random.NextDouble();
-                var shift = Convert.ToInt32(Math.Floor(25 * flt));
-                var letter = Convert.ToChar(shift + 65);
-                strBuild.Append(letter);
-            }
-
-            return strBuild.ToString();
-        }
-
-        private static void JoinTxtFiles(List<string> filePaths, string finalPath)
-        {
-            using (var output = File.Create(finalPath))
-                foreach (var filePath in filePaths)
-                    using (var inp = File.OpenRead(filePath))
-                        inp.CopyTo(output);
-        }
-
         //LLEGIR CLAU ENVIADA PER LA NAU
 
         //DESENCRIPTAR LA CLAU
-        private void PlanetInterface_Load(object sender, EventArgs e)
-        {
-            var res = _dataAccess.GetTable(@"Planets");
-            planetCmbx.DataSource = res.Tables[0];
-            planetCmbx.ValueMember = @"idPlanet";
-            planetCmbx.DisplayMember = @"DescPlanet";
-            onOffButton.ImageLocation = _buttonOff;
-            planetCmbx_ValueMemberChanged(null, null);
-
-            var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
-
-            GenerateValidationCode(idPlanet);
-            GeneratePlanetKeys(idPlanet);
-
-            CreateZip();
-
-            //ComprobarArchivoNave();
-        }
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
         {
-            var sqlParams = new Dictionary<string, string> {{"idplanet", planetCmbx.SelectedValue.ToString()}};
+            var sqlParams = new Dictionary<string, dynamic> {{"idplanet", planetCmbx.SelectedValue.ToString()}};
             var planetRow = _dataAccess.GetByQuery(
                 @"SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE idPlanet = @idplanet",
                 sqlParams).Tables[0].Rows[0].ItemArray;
@@ -381,5 +324,7 @@ namespace MC_PLANET
                 txtb_msg.Text = text;
             }
         }
+
+        private delegate void SafeCallDelegate(string text);
     }
 }

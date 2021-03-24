@@ -44,7 +44,7 @@ namespace PACS_Utils
             }
         }
 
-        public void RunSafeQuery(string query, Dictionary<string, string> parameters)
+        public void RunSafeQuery(string query, Dictionary<string, dynamic> parameters)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace PACS_Utils
             return ds;
         }
 
-        public DataSet GetByQuery(string query, Dictionary<string, string> parameters)
+        public DataSet GetByQuery(string query, Dictionary<string, dynamic> parameters)
         {
             DataSet ds;
 
