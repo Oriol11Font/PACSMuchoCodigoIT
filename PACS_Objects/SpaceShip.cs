@@ -6,7 +6,6 @@
         private readonly int _idSpaceShip;
         private readonly string _ipSpaceShip;
         private readonly int _portSpaceShip1;
-        private readonly int _portSpaceShip2;
 
         public SpaceShip(int id, string code, string ip, int port, int port2)
         {
@@ -14,17 +13,29 @@
             _codeSpaceShip = code;
             _ipSpaceShip = ip;
             _portSpaceShip1 = port;
-            _portSpaceShip2 = port2;
+            GetPort2 = port2;
         }
 
-        public int GetId() => _idSpaceShip;
+        public int GetPort2 { get; }
 
-        public string GetCode() => _codeSpaceShip;
+        public int GetId()
+        {
+            return _idSpaceShip;
+        }
 
-        public string GetIp() => _ipSpaceShip;
+        public string GetCode()
+        {
+            return _codeSpaceShip;
+        }
 
-        public int GetPort1() => _portSpaceShip1;
+        public string GetIp()
+        {
+            return _ipSpaceShip;
+        }
 
-        public int GetPort2 => _portSpaceShip2;
+        public int GetPort1()
+        {
+            return _portSpaceShip1;
+        }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 namespace PACS_Utils
 {
@@ -78,10 +76,8 @@ namespace PACS_Utils
                     var mssg = "" + missatge;
                     return mssg;
                 }
-                else
-                {
-                    return "Ho sento. No puc llegir aquest stream.";
-                }
+
+                return "Ho sento. No puc llegir aquest stream.";
             }
 
             return null;
@@ -115,9 +111,7 @@ namespace PACS_Utils
                     var reply = myPing.Send(ipToPing, 1000);
                     if (reply != null)
                         if (reply.Status != IPStatus.Success)
-                        {
                             check = false;
-                        }
                 }
 
                 return check;
@@ -134,7 +128,7 @@ namespace PACS_Utils
             {
                 var endpoint = new IPEndPoint(long.Parse(ip), port);
 
-                Socket client = new Socket(AddressFamily.InterNetwork,
+                var client = new Socket(AddressFamily.InterNetwork,
                     SocketType.Stream, ProtocolType.Tcp);
 
                 client.Connect(endpoint);

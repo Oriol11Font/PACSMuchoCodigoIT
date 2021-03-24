@@ -10,7 +10,7 @@ namespace PACS_Utils
         private const string Vocab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         private readonly SecureRandom _secureRandom = new SecureRandom();
-        private CspParameters _cspp = new CspParameters();
+        private readonly CspParameters _cspp = new CspParameters();
 
         private DataAccessService _dtb;
 
@@ -38,9 +38,7 @@ namespace PACS_Utils
                     sqlParams);
 
                 if (idPlanet.Tables[0].Rows.Count > 0)
-                {
                     _dtb.RunSafeQuery("DELETE FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;", sqlParams);
-                }
 
                 // INSERT INFO PUBLIC KEY OF PLANET TO BBDD
                 sqlParams.Clear();

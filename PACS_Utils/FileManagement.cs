@@ -32,9 +32,13 @@ namespace PACS_Utils
         public static void JoinTxtFiles(IEnumerable<string> filePaths, string finalPath)
         {
             using (var output = File.Create(finalPath))
+            {
                 foreach (var filePath in filePaths)
                     using (var inp = File.OpenRead(filePath))
+                    {
                         inp.CopyTo(output);
+                    }
+            }
         }
 
         public static void CreateFile(string path, string content, bool deleteIfExists)

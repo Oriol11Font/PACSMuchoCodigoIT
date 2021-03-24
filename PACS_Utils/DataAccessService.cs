@@ -265,14 +265,17 @@ namespace PACS_Utils
             return finalStr;
         }
 
-        public string CreateChainedTransaction(List<string> queries) =>
-            $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
+        public string CreateChainedTransaction(List<string> queries)
+        {
+            return $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
+        }
 
 
         private void ErrorMessage(Exception e, string message, string title)
-            =>
-                MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        {
+            MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
 
         public int Getid(string nombretabla, string campoid, string campodesc, string valoredi)

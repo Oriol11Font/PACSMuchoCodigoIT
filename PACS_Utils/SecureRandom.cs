@@ -6,7 +6,7 @@ namespace PACS_Utils
     public class SecureRandom : RandomNumberGenerator
     {
         private readonly RandomNumberGenerator _rng = new RNGCryptoServiceProvider();
-        
+
         public int Next()
         {
             var data = new byte[sizeof(int)];
