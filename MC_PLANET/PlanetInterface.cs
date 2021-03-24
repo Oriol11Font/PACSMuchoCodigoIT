@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -15,15 +16,15 @@ namespace MC_PLANET
     {
         private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
         private readonly DataAccessService _dataAccess = new DataAccessService();
-        readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
-        readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
+        private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
+        private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
 
         private delegate void SafeCallDelegate(string text);
 
         private TcpipSystemService _tcp;
         private TcpListener _listener;
         private Thread _listenerThread;
-        private bool _active = false;
+        private bool _active;
         private Planet _planet;
         private SpaceShip _spaceShip;
 
@@ -38,9 +39,10 @@ namespace MC_PLANET
         {
             var validationCode = _rsaKeysService.GenerateKey(12);
 
-            var sqlParams = new Dictionary<string, string>();
-            sqlParams.Add("validationcode", validationCode);
-            sqlParams.Add("idplanet", idPlanet.ToString());
+            var sqlParams = new Dictionary<string, string>
+            {
+                {"validationcode", validationCode}, {"idplanet", idPlanet.ToString()}
+            };
             _dataAccess.RunSafeQuery(@"
                 BEGIN TRANSACTION
                 UPDATE dbo.InnerEncryption SET ValidationCode = @validationcode WHERE idPlanet = @idplanet;
@@ -60,10 +62,8 @@ namespace MC_PLANET
             sqlParams.Clear();
             sqlParams.Add("idinnerencryption", idinnerencryption.ToString());
 
-            List<string> values = new List<string>();
-
-            foreach (var letterPair in _encryptedLetters)
-                values.Add($@"({idinnerencryption}, '{letterPair.Key}', '{letterPair.Value}')");
+            var values = _encryptedLetters
+                .Select(letterPair => $@"({idinnerencryption}, '{letterPair.Key}', '{letterPair.Value}')").ToList();
 
             _dataAccess.RunSafeQuery(
                 $@"BEGIN TRANSACTION; DELETE FROM InnerEncryptionData WHERE idInnerEncryption = @idinnerencryption; INSERT INTO InnerEncryptionData (IdInnerEncryption, Word, Numbers) VALUES {string.Join(", ", values)}; COMMIT TRANSACTION;",
@@ -92,12 +92,10 @@ namespace MC_PLANET
                 {
                     WriteTextSafe(msg);
                 }
-
-                ;
             }
         }
 
-        private void HandleMessage(String msg)
+        private void HandleMessage(string msg)
         {
             try
             {
@@ -113,9 +111,11 @@ namespace MC_PLANET
                             var shipCode = msg.Substring(2, 12);
                             var deliveryCode = msg.Substring(14, 12);
 
-                            Dictionary<string, string> sqlParams = new Dictionary<string, string>();
+                            var sqlParams = new Dictionary<string, string>
+                            {
+                                {"codespaceship", shipCode}
+                            };
 
-                            sqlParams.Add("codespaceship", shipCode);
                             var spaceshipRows =
                                 _dataAccess.GetByQuery(
                                     "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = @codespaceship",
@@ -139,7 +139,7 @@ namespace MC_PLANET
                         }
                         else
                         {
-                            PrintPanel($@"[SYSTEM] El missatge de validació d'entrada no té 26 caràcters de longitud");
+                            PrintPanel(@"[SYSTEM] El missatge de validació d'entrada no té 26 caràcters de longitud");
                         }
 
                         break;
@@ -165,7 +165,11 @@ namespace MC_PLANET
                                 $@"[SYSTEM] Codi de validació rebut de la nau {_spaceShip.getCode()} {(validated ? "correctament" : "erròniament")} encriptat"
                             );
 
-                            if (validated) CreateZip();
+                            if (validated)
+                            {
+                                var zipPath = CreateZip();
+                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.getIp(), _spaceShip.getPort()));
+                            }
                         }
                         else
                         {
@@ -184,21 +188,30 @@ namespace MC_PLANET
             }
             catch
             {
-                PrintPanel($@"[SYSTEM] Error on handling entrance petition");
+                PrintPanel(@"[SYSTEM] Error on handling entrance petition");
             }
         }
 
-        private string CreateZip(string zipPath)
+        private string CreateZip()
         {
             var filesPath = Path.Combine(Application.StartupPath, @"PacsFiles");
-            var zipFilePath = zipPath ?? Path.Combine(Application.StartupPath, @"zipfile.zip");
+            var zipFilePath = Path.Combine(Application.StartupPath, @"zipfile.zip");
 
-            if (Directory.Exists(filesPath)) Directory.Delete(filesPath);
+            if (Directory.Exists(filesPath)) Directory.Delete(filesPath, true);
             else Directory.CreateDirectory(filesPath);
 
             for (var i = 1; i <= 3; i++)
-                CreateFile(Path.Combine(filesPath, $@"pacs{i}.txt"), GenerateRandomLetters(100000), true);
+            {
+                var decryptedFile = Path.Combine(filesPath, $@"DecryptedPACS{i}.txt");
+                var encryptedFile = Path.Combine(filesPath, $@"PACS{i}.txt");
 
+                CreateFile(decryptedFile, GenerateRandomLetters(100000), true);
+                EncryptFile(decryptedFile, encryptedFile);
+
+                // if (File.Exists(decryptedFile)) File.Delete(decryptedFile);
+            }
+
+            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
             ZipFile.CreateFromDirectory(filesPath, zipFilePath);
 
             return zipFilePath;
@@ -208,12 +221,37 @@ namespace MC_PLANET
         {
             if (File.Exists(path) && deleteIfExists) File.Delete(path);
             using (var tw = new StreamWriter(path, true))
+            {
                 tw.Write(content);
+                tw.Flush();
+            }
+        }
+
+        private void EncryptFile(string originFile, string encryptedPath)
+        {
+            var iStream = new FileStream(originFile, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var sr = new StreamReader(iStream);
+
+            using (var sw = File.CreateText(encryptedPath))
+            {
+                var res = sr.Read();
+                while (res != -1)
+                {
+                    sw.Write(_encryptedLetters[(char) res]);
+                    res = sr.Read();
+                }
+
+                sw.Flush();
+                sw.Close();
+            }
+
+            sr.Close();
+            iStream.Close();
         }
 
         private string GenerateRandomLetters(int length)
         {
-            var str_build = new StringBuilder();
+            var strBuild = new StringBuilder();
             var random = new Random();
 
             for (var i = 0; i < length; i++)
@@ -221,11 +259,10 @@ namespace MC_PLANET
                 var flt = random.NextDouble();
                 var shift = Convert.ToInt32(Math.Floor(25 * flt));
                 var letter = Convert.ToChar(shift + 65);
-                var encoding = _encryptedLetters[letter];
-                str_build.Append(encoding);
+                strBuild.Append(letter);
             }
 
-            return str_build.ToString();
+            return strBuild.ToString();
         }
 
         //LLEGIR CLAU ENVIADA PER LA NAU
@@ -237,7 +274,7 @@ namespace MC_PLANET
             planetCmbx.DataSource = res.Tables[0];
             planetCmbx.ValueMember = @"idPlanet";
             planetCmbx.DisplayMember = @"DescPlanet";
-            onOffButton.ImageLocation = buttonOFF;
+            onOffButton.ImageLocation = _buttonOff;
             planetCmbx_ValueMemberChanged(null, null);
 
             var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
@@ -248,8 +285,7 @@ namespace MC_PLANET
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
         {
-            Dictionary<string, string> sqlParams = new Dictionary<string, string>();
-            sqlParams.Add("idplanet", planetCmbx.SelectedValue.ToString());
+            var sqlParams = new Dictionary<string, string> {{"idplanet", planetCmbx.SelectedValue.ToString()}};
             var planetRow = _dataAccess.GetByQuery(
                 @"SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE idPlanet = @idplanet",
                 sqlParams).Tables[0].Rows[0].ItemArray;
@@ -264,12 +300,17 @@ namespace MC_PLANET
             if (!_active)
             {
                 _active = true;
-                onOffButton.ImageLocation = buttonON;
+                onOffButton.ImageLocation = _buttonOn;
+
                 _tcp = new TcpipSystemService();
                 _listener = _tcp.StartServer(_planet.GetPort(), _listener);
-                _listenerThread = new Thread(ListenerServer);
-                _listenerThread.IsBackground = true;
+
+                _listenerThread = new Thread(ListenerServer)
+                {
+                    IsBackground = true
+                };
                 _listenerThread.Start();
+
                 PrintPanel(
                     $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
             }
@@ -278,7 +319,7 @@ namespace MC_PLANET
                 _active = false;
                 _listenerThread.Abort();
                 _listener = _tcp.StopServer(_listener);
-                onOffButton.ImageLocation = buttonOFF;
+                onOffButton.ImageLocation = _buttonOff;
                 //_tcp = null;
                 //_listener = null;
                 PrintPanel(
@@ -299,7 +340,7 @@ namespace MC_PLANET
             if (txtb_msg.InvokeRequired)
             {
                 var d = new SafeCallDelegate(WriteTextSafe);
-                txtb_msg.Invoke(d, new object[] {text});
+                txtb_msg.Invoke(d, text);
             }
             else
             {
