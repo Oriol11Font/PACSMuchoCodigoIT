@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using PACS_Objects;
@@ -100,6 +101,7 @@ namespace MC_PLANET
             try
             {
                 var msgType = msg.Substring(0, 2).ToUpper();
+
                 switch (msgType)
                 {
                     case "ER":
@@ -179,6 +181,10 @@ namespace MC_PLANET
 
                         break;
                     }
+                    case "FILE":
+                    {
+                        break;
+                    }
                     default:
                     {
                         PrintPanel($@"[SYSTEM] S'ha rebut un missatge però en un format erroni: {msg}");
@@ -190,6 +196,22 @@ namespace MC_PLANET
             {
                 PrintPanel(@"[SYSTEM] Error on handling entrance petition");
             }
+        }
+
+        private void ComprobarArchivoNave()
+        {
+            // recibe archivo
+
+            var filesDirectory = Path.Combine(Application.StartupPath, @"PacsFiles");
+
+            // filtro archivos que no sean los desencriptados
+            var reg = new Regex(@"DecryptedPACS[0-9]+.txt");
+            var fileNames = Directory.GetFiles(filesDirectory).Where(s => reg.IsMatch(s)).ToList();
+
+            foreach (var fileName in fileNames)
+                PrintPanel(fileName);
+
+            JoinTxtFiles(fileNames, Path.Combine(filesDirectory, @"CombinedFile.txt"));
         }
 
         private string CreateZip()
@@ -265,6 +287,14 @@ namespace MC_PLANET
             return strBuild.ToString();
         }
 
+        private static void JoinTxtFiles(List<string> filePaths, string finalPath)
+        {
+            using (var output = File.Create(finalPath))
+                foreach (var filePath in filePaths)
+                    using (var inp = File.OpenRead(filePath))
+                        inp.CopyTo(output);
+        }
+
         //LLEGIR CLAU ENVIADA PER LA NAU
 
         //DESENCRIPTAR LA CLAU
@@ -281,6 +311,10 @@ namespace MC_PLANET
 
             GenerateValidationCode(idPlanet);
             GeneratePlanetKeys(idPlanet);
+
+            CreateZip();
+
+            //ComprobarArchivoNave();
         }
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
@@ -289,7 +323,8 @@ namespace MC_PLANET
             var planetRow = _dataAccess.GetByQuery(
                 @"SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE idPlanet = @idplanet",
                 sqlParams).Tables[0].Rows[0].ItemArray;
-            _planet = new Planet(int.Parse(planetRow[0].ToString()), planetRow[1].ToString(), planetRow[2].ToString(),
+            _planet = new Planet(int.Parse(planetRow[0].ToString()), planetRow[1].ToString(),
+                planetRow[2].ToString(),
                 planetRow[3].ToString(), int.Parse(planetRow[4].ToString()));
 
             PrintPanel($@"[SYSTEM] - Selected Planet {_planet.GetName()}");
@@ -330,9 +365,7 @@ namespace MC_PLANET
         private void txtb_msg_TextChanged(object sender, EventArgs e)
         {
             if (txtb_msg.Text.Length > 2)
-            {
                 HandleMessage(txtb_msg.Text);
-            }
         }
 
         private void WriteTextSafe(string text)
