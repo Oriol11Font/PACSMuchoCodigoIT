@@ -36,6 +36,7 @@ namespace MC_PLANET
             this.onOffButton = new System.Windows.Forms.PictureBox();
             this.txtb_msg = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).BeginInit();
             this.SuspendLayout();
@@ -106,6 +107,16 @@ namespace MC_PLANET
             this.label1.TabIndex = 13;
             this.label1.Text = "Planeta Actual";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(989, 421);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(141, 81);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // PlanetInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -114,6 +125,7 @@ namespace MC_PLANET
             this.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtb_msg);
             this.Controls.Add(this.onOffButton);
@@ -128,6 +140,8 @@ namespace MC_PLANET
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Button button1;
 
         private System.Windows.Forms.Label label1;
 

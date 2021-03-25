@@ -32,16 +32,35 @@ namespace PACS_Utils
             iStream.Close();
         }
 
+        public static void DecryptFile(string encryptedPath, string decryptedPath,
+            Dictionary<char, string> encryptedLetters)
+        {
+            var iStream = new FileStream(encryptedPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            var sr = new StreamReader(iStream);
+
+            using (var sw = File.CreateText(encryptedPath))
+            {
+                var res = sr.Read();
+                while (res != -1)
+                {
+                    sw.Write(encryptedLetters[(char) res]);
+                    res = sr.Read();
+                }
+
+                sw.Flush();
+                sw.Close();
+            }
+
+            sr.Close();
+            iStream.Close();
+        }
+
         public static void JoinTxtFiles(IEnumerable<string> filePaths, string finalPath)
         {
             using (var output = File.Create(finalPath))
-            {
                 foreach (var filePath in filePaths)
                     using (var inp = File.OpenRead(filePath))
-                    {
                         inp.CopyTo(output);
-                    }
-            }
         }
 
         public static void CreateDirectory(string path)
@@ -74,7 +93,14 @@ namespace PACS_Utils
         {
             if (File.Exists(zipPath)) File.Delete(zipPath);
 
-            var tempFolder = Path.Combine(Application.StartupPath, @"tempfolder");
+            string tempFolder;
+            var i = 0;
+            do
+            {
+                i++;
+                tempFolder = Path.Combine(Application.StartupPath, $@"tempfolder{i}");
+            } while (Directory.Exists(tempFolder));
+
             foreach (var file in files)
                 if (File.Exists(file))
                     File.Copy(file, tempFolder);
@@ -101,10 +127,8 @@ namespace PACS_Utils
         {
             try
             {
-                if (File.Exists(path1) && File.Exists(path2))
-                    return File.ReadLines(path1).SequenceEqual(File.ReadLines(path2));
-
-                return false;
+                return (File.Exists(path1) && File.Exists(path2)) &&
+                       File.ReadLines(path1).SequenceEqual(File.ReadLines(path2));
             }
             catch
             {
@@ -114,7 +138,15 @@ namespace PACS_Utils
 
         public static bool IsContentEqual(params string[] paths)
         {
-            return paths.Count(path => File.ReadLines(paths[0]).SequenceEqual(File.ReadLines(path))) == paths.Length;
+            try
+            {
+                return paths.Count(path => File.ReadLines(paths[0]).SequenceEqual(File.ReadLines(path))) ==
+                       paths.Length;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -46,6 +46,12 @@ namespace MC_PLANET
             GeneratePlanetKeys(idPlanet);
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CreateZip();
+            ComprobarArchivoNave();
+        }
+
         private void GenerateValidationCode(int idPlanet)
         {
             var validationCode = _rsaKeysService.GenerateKey(12);
@@ -205,7 +211,7 @@ namespace MC_PLANET
             }
         }
 
-        private void ComprobarArchivoNave()
+        private static void ComprobarArchivoNave()
         {
             // recibe archivo
 
