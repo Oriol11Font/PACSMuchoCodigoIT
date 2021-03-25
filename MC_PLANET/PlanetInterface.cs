@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using PACS_Objects;
@@ -14,8 +12,8 @@ namespace MC_PLANET
 {
     public partial class PlanetInterface : Form
     {
-        private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
-        private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
+        private readonly string _buttonOff = $@"{Application.StartupPath}\\imgs\\buttonOFF.png";
+        private readonly string _buttonOn = $@"{Application.StartupPath}\\imgs\\buttonON.png";
         private readonly DataAccessService _dataAccess = new DataAccessService();
         private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
         private bool _active;
@@ -46,10 +44,6 @@ namespace MC_PLANET
 
             GenerateValidationCode(idPlanet);
             GeneratePlanetKeys(idPlanet);
-
-            CreateZip();
-
-            ComprobarArchivoNave();
         }
 
         private void GenerateValidationCode(int idPlanet)
@@ -218,10 +212,11 @@ namespace MC_PLANET
             var filesDirectory = Path.Combine(Application.StartupPath, @"PacsFiles");
 
             // filtro archivos que no sean los desencriptados
-            var fileReg = new Regex(@"DecryptedPACS[0-9]+.txt");
+
+            /*var fileReg = new Regex(@"DecryptedPACS[0-9]+.txt");
             var numReg = new Regex(@"\d+");
-            var filePaths = Directory.GetFiles(filesDirectory).Where(s => fileReg.IsMatch(s))
-                .OrderBy(file => numReg.Match(file).Value);
+            var filePaths = FileManagement.GetFilteredFileList(filesDirectory, fileReg, numReg);*/
+            var filePaths = Directory.EnumerateFiles(Path.Combine(filesDirectory, @"decrypted"));
 
             //MessageBox.Show(string.Join(", ", filePaths));
 
@@ -233,32 +228,31 @@ namespace MC_PLANET
                 Path.Combine(filesDirectory, @"DecryptedPACS1.txt"));
         }
 
+
         private string CreateZip()
         {
             var filesPath = Path.Combine(Application.StartupPath, @"PacsFiles");
-            var zipFilePath = Path.Combine(Application.StartupPath, @"zipfile.zip");
+            var zipFilePath = Path.Combine(filesPath, @"zipfile.zip");
+            var encryptedDirectory = Path.Combine(filesPath, @"encrypted");
+            var decryptedDirectory = Path.Combine(filesPath, @"decrypted");
 
-            if (Directory.Exists(filesPath)) Directory.Delete(filesPath, true);
-            else Directory.CreateDirectory(filesPath);
+            FileManagement.CreateDirectory(filesPath);
+            FileManagement.CreateDirectory(decryptedDirectory);
+            FileManagement.CreateDirectory(encryptedDirectory);
 
             for (var i = 1; i <= 3; i++)
             {
-                var decryptedFile = Path.Combine(filesPath, $@"DecryptedPACS{i}.txt");
-                var encryptedFile = Path.Combine(filesPath, $@"PACS{i}.txt");
+                var decryptedFile = Path.Combine(filesPath, decryptedDirectory, $@"PACS{i}.txt");
+                FileManagement.CreateFile(decryptedFile, RsaKeysService.GenerateRandomLetters(100000));
 
-                FileManagement.CreateFile(decryptedFile, RsaKeysService.GenerateRandomLetters(100000), true);
+                var encryptedFile = Path.Combine(encryptedDirectory, $@"PACS{i}.txt");
                 FileManagement.EncryptFile(decryptedFile, encryptedFile, _encryptedLetters);
             }
 
-            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
-            ZipFile.CreateFromDirectory(filesPath, zipFilePath);
+            FileManagement.ZipFile(encryptedDirectory, zipFilePath);
 
             return zipFilePath;
         }
-
-        //LLEGIR CLAU ENVIADA PER LA NAU
-
-        //DESENCRIPTAR LA CLAU
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
         {
