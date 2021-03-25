@@ -1,5 +1,6 @@
 ﻿using PACS_Objects;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -174,6 +175,87 @@ namespace PACS_Utils
                 Console.WriteLine(e.ToString());
                 return @"[ERROR] No s'ha pogut enviar el fitxer";
             }
+        }
+
+        public string RecivedFile(TcpListener listener, string filePath)
+        {
+            try
+            {
+                while (listener.Pending())
+                {
+                    using (var client = listener.AcceptTcpClient())
+                    using (var stream = client.GetStream())
+                    using (var output = File.Create(filePath + "recivedFile.zip"))
+                    {
+                        Console.WriteLine("[SYSTEM] - Client connected. Starting to receive the file");
+
+                        // read the file in chunks of 1KB
+                        var buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            output.Write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+                return "[SYSTEM] - File recived!";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return @"[ERROR] - System can't recive the file!";
+            }
+        }
+
+        public void ReciveFile2(TcpListener Listener, string filePath)
+        {
+            //try
+            //{
+            //    string message = "Accept the Incoming File ";
+            //    string caption = "Incoming Connection";
+
+            //    DialogResult result;
+
+            //    if (Listener.Pending())
+            //    {
+            //        client = Listener.AcceptTcpClient();
+            //        netstream = client.GetStream();
+            //        Status = "Connected to a client\n";
+            //        result = MessageBox.Show(message, caption, buttons);
+
+            //        if (result == System.Windows.Forms.DialogResult.Yes)
+            //        {
+            //            string SaveFileName = string.Empty;
+            //            SaveFileDialog DialogSave = new SaveFileDialog();
+            //            DialogSave.Filter = "All files (*.*)|*.*";
+            //            DialogSave.RestoreDirectory = true;
+            //            DialogSave.Title = "Where do you want to save the file?";
+            //            DialogSave.InitialDirectory = @"C:/";
+            //            if (DialogSave.ShowDialog() == DialogResult.OK)
+            //                SaveFileName = DialogSave.FileName;
+            //            if (SaveFileName != string.Empty)
+            //            {
+            //                int totalrecbytes = 0;
+            //                FileStream Fs = new FileStream
+            // (SaveFileName, FileMode.OpenOrCreate, FileAccess.Write);
+            //                while ((RecBytes = netstream.Read
+            //     (RecData, 0, RecData.Length)) > 0)
+            //                {
+            //                    Fs.Write(RecData, 0, RecBytes);
+            //                    totalrecbytes += RecBytes;
+            //                }
+            //                Fs.Close();
+            //            }
+            //            netstream.Close();
+            //            client.Close();
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //    //netstream.Close();
+            //}
         }
     }
 }

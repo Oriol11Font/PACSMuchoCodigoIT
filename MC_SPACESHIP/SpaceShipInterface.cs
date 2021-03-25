@@ -34,8 +34,8 @@ namespace MC_SPACESHIP
         //bool check = false;
         bool[] validations = {false, false, false};
 
-        Thread t1;
-        TcpListener Listener;
+        Thread t1, t2;
+        TcpListener Listener, FileListener;
         Planet planet;
         SpaceShip spaceShip;
         bool active;
@@ -176,6 +176,12 @@ namespace MC_SPACESHIP
                     t1 = new Thread(ListenerServer);
                     t1.IsBackground = true;
                     t1.Start();
+
+                    FileListener = tcp.StartServer(spaceShip.GetPort2, FileListener);
+                    t2 = new Thread(ListenerServer);
+                    t2.IsBackground = true;
+                    t2.Start();
+
                     printPanel("[SYSTEM] - Server ON");
                 }
                 catch
@@ -193,6 +199,7 @@ namespace MC_SPACESHIP
             {
                 mssg = tcp.WaitingForResponse(Listener, planet);
                 if (mssg != null) { WriteTextSafe(mssg); }
+
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
@@ -210,6 +217,7 @@ namespace MC_SPACESHIP
                             if (validations[0])
                             {
                                 validations[1] = true;
+                               
                             }
                             else
                             {
@@ -237,6 +245,9 @@ namespace MC_SPACESHIP
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
                         }
 
+                        break;
+                    case "FI":
+                        tcp.RecivedFile(FileListener, Application.StartupPath + "\\Downloads");
                         break;
                 }
             }
