@@ -222,7 +222,7 @@ namespace MC_SPACESHIP
             }
             catch
             {
-                PrintPanel(messageRecived.Text.Length.ToString());
+                //PrintPanel(messageRecived.Text.Length.ToString());
                 //check = false;
             }
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
