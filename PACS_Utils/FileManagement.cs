@@ -84,6 +84,7 @@ namespace PACS_Utils
 
         public static void JoinTxtFiles(IEnumerable<string> filePaths, string finalPath)
         {
+            if (File.Exists(finalPath)) { File.Delete(finalPath); }
             using (var output = File.Create(finalPath))
             {
                 foreach (var filePath in filePaths)
@@ -150,7 +151,10 @@ namespace PACS_Utils
 
         public static void UnzipFile(string fileToUnzip, string extractDirectory)
         {
-            if (Directory.Exists(extractDirectory)) Directory.Delete(extractDirectory);
+            var strFiles = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
+            foreach (var fichero in strFiles) File.Delete(fichero);
+
+            //if (Directory.Exists(extractDirectory)) Directory.Delete(extractDirectory);
             System.IO.Compression.ZipFile.ExtractToDirectory(fileToUnzip, extractDirectory);
         }
 

@@ -99,5 +99,8 @@
   <ItemGroup>
     <None Include="Resources\BackGroundPlanet.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\powerOff.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

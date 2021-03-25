@@ -403,7 +403,8 @@ namespace MC_SPACESHIP
             string fileToUnzip = Application.StartupPath + "\\Downloads\\PACS.zip";
             string fileToSend = Application.StartupPath + "\\Downloads\\PACSSSOL.zip";
             string fileToJoinTxt = Application.StartupPath + "\\Downloads\\PACS.txt";
-            string fileDecrypted = Application.StartupPath + "\\Downloads\\PACSSol.txt";
+            string fileDecrypted = Application.StartupPath + "\\Downloads\\DecryptedDir\\PACSSol.txt";
+            string fileDecryptedDir = Application.StartupPath + "\\Downloads\\DecryptedDir";
             string extractDirectory = Application.StartupPath + "\\Downloads\\extractFiles";
 
             FileManagement.UnzipFile(fileToUnzip, extractDirectory);
@@ -423,9 +424,7 @@ namespace MC_SPACESHIP
 
             FileManagement.DecryptFile(fileToJoinTxt, fileDecrypted, abcCodes);
 
-            List<string> filesToZip = new List<string> { fileDecrypted };
-
-            FileManagement.ZipFile(fileToSend, filesToZip);
+            FileManagement.ZipFile(fileToSend, fileDecryptedDir);
 
             //tcp.SendFile(fileToSend, planet.GetIp());
 

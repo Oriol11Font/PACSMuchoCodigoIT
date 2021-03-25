@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -24,6 +25,8 @@ namespace MC_PLANET
         private Planet _planet;
         private SpaceShip _spaceShip;
 
+        private Point _lastLocation;
+        private bool _mouseDown;
         private TcpipSystemService _tcp;
         private bool _code;
 
@@ -346,5 +349,33 @@ namespace MC_PLANET
         }
 
         private delegate void SafeCallDelegate(string text);
+
+        private void OffButton_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        //BARRA MOVIMENT DE LA PANTALLA
+        private void panel4_MouseDown(object sender, MouseEventArgs e)
+        {
+            _mouseDown = true;
+            _lastLocation = e.Location;
+        }
+
+        private void panel4_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_mouseDown) return;
+            //ChangeBorderColor(Color.Red);
+            Location = new Point(
+                Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
+
+            Update();
+        }
+
+        private void panel4_MouseUp(object sender, MouseEventArgs e)
+        {
+            _mouseDown = false;
+            //ChangeBorderColor(Color.Yellow);
+        }
     }
 }

@@ -37,8 +37,11 @@ namespace MC_PLANET
             this.txtb_msg = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.OffButton = new System.Windows.Forms.PictureBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -117,6 +120,29 @@ namespace MC_PLANET
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // OffButton
+            // 
+            this.OffButton.BackColor = System.Drawing.Color.Transparent;
+            this.OffButton.Image = global::MC_PLANET.Properties.Resources.powerOff;
+            this.OffButton.Location = new System.Drawing.Point(766, 557);
+            this.OffButton.Name = "OffButton";
+            this.OffButton.Size = new System.Drawing.Size(83, 74);
+            this.OffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.OffButton.TabIndex = 15;
+            this.OffButton.TabStop = false;
+            this.OffButton.Click += new System.EventHandler(this.OffButton_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Location = new System.Drawing.Point(1, 1);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1347, 32);
+            this.panel2.TabIndex = 16;
+            this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
+            this.panel2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
+            this.panel2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseUp);
+            // 
             // PlanetInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -125,18 +151,22 @@ namespace MC_PLANET
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.OffButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtb_msg);
             this.Controls.Add(this.onOffButton);
             this.Controls.Add(this.planetCmbx);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "PlanetInterface";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.PlanetInterface_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OffButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,6 +184,8 @@ namespace MC_PLANET
         private System.Windows.Forms.PictureBox onOffButton;
         private System.Windows.Forms.ListBox PlanetConsole;
         private System.Windows.Forms.TextBox txtb_msg;
+        private System.Windows.Forms.PictureBox OffButton;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 
