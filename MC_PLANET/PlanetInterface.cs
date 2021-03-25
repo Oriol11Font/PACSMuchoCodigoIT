@@ -36,6 +36,16 @@ namespace MC_PLANET
         {
             CreateZip();
             ComprobarArchivoNave();
+            FileManagement.EncryptFile(
+                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt",
+                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
+                _encryptedLetters);
+            FileManagement.DecryptFile(
+                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
+                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt",
+                _encryptedLetters);
+            PrintPanel(
+                $"is content equal? should be yes: {FileManagement.IsContentEqual(@"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt", @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt").ToString()}");
         }
 
         private void GenerateValidationCode(int idPlanet)

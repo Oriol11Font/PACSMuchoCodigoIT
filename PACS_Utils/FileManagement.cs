@@ -35,15 +35,25 @@ namespace PACS_Utils
         public static void DecryptFile(string encryptedPath, string decryptedPath,
             Dictionary<char, string> encryptedLetters)
         {
-            var iStream = new FileStream(encryptedPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            var iStream = new FileStream(encryptedPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             var sr = new StreamReader(iStream);
 
-            using (var sw = File.CreateText(encryptedPath))
+            using (var sw = File.CreateText(decryptedPath))
             {
                 var res = sr.Read();
+                var code = "";
                 while (res != -1)
                 {
-                    sw.Write(encryptedLetters[(char) res]);
+                    code += (char) res;
+
+                    if (code.Length == 3)
+                    {
+                        var letter = encryptedLetters.FirstOrDefault(x => x.Value.Equals(code));
+                        sw.Write(letter.Key);
+                        code = @"";
+                    }
+
+                    //sw.Write(encryptedLetters[(char) res]);
                     res = sr.Read();
                 }
 
@@ -55,12 +65,33 @@ namespace PACS_Utils
             iStream.Close();
         }
 
+        public static void ReplaceString(string filename, string search, string replace)
+        {
+            var sr = new StreamReader(filename);
+            var rows = Regex.Split(sr.ReadToEnd(), "\r\n");
+            sr.Close();
+
+            var sw = new StreamWriter(filename);
+            for (var i = 0; i < rows.Length; i++)
+            {
+                if (rows[i].Contains(search)) rows[i] = rows[i].Replace(search, replace);
+
+                sw.WriteLine(rows[i]);
+            }
+
+            sw.Close();
+        }
+
         public static void JoinTxtFiles(IEnumerable<string> filePaths, string finalPath)
         {
             using (var output = File.Create(finalPath))
+            {
                 foreach (var filePath in filePaths)
                     using (var inp = File.OpenRead(filePath))
+                    {
                         inp.CopyTo(output);
+                    }
+            }
         }
 
         public static void CreateDirectory(string path)
@@ -127,7 +158,7 @@ namespace PACS_Utils
         {
             try
             {
-                return (File.Exists(path1) && File.Exists(path2)) &&
+                return File.Exists(path1) && File.Exists(path2) &&
                        File.ReadLines(path1).SequenceEqual(File.ReadLines(path2));
             }
             catch
