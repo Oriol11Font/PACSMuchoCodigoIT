@@ -7,6 +7,9 @@ using PACS_Objects;
 using PACS_Utils;
 using System.Threading;
 using System.Net.Sockets;
+using System.IO.Compression;
+using System.IO;
+using System.Linq;
 
 namespace MC_SPACESHIP
 {
@@ -28,8 +31,8 @@ namespace MC_SPACESHIP
 
         private Point _lastLocation;
         private bool _mouseDown;
-        bool check = false;
-        bool[] validations = {false, false};
+        //bool check = false;
+        bool[] validations = {false, false, false};
 
         Thread t1;
         TcpListener Listener;
@@ -188,19 +191,15 @@ namespace MC_SPACESHIP
 
             while (active)
             {
-                mssg = tcp.WaitingForResponse(Listener);
-                if (mssg != null)
-                {
-                    WriteTextSafe(mssg);
-                }
+                mssg = tcp.WaitingForResponse(Listener, planet);
+                if (mssg != null) { WriteTextSafe(mssg); }
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
         private void RecivedMessage(string message)
         {
             try
-            {
-                //VR12345678901VP          
+            {      
                 string id_message = message.Substring(0, 2);
                 string result = message.Substring(14, 2);
                 switch (id_message)
@@ -234,6 +233,7 @@ namespace MC_SPACESHIP
                         }
                         else if (result.Equals("AG"))
                         {
+                            validations[2] = true;
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
                         }
 
@@ -243,7 +243,7 @@ namespace MC_SPACESHIP
             catch
             {
                 printPanel(messageRecived.Text.Length.ToString());
-                check = false;
+                //check = false;
             }
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
@@ -251,6 +251,16 @@ namespace MC_SPACESHIP
         {
             if (messageRecived.Text.Length > 2)
             {
+                if (messageRecived.Text == "code")
+                {
+                    string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
+                    string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                    byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+
+                    tcp.SendMessageToServer(encryptedCode, planet.GetIp(), planet.GetPort());
+                }
+
                 RecivedMessage(messageRecived.Text);
                 validationNextStep();
             }
@@ -261,12 +271,31 @@ namespace MC_SPACESHIP
             if (validations[0])
             {
                 btn_SendCode.Enabled = true;
+                btn_detectPlanet.ForeColor = Color.Green;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
                 if (validations[1])
                 {
                     btn_SendFiles.Enabled = true;
+                    btn_SendCode.ForeColor = Color.Green;
+                    btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+
+                    if (validations[2])
+                    {
+                        btn_SendFiles.ForeColor = Color.Green;
+                        btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+                    }
+                } else
+                {
+                    //validations = new bool[] { false, false, false };
+                    //btn_SendCode.ForeColor = Color.Red;
                 }
+            } else
+            {
+                //validations = new bool[] { false, false, false };
+                btn_detectPlanet.ForeColor = Color.Red;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Red;
             }
-        }
+        }//ACTIVANT BOTONS QUAN VAN PASSANT PROCESSOS DE VALIDACIÓ
 
         private void getCodeAndSend()
         {
@@ -280,7 +309,7 @@ namespace MC_SPACESHIP
 
                 byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
 
-                tcp.SendMessageToServer(encryptedCode.ToString(), planet.GetIp(), planet.GetPort());
+                tcp.SendMessageToServer("VK", planet.GetIp(), planet.GetPort());
 
                 printPanel("[SYSTEM] - Key validation send it, waiting for response...");
             }
@@ -300,12 +329,26 @@ namespace MC_SPACESHIP
             getCodeAndSend();
         } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
 
+        private void WriteTextSafe(string text)
+        {
+            if (messageRecived.InvokeRequired)
+            {
+                var d = new SafeCallDelegate(WriteTextSafe);
+                messageRecived.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                messageRecived.Text = "";
+                messageRecived.Text = text;
+            }
+        }//FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
+
+        //BARRA MOVIMENT DE LA PANTALLA
         private void panel4_MouseDown(object sender, MouseEventArgs e)
         {
             _mouseDown = true;
             _lastLocation = e.Location;
         }
-
         private void panel4_MouseMove(object sender, MouseEventArgs e)
         {
             if (_mouseDown)
@@ -317,25 +360,65 @@ namespace MC_SPACESHIP
                 Update();
             }
         }
-
         private void panel4_MouseUp(object sender, MouseEventArgs e)
         {
             _mouseDown = false;
             //ChangeBorderColor(Color.Yellow);
         }
 
-        private void WriteTextSafe(string text)
+        private void decodeFiles ()
         {
-            if (messageRecived.InvokeRequired)
+            string extractPath = Application.StartupPath + "\\ZipFiles";
+            string downloadPath = Application.StartupPath + "\\Downloads";
+
+            List<string> strFiles = Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories).ToList();
+
+            foreach (string fichero in strFiles)
             {
-                var d = new SafeCallDelegate(WriteTextSafe);
-                messageRecived.Invoke(d, new object[] {text});
+                File.Delete(fichero);
             }
-            else
+
+            ZipFile.ExtractToDirectory(downloadPath, extractPath);
+
+            var res = dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = "+planet.GetId()+";");
+            Dictionary<string, string> abcCodes = new Dictionary<string, string>();
+
+            for (int i = 0; i < 24; i++)
             {
-                messageRecived.Text = "";
-                messageRecived.Text = text;
+                var dr = res.Tables[0].Rows[i];
+                abcCodes.Add(dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(0).ToString());
             }
-        }
+
+            string pathFile = Application.StartupPath + "\\ZipFiles\\PacsSol.txt";
+
+            var iStream = new FileStream(pathFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var sr = new StreamReader(iStream);
+
+            foreach (string file in strFiles) 
+            {
+                var oStream = new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Read);
+                
+                var sw = new StreamWriter(oStream);
+
+                string code;
+                string letter;
+
+                while (sr.Peek() >= 0)
+                {
+                    code = sr.ReadLine();
+
+                    letter = abcCodes[code];
+
+                    sw.WriteLine(letter); sw.Flush();
+                }
+                sw.Close();
+            }
+            sr.Close();
+        }//FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
+
+        private void btn_SendFiles_Click(object sender, EventArgs e)
+        {
+
+        }//FUNCIO PER ENVIAR L'ARXIU DESCODIFICAT AL PLANETA
     }
 }

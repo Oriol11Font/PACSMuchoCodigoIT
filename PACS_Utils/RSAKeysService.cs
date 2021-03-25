@@ -12,19 +12,19 @@ namespace PACS_Utils
         private readonly SecureRandom _secureRandom = new SecureRandom();
         private readonly CspParameters _cspp = new CspParameters();
 
-        private DataAccessService _dtb;
+        private DataAccessService _dtb = new DataAccessService();
 
         private RSACryptoServiceProvider _rsa;
         //CREAR OBJETO PLANET PARA TENER TODO SU INFO EN EL CODIGO
 
-        public string GenerateRsaKeys(int planetId)
+        public string GenerateRsaKeys(string codePlanet, int planetId)
         {
             try
             {
                 _dtb = new DataAccessService();
                 _rsa?.Clear();
 
-                _cspp.KeyContainerName = planetId.ToString();
+                _cspp.KeyContainerName = codePlanet;
                 _rsa = new RSACryptoServiceProvider(_cspp);
 
                 var publicKey = _rsa.ToXmlString(false);
@@ -79,7 +79,7 @@ namespace PACS_Utils
             }
         }
 
-        public static string DecryptCode(string encryptedMessage, string planetCode)
+        public string DecryptCode(byte[] encryptedMessage, string planetCode)
         {
             try
             {
@@ -87,10 +87,10 @@ namespace PACS_Utils
 
                 var rsa = new RSACryptoServiceProvider();
                 rsa.FromXmlString(GetKeyFromContainer(planetCode));
+                
+                //var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
 
-                var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
-
-                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(dataToDecrypt, false));
+                var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptedMessage, false));
 
                 return decryptedMessage;
             }

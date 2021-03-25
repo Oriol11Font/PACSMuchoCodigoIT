@@ -38,7 +38,7 @@ namespace MC_PLANET
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -47,23 +47,23 @@ namespace MC_PLANET
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.PlanetConsole);
-            this.panel1.Location = new System.Drawing.Point(147, 114);
+            this.panel1.Location = new System.Drawing.Point(124, 93);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(536, 485);
+            this.panel1.Size = new System.Drawing.Size(582, 538);
             this.panel1.TabIndex = 4;
             // 
             // PlanetConsole
             // 
-            this.PlanetConsole.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (29)))), ((int) (((byte) (36)))), ((int) (((byte) (39)))));
+            this.PlanetConsole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(36)))), ((int)(((byte)(39)))));
             this.PlanetConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.PlanetConsole.FormattingEnabled = true;
             this.PlanetConsole.ItemHeight = 16;
-            this.PlanetConsole.Location = new System.Drawing.Point(12, 16);
+            this.PlanetConsole.Location = new System.Drawing.Point(13, 11);
             this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PlanetConsole.Name = "PlanetConsole";
-            this.PlanetConsole.Size = new System.Drawing.Size(508, 448);
+            this.PlanetConsole.Size = new System.Drawing.Size(550, 512);
             this.PlanetConsole.TabIndex = 1;
             // 
             // planetCmbx
@@ -99,7 +99,7 @@ namespace MC_PLANET
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft PhagsPa", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft PhagsPa", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(947, 334);
             this.label1.Name = "label1";
@@ -122,7 +122,7 @@ namespace MC_PLANET
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.BackgroundImage = ((System.Drawing.Image) (resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
             this.Controls.Add(this.button1);
@@ -136,9 +136,10 @@ namespace MC_PLANET
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.PlanetInterface_Load);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize) (this.onOffButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Button button1;

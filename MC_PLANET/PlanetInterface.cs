@@ -23,27 +23,13 @@ namespace MC_PLANET
         private Thread _listenerThread;
         private Planet _planet;
         private SpaceShip _spaceShip;
+        bool code = false;
 
         private TcpipSystemService _tcp;
 
         public PlanetInterface()
         {
             InitializeComponent();
-        }
-
-        private void PlanetInterface_Load(object sender, EventArgs e)
-        {
-            var res = _dataAccess.GetTable(@"Planets");
-            planetCmbx.DataSource = res.Tables[0];
-            planetCmbx.ValueMember = @"idPlanet";
-            planetCmbx.DisplayMember = @"DescPlanet";
-            onOffButton.ImageLocation = _buttonOff;
-            planetCmbx_ValueMemberChanged(null, null);
-
-            var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
-
-            GenerateValidationCode(idPlanet);
-            GeneratePlanetKeys(idPlanet);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -100,9 +86,9 @@ namespace MC_PLANET
                 $@"[SYSTEM] Generated Validation Code and encrypted letters for planet {_planet.GetName()}");
         }
 
-        private void GeneratePlanetKeys(int idPlanet)
+        private void GeneratePlanetKeys(string codePlanet, int idPlanet)
         {
-            PrintPanel(_rsaKeysService.GenerateRsaKeys(idPlanet));
+            PrintPanel(_rsaKeysService.GenerateRsaKeys(codePlanet, idPlanet));
         }
 
         private void PrintPanel(string message)
@@ -114,8 +100,11 @@ namespace MC_PLANET
         {
             while (_active)
             {
-                var msg = _tcp.WaitingForResponse(_listener);
-                if (msg != null) WriteTextSafe(msg);
+                var msg = _tcp.WaitingForResponse(_listener, _planet);
+                if (msg != null)
+                {
+                    WriteTextSafe(msg);
+                }
             }
         }
 
@@ -124,12 +113,14 @@ namespace MC_PLANET
             try
             {
                 var msgType = msg.Substring(0, 2).ToUpper();
-
+                if (code) { msgType = "VK"; }
+                if (msgType == "VK") { code = !code; }
+                
                 switch (msgType)
                 {
                     case "ER":
                     {
-                        PrintPanel($@"[SYSTEM] Rebut missatge de validació d'entrada: {msg}");
+                        PrintPanel($@"[SYSTEM] - Rebut missatge de validació d'entrada: {msg}");
 
                         if (msg.Length == 26)
                         {
@@ -164,20 +155,20 @@ namespace MC_PLANET
                         }
                         else
                         {
-                            PrintPanel(@"[SYSTEM] El missatge de validació d'entrada no té 26 caràcters de longitud");
+                            PrintPanel(@"[SYSTEM] - El missatge de validació d'entrada no té 26 caràcters de longitud");
                         }
 
                         break;
                     }
                     case "VK":
                     {
-                        PrintPanel($@"[SYSTEM] Rebut missatge de validació del codi de validació encriptat: {msg}");
-
-                        if (msg.Length == 14)
+                        if (msg.Length > 2)
                         {
-                            var validationCode = msg.Substring(2);
+                            PrintPanel($@"[SYSTEM] - Rebut missatge de validació del codi de validació encriptat");
 
-                            var decryptedCode = RsaKeysService.DecryptCode(validationCode, _planet.GetCode());
+                            var decryptedCode = msg;
+
+                            PrintPanel($@"[SYSTEM] - Verificant codi de validació de " + _planet.GetName() + "...");
 
                             var validated = decryptedCode != null;
 
@@ -187,19 +178,18 @@ namespace MC_PLANET
                                 _spaceShip.GetPort1());
 
                             PrintPanel(
-                                $@"[SYSTEM] Codi de validació rebut de la nau {_spaceShip.GetCode()} {(validated ? "correctament" : "erròniament")} encriptat"
+                                $@"[SYSTEM] - Codi de validació rebut de la nau {_spaceShip.GetCode()} {(validated ? "correctament" : "erròniament")} encriptat"
                             );
 
                             if (validated)
                             {
                                 var zipPath = CreateZip();
-                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.GetIp(), _spaceShip.GetPort1()));
+                                //PrintPanel(_tcp.SendFile(zipPath, _spaceShip.getIp(), _spaceShip.getPort()));
                             }
                         }
                         else
                         {
-                            PrintPanel(
-                                @"[SYSTEM] El missatge de validació del codi de validació no té 14 caràcters de longitud");
+                            _tcp.SendMessageToServer("code", _spaceShip.GetIp(), _spaceShip.GetPort1());
                         }
 
                         break;
@@ -210,14 +200,14 @@ namespace MC_PLANET
                     }
                     default:
                     {
-                        PrintPanel($@"[SYSTEM] S'ha rebut un missatge però en un format erroni: {msg}");
+                        PrintPanel($@"[SYSTEM] - S'ha rebut un missatge però en un format erroni: {msg}");
                         break;
                     }
                 }
             }
             catch
             {
-                PrintPanel(@"[SYSTEM] Error on handling entrance petition");
+                PrintPanel(@"[SYSTEM] - Error on handling entrance petition");
             }
         }
 
@@ -266,8 +256,27 @@ namespace MC_PLANET
             }
 
             FileManagement.ZipFile(encryptedDirectory, zipFilePath);
-
             return zipFilePath;
+        }
+
+        //LLEGIR CLAU ENVIADA PER LA NAU
+
+        //DESENCRIPTAR LA CLAU
+        private void PlanetInterface_Load(object sender, EventArgs e)
+        {
+            var res = _dataAccess.GetTable(@"Planets");
+            planetCmbx.DataSource = res.Tables[0];
+            planetCmbx.ValueMember = @"idPlanet";
+            planetCmbx.DisplayMember = @"DescPlanet";
+            onOffButton.ImageLocation = _buttonOff;
+            planetCmbx_ValueMemberChanged(null, null);
+
+            var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
+            string sql = "SELECT CodePlanet FROM Planets Where idPlanet = " + idPlanet;
+            string codePlanet = _dataAccess.GetByQuery(sql).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+            GenerateValidationCode(idPlanet);
+            GeneratePlanetKeys(codePlanet, idPlanet);
         }
 
         private void planetCmbx_ValueMemberChanged(object sender, EventArgs e)
@@ -317,8 +326,10 @@ namespace MC_PLANET
 
         private void txtb_msg_TextChanged(object sender, EventArgs e)
         {
-            if (txtb_msg.Text.Length > 2)
+            if (txtb_msg.Text.Length >= 2)
+            {
                 HandleMessage(txtb_msg.Text);
+            }
         }
 
         private void WriteTextSafe(string text)

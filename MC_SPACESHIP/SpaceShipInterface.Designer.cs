@@ -129,7 +129,7 @@ namespace MC_SPACESHIP
             // 
             this.onOffButton.BackColor = System.Drawing.Color.Transparent;
             this.onOffButton.Location = new System.Drawing.Point(1120, 72);
-            this.onOffButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4);
             this.onOffButton.Name = "onOffButton";
             this.onOffButton.Size = new System.Drawing.Size(149, 132);
             this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -188,6 +188,7 @@ namespace MC_SPACESHIP
             this.btn_SendFiles.TabIndex = 7;
             this.btn_SendFiles.Text = "Enviar Arxius Codificats";
             this.btn_SendFiles.UseVisualStyleBackColor = true;
+            this.btn_SendFiles.Click += new System.EventHandler(this.btn_SendFiles_Click);
             // 
             // OffButton
             // 
