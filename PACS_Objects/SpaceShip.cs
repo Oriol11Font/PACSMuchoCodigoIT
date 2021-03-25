@@ -6,6 +6,7 @@
         private readonly int _idSpaceShip;
         private readonly string _ipSpaceShip;
         private readonly int _portSpaceShip1;
+        private readonly int _portSpaceShip2;
 
         public SpaceShip(int id, string code, string ip, int port, int port2)
         {
@@ -13,10 +14,8 @@
             _codeSpaceShip = code;
             _ipSpaceShip = ip;
             _portSpaceShip1 = port;
-            GetPort2 = port2;
+            _portSpaceShip2 = port2;
         }
-
-        public int GetPort2 { get; }
 
         public int GetId()
         {
@@ -36,6 +35,11 @@
         public int GetPort1()
         {
             return _portSpaceShip1;
+        }
+
+        public int GetPort2()
+        {
+            return _portSpaceShip2;
         }
     }
 }

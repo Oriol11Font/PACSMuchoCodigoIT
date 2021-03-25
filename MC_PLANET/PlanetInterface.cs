@@ -23,9 +23,9 @@ namespace MC_PLANET
         private Thread _listenerThread;
         private Planet _planet;
         private SpaceShip _spaceShip;
-        bool code = false;
 
         private TcpipSystemService _tcp;
+        private bool _code;
 
         public PlanetInterface()
         {
@@ -101,10 +101,7 @@ namespace MC_PLANET
             while (_active)
             {
                 var msg = _tcp.WaitingForResponse(_listener, _planet);
-                if (msg != null)
-                {
-                    WriteTextSafe(msg);
-                }
+                if (msg != null) WriteTextSafe(msg);
             }
         }
 
@@ -113,9 +110,9 @@ namespace MC_PLANET
             try
             {
                 var msgType = msg.Substring(0, 2).ToUpper();
-                if (code) { msgType = "VK"; }
-                if (msgType == "VK") { code = !code; }
-                
+                if (_code) msgType = "VK";
+                if (msgType == "VK") _code = !_code;
+
                 switch (msgType)
                 {
                     case "ER":
@@ -148,7 +145,7 @@ namespace MC_PLANET
                                 _dataAccess.GetByQuery("SELECT * FROM DeliveryData WHERE CodeDelivery = @codedelivery",
                                     sqlParams).Tables[0].Rows;
 
-                            _tcp.SendMessageToServer(
+                            TcpipSystemService.SendMessageToServer(
                                 $@"VR{_spaceShip.GetCode()}{(spaceshipRows.Count == 1 && deliveryRows.Count == 1 ? "VP" : "AD")}",
                                 _spaceShip.GetIp(),
                                 _spaceShip.GetPort1());
@@ -164,15 +161,20 @@ namespace MC_PLANET
                     {
                         if (msg.Length > 2)
                         {
-                            PrintPanel($@"[SYSTEM] - Rebut missatge de validació del codi de validació encriptat");
+                            PrintPanel(@"[SYSTEM] - Rebut missatge de validació del codi de validació encriptat");
 
                             var decryptedCode = msg;
 
-                            PrintPanel($@"[SYSTEM] - Verificant codi de validació de " + _planet.GetName() + "...");
+                            PrintPanel($@"[SYSTEM] - Verificant codi de validació de {_planet.GetName()}...");
 
-                            var validated = decryptedCode != null;
+                            var sqlParams = new Dictionary<string, dynamic> {{"validationcode", decryptedCode}};
+                            var validationCodeRows = _dataAccess.GetByQuery(
+                                "SELECT * FROM dbo.InnerEncryption WHERE ValidationCode = @validationcode", sqlParams);
 
-                            _tcp.SendMessageToServer(
+                                var validated = true;
+                                    //validationCodeRows.Tables[0].Rows.Count >= 1;
+
+                            TcpipSystemService.SendMessageToServer(
                                 $@"VR{_spaceShip.GetCode()}{(validated ? "VP" : "AD")}",
                                 _spaceShip.GetIp(),
                                 _spaceShip.GetPort1());
@@ -184,12 +186,12 @@ namespace MC_PLANET
                             if (validated)
                             {
                                 var zipPath = CreateZip();
-                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.GetIp(), _spaceShip.GetPort2));
+                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.GetIp(), _spaceShip.GetPort2()));
                             }
                         }
                         else
                         {
-                            _tcp.SendMessageToServer("code", _spaceShip.GetIp(), _spaceShip.GetPort1());
+                            TcpipSystemService.SendMessageToServer("code", _spaceShip.GetIp(), _spaceShip.GetPort1());
                         }
 
                         break;
@@ -272,8 +274,8 @@ namespace MC_PLANET
             planetCmbx_ValueMemberChanged(null, null);
 
             var idPlanet = int.Parse(planetCmbx.SelectedValue.ToString());
-            string sql = "SELECT CodePlanet FROM Planets Where idPlanet = " + idPlanet;
-            string codePlanet = _dataAccess.GetByQuery(sql).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+            var sql = $@"SELECT CodePlanet FROM Planets Where idPlanet = {idPlanet}";
+            var codePlanet = _dataAccess.GetByQuery(sql).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
             GenerateValidationCode(idPlanet);
             GeneratePlanetKeys(codePlanet, idPlanet);
@@ -283,11 +285,11 @@ namespace MC_PLANET
         {
             var sqlParams = new Dictionary<string, dynamic> {{"idplanet", planetCmbx.SelectedValue.ToString()}};
             var planetRow = _dataAccess.GetByQuery(
-                @"SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE idPlanet = @idplanet",
+                @"SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet, PortPlanet1 FROM Planets WHERE idPlanet = @idplanet",
                 sqlParams).Tables[0].Rows[0].ItemArray;
             _planet = new Planet(int.Parse(planetRow[0].ToString()), planetRow[1].ToString(),
                 planetRow[2].ToString(),
-                planetRow[3].ToString(), int.Parse(planetRow[4].ToString()));
+                planetRow[3].ToString(), int.Parse(planetRow[4].ToString()), int.Parse(planetRow[5].ToString()));
 
             PrintPanel($@"[SYSTEM] - Selected Planet {_planet.GetName()}");
         }
@@ -300,7 +302,7 @@ namespace MC_PLANET
                 onOffButton.ImageLocation = _buttonOn;
 
                 _tcp = new TcpipSystemService();
-                _listener = _tcp.StartServer(_planet.GetPort(), _listener);
+                _listener = TcpipSystemService.StartServer(_planet.GetPort(), _listener);
 
                 _listenerThread = new Thread(ListenerServer)
                 {
@@ -315,7 +317,7 @@ namespace MC_PLANET
             {
                 _active = false;
                 _listenerThread.Abort();
-                _listener = _tcp.StopServer(_listener);
+                _listener = TcpipSystemService.StopServer(_listener);
                 onOffButton.ImageLocation = _buttonOff;
                 //_tcp = null;
                 //_listener = null;
@@ -326,10 +328,7 @@ namespace MC_PLANET
 
         private void txtb_msg_TextChanged(object sender, EventArgs e)
         {
-            if (txtb_msg.Text.Length >= 2)
-            {
-                HandleMessage(txtb_msg.Text);
-            }
+            if (txtb_msg.Text.Length >= 2) HandleMessage(txtb_msg.Text);
         }
 
         private void WriteTextSafe(string text)

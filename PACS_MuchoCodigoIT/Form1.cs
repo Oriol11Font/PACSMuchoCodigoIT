@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using MC_PLANET;
 using MC_SPACESHIP;
@@ -14,8 +15,8 @@ namespace PACS_MuchoCodigoIT
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            PlanetImg.ImageLocation = Application.StartupPath + "\\imgs\\Planet.png";
-            SpaceShipImg.ImageLocation = Application.StartupPath + "\\imgs\\SpaceShip.png";
+            PlanetImg.ImageLocation = Path.Combine(Application.StartupPath, "imgs", "Planet.png");
+            SpaceShipImg.ImageLocation = Path.Combine(Application.StartupPath, "imgs", "SpaceShip.png");
         }
 
         private void PlanetImg_Click(object sender, EventArgs e)
