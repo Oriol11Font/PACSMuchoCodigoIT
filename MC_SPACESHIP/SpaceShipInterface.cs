@@ -27,6 +27,7 @@ namespace MC_SPACESHIP
         readonly TcpipSystemService tcp = new TcpipSystemService();
         readonly RsaKeysService rsa = new RsaKeysService();
 
+
         private delegate void SafeCallDelegate(string text);
 
         private Point _lastLocation;
@@ -178,7 +179,7 @@ namespace MC_SPACESHIP
                     t1.Start();
 
                     FileListener = tcp.StartServer(spaceShip.GetPort2, FileListener);
-                    t2 = new Thread(ListenerServer);
+                    t2 = new Thread(RecivedFiles);
                     t2.IsBackground = true;
                     t2.Start();
 
@@ -217,7 +218,7 @@ namespace MC_SPACESHIP
                             if (validations[0])
                             {
                                 validations[1] = true;
-                               
+                                
                             }
                             else
                             {
@@ -245,9 +246,6 @@ namespace MC_SPACESHIP
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
                         }
 
-                        break;
-                    case "FI":
-                        tcp.RecivedFile(FileListener, Application.StartupPath + "\\Downloads");
                         break;
                 }
             }
@@ -427,8 +425,48 @@ namespace MC_SPACESHIP
             sr.Close();
         }//FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
 
+        private void RecivedFiles()
+        {
+            while (active)
+            {
+                String mssg = tcp.RecivedFile(FileListener, Application.StartupPath + "\\Downloads\\");
+                if (mssg != null)
+                {
+                    WriteTextSafe(mssg);
+                }
+            }
+        }
+
         private void btn_SendFiles_Click(object sender, EventArgs e)
         {
+            string fileToUnzip = Application.StartupPath + "\\Downloads\\PACS.zip";
+            string fileToSend = Application.StartupPath + "\\Downloads\\PACSSSOL.zip";
+            string fileToJoinTxt = Application.StartupPath + "\\Downloads\\PACS.txt";
+            string fileDecrypted = Application.StartupPath + "\\Downloads\\PACSSol.txt";
+            string extractDirectory = Application.StartupPath + "\\Downloads\\extractFiles";
+
+            FileManagement.UnzipFile(fileToUnzip, extractDirectory);
+
+            IEnumerable<string> filePaths = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
+
+            FileManagement.JoinTxtFiles(filePaths, fileToJoinTxt);
+
+            var res = dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " + planet.GetId() + ";");
+            Dictionary<char, string> abcCodes = new Dictionary<char, string>();
+
+            for (int i = 0; i < 24; i++)
+            {
+                var dr = res.Tables[0].Rows[i];
+                abcCodes.Add(dr.ItemArray.GetValue(0).ToString()[0], dr.ItemArray.GetValue(1).ToString());
+            }
+
+            FileManagement.DecryptFile(fileToJoinTxt, fileDecrypted, abcCodes);
+
+            List<string> filesToZip = new List<string> { fileDecrypted };
+
+            FileManagement.ZipFile(fileToSend, filesToZip);
+
+            //tcp.SendFile(fileToSend, planet.GetIp());
 
         }//FUNCIO PER ENVIAR L'ARXIU DESCODIFICAT AL PLANETA
     }

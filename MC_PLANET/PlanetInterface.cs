@@ -184,7 +184,7 @@ namespace MC_PLANET
                             if (validated)
                             {
                                 var zipPath = CreateZip();
-                                //PrintPanel(_tcp.SendFile(zipPath, _spaceShip.getIp(), _spaceShip.getPort()));
+                                PrintPanel(_tcp.SendFile(zipPath, _spaceShip.GetIp(), _spaceShip.GetPort2));
                             }
                         }
                         else

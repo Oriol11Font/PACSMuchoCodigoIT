@@ -155,14 +155,14 @@ namespace PACS_Utils
         {
             try
             {
-                var endpoint = new IPEndPoint(long.Parse(ip), port);
+                var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
 
                 var client = new Socket(AddressFamily.InterNetwork,
                     SocketType.Stream, ProtocolType.Tcp);
 
                 client.Connect(endpoint);
 
-                Console.WriteLine("Sending {0} to the host.", filePath);
+                //Console.WriteLine("Sending {0} to the host.", filePath);
                 client.SendFile(filePath);
 
                 client.Shutdown(SocketShutdown.Both);
@@ -172,8 +172,8 @@ namespace PACS_Utils
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
-                return @"[ERROR] No s'ha pogut enviar el fitxer";
+                //Console.WriteLine(e.ToString());
+                return @"[ERROR] No s'ha pogut enviar el fitxer "+ e.ToString();
             }
         }
 
@@ -185,25 +185,30 @@ namespace PACS_Utils
                 {
                     using (var client = listener.AcceptTcpClient())
                     using (var stream = client.GetStream())
-                    using (var output = File.Create(filePath + "recivedFile.zip"))
-                    {
-                        Console.WriteLine("[SYSTEM] - Client connected. Starting to receive the file");
-
-                        // read the file in chunks of 1KB
-                        var buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        if (stream.CanRead)
                         {
-                            output.Write(buffer, 0, bytesRead);
+                            using (var output = File.Create(filePath + "PACS.zip"))
+                            {
+                                Console.WriteLine("[SYSTEM] - Client connected. Starting to receive the file");
+
+                                // read the file in chunks of 1KB
+                                var buffer = new byte[1024];
+                                int bytesRead;
+                                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    output.Write(buffer, 0, bytesRead);
+                                }
+                            }
+
+                            return "[SYSTEM] - File recived!";
                         }
-                    }
                 }
-                return "[SYSTEM] - File recived!";
+                return null;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
-                return @"[ERROR] - System can't recive the file!";
+                //Console.WriteLine(e.ToString());
+                return null;
             }
         }
 
