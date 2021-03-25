@@ -2,11 +2,11 @@
 {
     public class Planet
     {
-        private string _codePlanet;
-        private int _idPlanet;
-        private string _ipPlanet;
-        private string _namePlanet;
-        private int _portPlanet;
+        private readonly string _codePlanet;
+        private readonly int _idPlanet;
+        private readonly string _ipPlanet;
+        private readonly string _namePlanet;
+        private readonly int _portPlanet;
 
         public Planet(int id, string code, string name, string ip, int port)
         {

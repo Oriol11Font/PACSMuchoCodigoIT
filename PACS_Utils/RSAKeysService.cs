@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Forms;
 
 namespace PACS_Utils
 {
@@ -11,7 +10,7 @@ namespace PACS_Utils
         private const string Vocab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         private readonly SecureRandom _secureRandom = new SecureRandom();
-        private CspParameters _cspp = new CspParameters();
+        private readonly CspParameters _cspp = new CspParameters();
 
         private DataAccessService _dtb = new DataAccessService();
 
@@ -31,17 +30,15 @@ namespace PACS_Utils
                 var publicKey = _rsa.ToXmlString(false);
                 _rsa.PersistKeyInCsp = true;
 
-                Dictionary<string, string> sqlParams = new Dictionary<string, string>();
+                var sqlParams = new Dictionary<string, dynamic>();
 
                 // GET ID OF TH PLANET FOR PLANETKEYS TABLE
-                sqlParams.Add("idplanet", planetId.ToString());
+                sqlParams.Add("idplanet", planetId);
                 var idPlanet = _dtb.GetByQuery("SELECT * FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;",
                     sqlParams);
 
                 if (idPlanet.Tables[0].Rows.Count > 0)
-                {
                     _dtb.RunSafeQuery("DELETE FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;", sqlParams);
-                }
 
                 // INSERT INFO PUBLIC KEY OF PLANET TO BBDD
                 sqlParams.Clear();
@@ -103,7 +100,7 @@ namespace PACS_Utils
             }
         }
 
-        private string GetKeyFromContainer(string containerName)
+        private static string GetKeyFromContainer(string containerName)
         {
             var param = new CspParameters();
 
@@ -129,7 +126,7 @@ namespace PACS_Utils
             return key;
         }
 
-        private List<dynamic> GetCharList()
+        private static List<dynamic> GetCharList()
         {
             var chars = new List<dynamic>();
 
@@ -158,6 +155,22 @@ namespace PACS_Utils
             }
 
             return charsList;
+        }
+
+        public static string GenerateRandomLetters(int length)
+        {
+            var strBuild = new StringBuilder();
+            var random = new Random();
+
+            for (var i = 0; i < length; i++)
+            {
+                var flt = random.NextDouble();
+                var shift = Convert.ToInt32(Math.Floor(25 * flt));
+                var letter = Convert.ToChar(shift + 65);
+                strBuild.Append(letter);
+            }
+
+            return strBuild.ToString();
         }
     }
 }

@@ -7,7 +7,6 @@ namespace PACS_CustomControls
     {
         private readonly string _buttonOff = Application.StartupPath + "\\imgs\\buttonOFF.png";
         private readonly string _buttonOn = Application.StartupPath + "\\imgs\\buttonON.png";
-        public event EventHandler HandleClick;
 
         public CircularButton()
         {
@@ -15,6 +14,8 @@ namespace PACS_CustomControls
             pictrButton.SizeMode = PictureBoxSizeMode.StretchImage;
             pictrButton.ImageLocation = _buttonOff;
         }
+
+        public event EventHandler HandleClick;
 
 
         private void pictrButton_Click(object sender, EventArgs e)

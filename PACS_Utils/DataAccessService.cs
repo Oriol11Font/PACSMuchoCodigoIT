@@ -44,7 +44,7 @@ namespace PACS_Utils
             }
         }
 
-        public void RunSafeQuery(string query, Dictionary<string, string> parameters)
+        public void RunSafeQuery(string query, Dictionary<string, dynamic> parameters)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace PACS_Utils
             return ds;
         }
 
-        public DataSet GetByQuery(string query, Dictionary<string, string> parameters)
+        public DataSet GetByQuery(string query, Dictionary<string, dynamic> parameters)
         {
             DataSet ds;
 
@@ -265,14 +265,17 @@ namespace PACS_Utils
             return finalStr;
         }
 
-        public string CreateChainedTransaction(List<string> queries) =>
-            $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
+        public string CreateChainedTransaction(List<string> queries)
+        {
+            return $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
+        }
 
 
         private void ErrorMessage(Exception e, string message, string title)
-            =>
-                MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        {
+            MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
 
         public int Getid(string nombretabla, string campoid, string campodesc, string valoredi)

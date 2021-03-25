@@ -14,3 +14,5 @@ idea/
 
 packages/
 PacsFiles/
+
+*.zip

@@ -7,7 +7,6 @@ using PACS_Objects;
 using PACS_Utils;
 using System.Threading;
 using System.Net.Sockets;
-using System.Text;
 using System.IO.Compression;
 using System.IO;
 using System.Linq;
@@ -29,6 +28,7 @@ namespace MC_SPACESHIP
         readonly RsaKeysService rsa = new RsaKeysService();
 
         private delegate void SafeCallDelegate(string text);
+
         private Point _lastLocation;
         private bool _mouseDown;
         //bool check = false;
@@ -46,16 +46,13 @@ namespace MC_SPACESHIP
             onOffButton.ImageLocation = buttonOFF;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
             string sqlSpaceShip =
-                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1 FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
-            DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
+                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1, PortSpaceShip2 FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
 
-            printPanel(Application.StartupPath);
+            var dr = dt.GetByQuery(sqlSpaceShip).Tables[0].Rows[0].ItemArray;
 
-            var dr = ds1.Tables[0].Rows[0];
-
-            spaceShip = new SpaceShip(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
-                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
-                Int32.Parse(dr.ItemArray.GetValue(3).ToString()));
+            spaceShip = new SpaceShip(Int32.Parse(dr[0].ToString()),
+                dr[1].ToString(), dr[2].ToString(),
+                Int32.Parse(dr[3].ToString()), int.Parse(dr[4].ToString()));
 
             string sql = "SELECT DescPlanet FROM Planets;";
             DataSet ds2 = dt.GetByQuery(sql);
@@ -77,22 +74,18 @@ namespace MC_SPACESHIP
                     if (tcp.CheckXarxa("8.8.8.8", 5))
                     {
                         printPanel("[SYSTEM] - Stable connection with" + planet.GetName());
-                        tcp.SendMessageToServer("ER"+ spaceShip.getCode() + "DELIVER01TAK", planet.GetIp(), planet.GetPort());
-     
+                        tcp.SendMessageToServer("ER" + spaceShip.GetCode() + "DELIVER01TAK", planet.GetIp(),
+                            planet.GetPort());
                     }
                     else
                     {
-                        printPanel("[ERROR] - Failed connection to " + planet.GetName() + " : " +  planet.GetIp());
+                        printPanel("[ERROR] - Failed connection to " + planet.GetName() + " : " + planet.GetIp());
                     }
-                    
-                    
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
-
             }
         } //COMPROVACIO PING AL PLANETA
 
@@ -114,7 +107,7 @@ namespace MC_SPACESHIP
                     dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
                     dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
 
-                string mssg = "ER" + spaceShip.getCode() + "DADAD";
+                string mssg = "ER" + spaceShip.GetCode() + "DADAD";
 
                 try
                 {
@@ -175,11 +168,11 @@ namespace MC_SPACESHIP
                     active = true;
                     comboPlanet.Enabled = true;
                     infoSpaceShip.Items.Add("SpaceShip:");
-                    infoSpaceShip.Items.Add("Code: " + spaceShip.getCode());
-                    infoSpaceShip.Items.Add("IP: " + spaceShip.getIp());
-                    infoSpaceShip.Items.Add("Port: " + spaceShip.getPort());
+                    infoSpaceShip.Items.Add("Code: " + spaceShip.GetCode());
+                    infoSpaceShip.Items.Add("IP: " + spaceShip.GetIp());
+                    infoSpaceShip.Items.Add("Port: " + spaceShip.GetPort1());
                     onOffButton.ImageLocation = buttonON;
-                    Listener = tcp.StartServer(spaceShip.getPort(), Listener);
+                    Listener = tcp.StartServer(spaceShip.GetPort1(), Listener);
                     t1 = new Thread(ListenerServer);
                     t1.IsBackground = true;
                     t1.Start();
@@ -217,7 +210,8 @@ namespace MC_SPACESHIP
                             if (validations[0])
                             {
                                 validations[1] = true;
-                            } else
+                            }
+                            else
                             {
                                 validations[0] = true;
                             }
@@ -234,6 +228,7 @@ namespace MC_SPACESHIP
                             {
                                 validations[0] = false;
                             }
+
                             printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
                         }
                         else if (result.Equals("AG"))
@@ -306,6 +301,13 @@ namespace MC_SPACESHIP
         {
             try
             {
+                var sqlParams = new Dictionary<string, dynamic>();
+                sqlParams.Add(@"planetid", planet.GetId());
+                string code = dt.GetByQuery("SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = @planetid",
+                        sqlParams)
+                    .Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
 
                 tcp.SendMessageToServer("VK", planet.GetIp(), planet.GetPort());
 
