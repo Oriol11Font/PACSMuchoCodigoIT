@@ -11,8 +11,7 @@ namespace PACS_Utils
     public class DataAccessService
     {
         // TODO: guardar la connection string en el app.config
-        private static readonly string ConnectionString =
-            @"Data Source=den1.mssql7.gear.host;Initial Catalog=muchocodigodtb;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
+        private const string ConnectionString = @"Data Source=den1.mssql7.gear.host;Initial Catalog=muchocodigodtb;User ID=muchocodigodtb;Password=[MuchoCodigo1T]";
 
         private static readonly Configuration Config =
             ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -265,13 +264,13 @@ namespace PACS_Utils
             return finalStr;
         }
 
-        public string CreateChainedTransaction(List<string> queries)
+        public string CreateChainedTransaction(IEnumerable<string> queries)
         {
             return $@"BEGIN TRANSACTION; {string.Join(" ", queries)} COMMIT TRANSACTION;";
         }
 
 
-        private void ErrorMessage(Exception e, string message, string title)
+        private static void ErrorMessage(Exception e, string message, string title)
         {
             MessageBox.Show($"{message ?? "Error"}: Excepció {e.ToString() ?? "Error no fatal"}", title,
                 MessageBoxButtons.OK, MessageBoxIcon.Error);

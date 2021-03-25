@@ -1,20 +1,21 @@
-﻿using PACS_Objects;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using PACS_Objects;
 
 namespace PACS_Utils
 {
     public class TcpipSystemService
     {
-        bool code = false;
-        RsaKeysService rsa = new RsaKeysService();
+        private readonly RsaKeysService _rsa = new RsaKeysService();
+
+        private bool _code;
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
-        public TcpListener StartServer(int numPort, TcpListener listener)
+        public static TcpListener StartServer(int numPort, TcpListener listener)
         {
             try
             {
@@ -29,13 +30,13 @@ namespace PACS_Utils
             }
         }
 
-        public TcpListener StopServer(TcpListener Listener)
+        public static TcpListener StopServer(TcpListener listener)
         {
             try
             {
-                Listener.Stop();
+                listener.Stop();
 
-                return Listener;
+                return listener;
             }
             catch
             {
@@ -43,60 +44,45 @@ namespace PACS_Utils
             }
         }
 
-        public string WaitingForResponse(TcpListener Listener, Planet planet)
+        public string WaitingForResponse(TcpListener listener, Planet planet)
         {
-            if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
+            if (!listener.Pending()) return null;
+            var client = listener.AcceptTcpClient();
+            var ns = client.GetStream();
+            var decryptedCode = string.Empty;
+            if (!ns.CanRead) return "Ho sento. No puc llegir aquest stream.";
+            var buffer = new byte[1024]; // NEW BUFFER
+            var missatge = new StringBuilder();
+            var numberOfBytesRead = 0;
+            var mssg = string.Empty;
+            // POSSIBLE MESSAGE BIGGER THAN BUFFER
+            if (_code)
             {
-                var client = Listener.AcceptTcpClient();
-                var ns = client.GetStream();
-                string decryptedCode = string.Empty;
-                if (ns.CanRead)
+                do
                 {
-                    var buffer = new byte[1024]; // NEW BUFFER
-                    var missatge = new StringBuilder();
-                    var numberOfBytesRead = 0;
-                    var mssg = string.Empty;
-                    // POSSIBLE MESSAGE BIGGER THAN BUFFER
-                    if (code)
-                    {
-                        do
-                        {
-                            numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                        } while (ns.DataAvailable);
+                    numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                } while (ns.DataAvailable);
 
-                        code = false;
-                        return "VK" + rsa.DecryptCode(buffer, planet.GetCode());
-
-                    } else
-                    {
-                        do
-                        {
-                            numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                            missatge.AppendFormat("{0}",
-                                Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
-                        } while (ns.DataAvailable);
-                    }
-                    // READ ALL MESSAGE
-
-                    
-
-                    if (mssg == "code")
-                    {
-                        code = true;
-                    }
-
-                    return missatge.ToString();
-                }
-                else
-                {
-                    return "Ho sento. No puc llegir aquest stream.";
-                }
+                _code = false;
+                return "VK" + RsaKeysService.DecryptCode(buffer, planet.GetCode());
             }
 
-            return null;
+            do
+            {
+                numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                missatge.AppendFormat("{0}",
+                    Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
+            } while (ns.DataAvailable);
+            // READ ALL MESSAGE
+
+
+            if (mssg == "code") _code = true;
+
+            return missatge.ToString();
+
         }
 
-        public string SendMessageToServer(string mssg, string serverIp, int portIp)
+        public static string SendMessageToServer(string mssg, string serverIp, int portIp)
         {
             try
             {
@@ -113,7 +99,7 @@ namespace PACS_Utils
             }
         }
 
-        public string SendMessageToServer(byte [] mssg, string serverIp, int portIp)
+        public static string SendMessageToServer(byte[] mssg, string serverIp, int portIp)
         {
             try
             {
@@ -129,7 +115,7 @@ namespace PACS_Utils
             }
         }
 
-        public bool CheckXarxa(string ipToPing, int repeat)
+        public static bool CheckXarxa(string ipToPing, int repeat)
         {
             var check = true;
             try
@@ -138,9 +124,9 @@ namespace PACS_Utils
                 {
                     var myPing = new Ping();
                     var reply = myPing.Send(ipToPing, 1000);
-                    if (reply != null)
-                        if (reply.Status != IPStatus.Success)
-                            check = false;
+                    if (reply == null) continue;
+                    if (reply.Status != IPStatus.Success)
+                        check = false;
                 }
 
                 return check;
@@ -177,12 +163,11 @@ namespace PACS_Utils
             }
         }
 
-        public string RecivedFile(TcpListener listener, string filePath)
+        public static string RecivedFile(TcpListener listener, string filePath)
         {
             try
             {
                 while (listener.Pending())
-                {
                     using (var client = listener.AcceptTcpClient())
                     using (var stream = client.GetStream())
                     using (var output = File.Create(filePath + "recivedFile.zip"))
@@ -193,11 +178,9 @@ namespace PACS_Utils
                         var buffer = new byte[1024];
                         int bytesRead;
                         while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
                             output.Write(buffer, 0, bytesRead);
-                        }
                     }
-                }
+
                 return "[SYSTEM] - File recived!";
             }
             catch (Exception e)
@@ -207,7 +190,7 @@ namespace PACS_Utils
             }
         }
 
-        public void ReciveFile2(TcpListener Listener, string filePath)
+        public void ReciveFile2(TcpListener listener, string filePath)
         {
             //try
             //{

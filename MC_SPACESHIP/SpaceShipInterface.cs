@@ -2,146 +2,126 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Forms;
 using PACS_Objects;
 using PACS_Utils;
-using System.Threading;
-using System.Net.Sockets;
-using System.IO.Compression;
-using System.IO;
-using System.Linq;
 
 namespace MC_SPACESHIP
 {
     public partial class SpaceShipInterface : Form
     {
+        private readonly string _buttonOff = Path.Combine(Application.StartupPath, "imgs", "buttonOFF.png");
+
+        private readonly string _buttonOn = Path.Combine(Application.StartupPath, "imgs", "buttonON.png");
+
+        private readonly DataAccessService _dt = new DataAccessService();
+        private readonly RsaKeysService _rsa = new RsaKeysService();
+        private readonly TcpipSystemService _tcp = new TcpipSystemService();
+
+        private readonly bool[] _validations = {false, false, false};
+
+        private Point _lastLocation;
+        private bool _mouseDown;
+        private bool _active;
+        private TcpListener _listener, _fileListener;
+        private Planet _planet;
+        private SpaceShip _spaceShip;
+
+        private Thread _t1, _t2;
+
         public SpaceShipInterface()
         {
             InitializeComponent();
         }
 
-        readonly string buttonON = Application.StartupPath + "\\imgs\\buttonON.png";
-        readonly string buttonOFF = Application.StartupPath + "\\imgs\\buttonOFF.png";
-
-        readonly DataAccessService dt = new DataAccessService();
-        readonly TcpipSystemService tcp = new TcpipSystemService();
-        readonly RsaKeysService rsa = new RsaKeysService();
-
-        private delegate void SafeCallDelegate(string text);
-
-        private Point _lastLocation;
-        private bool _mouseDown;
-        //bool check = false;
-        bool[] validations = {false, false, false};
-
-        Thread t1, t2;
-        TcpListener Listener, FileListener;
-        Planet planet;
-        SpaceShip spaceShip;
-        bool active;
-
 
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
-            onOffButton.ImageLocation = buttonOFF;
+            onOffButton.ImageLocation = _buttonOff;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
-            string sqlSpaceShip =
+            const string sqlSpaceShip =
                 "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1, PortSpaceShip2 FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
 
-            var dr = dt.GetByQuery(sqlSpaceShip).Tables[0].Rows[0].ItemArray;
+            var dr = _dt.GetByQuery(sqlSpaceShip).Tables[0].Rows[0].ItemArray;
 
-            spaceShip = new SpaceShip(Int32.Parse(dr[0].ToString()),
+            _spaceShip = new SpaceShip(int.Parse(dr[0].ToString()),
                 dr[1].ToString(), dr[2].ToString(),
-                Int32.Parse(dr[3].ToString()), int.Parse(dr[4].ToString()));
+                int.Parse(dr[3].ToString()), int.Parse(dr[4].ToString()));
 
-            string sql = "SELECT DescPlanet FROM Planets;";
-            DataSet ds2 = dt.GetByQuery(sql);
+            const string sql = "SELECT DescPlanet FROM Planets;";
+            var ds2 = _dt.GetByQuery(sql);
 
             var planets = new List<object>();
 
-            foreach (DataRow row in ds2.Tables[0].Rows)
-            {
-                comboPlanet.Items.Add(row["DescPlanet"]);
-            }
+            foreach (DataRow row in ds2.Tables[0].Rows) comboPlanet.Items.Add(row["DescPlanet"]);
         } //AL INICIAR EL FORMULARI
 
         private void ping_Click(object sender, EventArgs e)
         {
-            if (comboPlanet.SelectedItem != null)
+            if (comboPlanet.SelectedItem == null) return;
+            if (TcpipSystemService.CheckXarxa("8.8.8.8", 5))
             {
-                try
-                {
-                    if (tcp.CheckXarxa("8.8.8.8", 5))
-                    {
-                        printPanel("[SYSTEM] - Stable connection with" + planet.GetName());
-                        tcp.SendMessageToServer("ER" + spaceShip.GetCode() + "DELIVER01TAK", planet.GetIp(),
-                            planet.GetPort());
-                    }
-                    else
-                    {
-                        printPanel("[ERROR] - Failed connection to " + planet.GetName() + " : " + planet.GetIp());
-                    }
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                PrintPanel("[SYSTEM] - Stable connection with" + _planet.GetName());
+                TcpipSystemService.SendMessageToServer("ER" + _spaceShip.GetCode() + "DELIVER01TAK", _planet.GetIp(),
+                    _planet.GetPort());
+            }
+            else
+            {
+                PrintPanel("[ERROR] - Failed connection to " + _planet.GetName() + " : " + _planet.GetIp());
             }
         } //COMPROVACIO PING AL PLANETA
 
         private void comboPlanet_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboPlanet.SelectedItem != null)
+            if (comboPlanet.SelectedItem == null) return;
+            btn_detectPlanet.Enabled = true;
+            //btn_SendCode.Enabled = true;
+
+            var sql =
+                "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
+                comboPlanet.SelectedItem + "';";
+            var ds = _dt.GetByQuery(sql);
+
+            var dr = ds.Tables[0].Rows[0];
+
+            _planet = new Planet(int.Parse(dr.ItemArray.GetValue(0).ToString()),
+                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                dr.ItemArray.GetValue(3).ToString(), int.Parse(dr.ItemArray.GetValue(4).ToString()));
+
+            var mssg = "ER" + _spaceShip.GetCode() + "DADAD";
+
+            try
             {
-                btn_detectPlanet.Enabled = true;
-                //btn_SendCode.Enabled = true;
+                PrintPanel("[SYSTEM] - Selected Planet: " + _planet.GetCode() + " | " + _planet.GetName() +
+                           " - Address: " + _planet.GetIp() + " - Port: " + _planet.GetPort() +
+                           " - Ready to CHECK");
 
-                var sql =
-                    "SELECT idPlanet, CodePlanet, DescPlanet, IPPlanet, PortPlanet FROM Planets WHERE DescPlanet = '" +
-                    comboPlanet.SelectedItem + "';";
-                var ds = dt.GetByQuery(sql);
-
-                var dr = ds.Tables[0].Rows[0];
-
-                planet = new Planet(Int32.Parse(dr.ItemArray.GetValue(0).ToString()),
-                    dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
-                    dr.ItemArray.GetValue(3).ToString(), Int32.Parse(dr.ItemArray.GetValue(4).ToString()));
-
-                string mssg = "ER" + spaceShip.GetCode() + "DADAD";
-
-                try
-                {
-                    printPanel("[SYSTEM] - Selected Planet: " + planet.GetCode() + " | " + planet.GetName() +
-                               " - Address: " + planet.GetIp() + " - Port: " + planet.GetPort() + " - Ready to CHECK");
-
-                    //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
-                }
-                catch (Exception ex)
-                {
-                    printPanel("[ERROR] - Error connecting to Server of the Planet");
-                }
+                //tcp.SendMessageToServer(mssg, planet.getIp(), planet.getPort());
+            }
+            catch
+            {
+                PrintPanel("[ERROR] - Error connecting to Server of the Planet");
             }
         } //SELECIO DEL PLANETA QUE ES VOL ACCEDIR
 
-        private void printPanel(string message)
+        private void PrintPanel(string message)
         {
-            if (message != "")
-            {
-                SpaceShipConsole.Text = SpaceShipConsole.Text + message + Environment.NewLine;
+            if (message == "") return;
+            SpaceShipConsole.Text = SpaceShipConsole.Text + message + Environment.NewLine;
 
-                if (SpaceShipConsole.Items.Count > 30)
-                {
-                    SpaceShipConsole.Items.Clear();
-                }
+            if (SpaceShipConsole.Items.Count > 30) SpaceShipConsole.Items.Clear();
 
-                SpaceShipConsole.Items.Add(message);
-            }
+            SpaceShipConsole.Items.Add(message);
         } //PER FER PRINT A LA CONSOLA DE LA PANTALLA
 
         private void StartServer_Click(object sender, EventArgs e)
         {
-            if (active == true)
-            {
+            if (_active)
                 try
                 {
                     btn_detectPlanet.Enabled = false;
@@ -149,195 +129,172 @@ namespace MC_SPACESHIP
                     comboPlanet.Enabled = false;
                     SpaceShipConsole.Items.Clear();
 
-                    active = false;
+                    _active = false;
                     infoSpaceShip.Items.Clear();
-                    onOffButton.ImageLocation = buttonOFF;
-                    t1.Abort();
-                    Listener = tcp.StopServer(Listener);
-                    printPanel("[SYSTEM] - Server OFF");
+                    onOffButton.ImageLocation = _buttonOff;
+                    _t1.Abort();
+                    _listener = TcpipSystemService.StopServer(_listener);
+                    PrintPanel("[SYSTEM] - Server OFF");
                 }
                 catch
                 {
-                    printPanel("[ERROR] - Failed to stop the Server Process");
+                    PrintPanel("[ERROR] - Failed to stop the Server Process");
                 }
-            }
             else
-            {
                 try
                 {
-                    active = true;
+                    _active = true;
                     comboPlanet.Enabled = true;
                     infoSpaceShip.Items.Add("SpaceShip:");
-                    infoSpaceShip.Items.Add("Code: " + spaceShip.GetCode());
-                    infoSpaceShip.Items.Add("IP: " + spaceShip.GetIp());
-                    infoSpaceShip.Items.Add("Port: " + spaceShip.GetPort1());
-                    onOffButton.ImageLocation = buttonON;
-                    Listener = tcp.StartServer(spaceShip.GetPort1(), Listener);
-                    t1 = new Thread(ListenerServer);
-                    t1.IsBackground = true;
-                    t1.Start();
+                    infoSpaceShip.Items.Add("Code: " + _spaceShip.GetCode());
+                    infoSpaceShip.Items.Add("IP: " + _spaceShip.GetIp());
+                    infoSpaceShip.Items.Add("Port: " + _spaceShip.GetPort1());
+                    onOffButton.ImageLocation = _buttonOn;
+                    _listener = TcpipSystemService.StartServer(_spaceShip.GetPort1(), _listener);
+                    _t1 = new Thread(ListenerServer) {IsBackground = true};
+                    _t1.Start();
 
-                    FileListener = tcp.StartServer(spaceShip.GetPort2, FileListener);
-                    t2 = new Thread(ListenerServer);
-                    t2.IsBackground = true;
-                    t2.Start();
+                    _fileListener = TcpipSystemService.StartServer(_spaceShip.GetPort2, _fileListener);
+                    _t2 = new Thread(ListenerServer) {IsBackground = true};
+                    _t2.Start();
 
-                    printPanel("[SYSTEM] - Server ON");
+                    PrintPanel("[SYSTEM] - Server ON");
                 }
                 catch
                 {
-                    printPanel("[ERROR] - Failed to start the server");
+                    PrintPanel("[ERROR] - Failed to start the server");
                 }
-            }
         } //INICIAR SERVIDOR
 
         private void ListenerServer()
         {
-            string mssg;
-
-            while (active)
+            while (_active)
             {
-                mssg = tcp.WaitingForResponse(Listener, planet);
-                if (mssg != null) { WriteTextSafe(mssg); }
-
+                var mssg = _tcp.WaitingForResponse(_listener, _planet);
+                if (mssg != null) WriteTextSafe(mssg);
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
 
         private void RecivedMessage(string message)
         {
             try
-            {      
-                string id_message = message.Substring(0, 2);
-                string result = message.Substring(14, 2);
-                switch (id_message)
+            {
+                var idMessage = message.Substring(0, 2);
+                var result = message.Substring(14, 2);
+                switch (idMessage)
                 {
                     case "VR":
-                        if (result.Equals("VP"))
+                        switch (result)
                         {
-                            if (validations[0])
+                            case "VP":
                             {
-                                validations[1] = true;
-                               
-                            }
-                            else
-                            {
-                                validations[0] = true;
-                            }
+                                if (_validations[0])
+                                    _validations[1] = true;
+                                else
+                                    _validations[0] = true;
 
-                            printPanel("[SYSTEM] - Validation in progress...");
-                        }
-                        else if (result.Equals("AD"))
-                        {
-                            if (validations[0])
-                            {
-                                validations[1] = false;
+                                PrintPanel("[SYSTEM] - Validation in progress...");
+                                break;
                             }
-                            else
+                            case "AD":
                             {
-                                validations[0] = false;
-                            }
+                                if (_validations[0])
+                                    _validations[1] = false;
+                                else
+                                    _validations[0] = false;
 
-                            printPanel("[ERROR] - ACCESS DENIED, please leave the security area");
-                        }
-                        else if (result.Equals("AG"))
-                        {
-                            validations[2] = true;
-                            printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
+                                PrintPanel("[ERROR] - ACCESS DENIED, please leave the security area");
+                                break;
+                            }
+                            case "AG":
+                                _validations[2] = true;
+                                PrintPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
+                                break;
                         }
 
                         break;
                     case "FI":
-                        tcp.RecivedFile(FileListener, Application.StartupPath + "\\Downloads");
+                        TcpipSystemService.RecivedFile(_fileListener, Application.StartupPath + "\\Downloads");
                         break;
                 }
             }
             catch
             {
-                printPanel(messageRecived.Text.Length.ToString());
+                PrintPanel(messageRecived.Text.Length.ToString());
                 //check = false;
             }
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
-            if (messageRecived.Text.Length > 2)
+            if (messageRecived.Text.Length <= 2) return;
+            if (messageRecived.Text == @"code")
             {
-                if (messageRecived.Text == "code")
-                {
-                    string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
-                    string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+                var queryCode = $@"SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = {_planet.GetId()}";
+                var code = _dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
-                    byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+                var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
 
-                    tcp.SendMessageToServer(encryptedCode, planet.GetIp(), planet.GetPort());
-                }
-
-                RecivedMessage(messageRecived.Text);
-                validationNextStep();
+                TcpipSystemService.SendMessageToServer(encryptedCode, _planet.GetIp(), _planet.GetPort());
             }
+
+            RecivedMessage(messageRecived.Text);
+            ValidationNextStep();
         } //DETECTA PER INICIAR LA DESCODIFICACIO
 
-        private void validationNextStep()
+        private void ValidationNextStep()
         {
-            if (validations[0])
+            if (_validations[0])
             {
                 btn_SendCode.Enabled = true;
                 btn_detectPlanet.ForeColor = Color.Green;
                 btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
-                if (validations[1])
-                {
-                    btn_SendFiles.Enabled = true;
-                    btn_SendCode.ForeColor = Color.Green;
-                    btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+                if (!_validations[1]) return;
+                btn_SendFiles.Enabled = true;
+                btn_SendCode.ForeColor = Color.Green;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
 
-                    if (validations[2])
-                    {
-                        btn_SendFiles.ForeColor = Color.Green;
-                        btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
-                    }
-                } else
-                {
-                    //validations = new bool[] { false, false, false };
-                    //btn_SendCode.ForeColor = Color.Red;
-                }
-            } else
+                if (!_validations[2]) return;
+                btn_SendFiles.ForeColor = Color.Green;
+                btn_detectPlanet.FlatAppearance.BorderColor = Color.Green;
+            }
+            else
             {
                 //validations = new bool[] { false, false, false };
                 btn_detectPlanet.ForeColor = Color.Red;
                 btn_detectPlanet.FlatAppearance.BorderColor = Color.Red;
             }
-        }//ACTIVANT BOTONS QUAN VAN PASSANT PROCESSOS DE VALIDACIÓ
+        } //ACTIVANT BOTONS QUAN VAN PASSANT PROCESSOS DE VALIDACIÓ
 
-        private void getCodeAndSend()
+        private void GetCodeAndSend()
         {
             try
             {
-                var sqlParams = new Dictionary<string, dynamic>();
-                sqlParams.Add(@"planetid", planet.GetId());
-                string code = dt.GetByQuery("SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = @planetid",
+                var sqlParams = new Dictionary<string, dynamic> {{@"planetid", _planet.GetId()}};
+                var code = _dt.GetByQuery("SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = @planetid",
                         sqlParams)
                     .Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
-                byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+                var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
 
-                tcp.SendMessageToServer("VK", planet.GetIp(), planet.GetPort());
+                TcpipSystemService.SendMessageToServer("VK", _planet.GetIp(), _planet.GetPort());
 
-                printPanel("[SYSTEM] - Key validation send it, waiting for response...");
+                PrintPanel("[SYSTEM] - Key validation send it, waiting for response...");
             }
             catch
             {
-                printPanel("[ERROR] - Key validation error, problem with connecting to server");
+                PrintPanel("[ERROR] - Key validation error, problem with connecting to server");
             }
         } //DEMANAR LA CLAU I EL CODI A LA BBDD I ENVIARLO
 
         private void offButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         } //TANCA LA PAGINA DE LA NAU
 
         private void SendCodeButton_Click(object sender, EventArgs e)
         {
-            getCodeAndSend();
+            GetCodeAndSend();
         } //BOTON PARA ENVIAR EL CODIGO ENCRUPTADO AL PLANETA
 
         private void WriteTextSafe(string text)
@@ -345,14 +302,14 @@ namespace MC_SPACESHIP
             if (messageRecived.InvokeRequired)
             {
                 var d = new SafeCallDelegate(WriteTextSafe);
-                messageRecived.Invoke(d, new object[] { text });
+                messageRecived.Invoke(d, text);
             }
             else
             {
                 messageRecived.Text = "";
                 messageRecived.Text = text;
             }
-        }//FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
+        } //FUNCIO PER PODER ESCRIURE AL TEXT BOX SENSE QUE PETI EL THREAD
 
         //BARRA MOVIMENT DE LA PANTALLA
         private void panel4_MouseDown(object sender, MouseEventArgs e)
@@ -360,57 +317,54 @@ namespace MC_SPACESHIP
             _mouseDown = true;
             _lastLocation = e.Location;
         }
+
         private void panel4_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_mouseDown)
-            {
-                //ChangeBorderColor(Color.Red);
-                Location = new Point(
-                    Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
+            if (!_mouseDown) return;
+            //ChangeBorderColor(Color.Red);
+            Location = new Point(
+                Location.X - _lastLocation.X + e.X, Location.Y - _lastLocation.Y + e.Y);
 
-                Update();
-            }
+            Update();
         }
+
         private void panel4_MouseUp(object sender, MouseEventArgs e)
         {
             _mouseDown = false;
             //ChangeBorderColor(Color.Yellow);
         }
 
-        private void decodeFiles ()
+        private void DecodeFiles()
         {
-            string extractPath = Application.StartupPath + "\\ZipFiles";
-            string downloadPath = Application.StartupPath + "\\Downloads";
+            var extractPath = Application.StartupPath + "\\ZipFiles";
+            var downloadPath = Application.StartupPath + "\\Downloads";
 
-            List<string> strFiles = Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories).ToList();
+            var strFiles = Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories).ToList();
 
-            foreach (string fichero in strFiles)
-            {
-                File.Delete(fichero);
-            }
+            foreach (var fichero in strFiles) File.Delete(fichero);
 
             ZipFile.ExtractToDirectory(downloadPath, extractPath);
 
-            var res = dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = "+planet.GetId()+";");
-            Dictionary<string, string> abcCodes = new Dictionary<string, string>();
+            var res = _dt.GetByQuery(
+                "SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " +
+                _planet.GetId() + ";");
+            var abcCodes = new Dictionary<string, string>();
 
-            for (int i = 0; i < 24; i++)
+            for (var i = 0; i < 24; i++)
             {
                 var dr = res.Tables[0].Rows[i];
                 abcCodes.Add(dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(0).ToString());
             }
 
-            string pathFile = Application.StartupPath + "\\ZipFiles\\PacsSol.txt";
+            var pathFile = Application.StartupPath + "\\ZipFiles\\PacsSol.txt";
 
             var iStream = new FileStream(pathFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var sr = new StreamReader(iStream);
 
-            foreach (string file in strFiles) 
+            foreach (var sw in strFiles
+                .Select(file => new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Read))
+                .Select(oStream => new StreamWriter(oStream)))
             {
-                var oStream = new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Read);
-                
-                var sw = new StreamWriter(oStream);
-
                 string code;
                 string letter;
 
@@ -418,18 +372,22 @@ namespace MC_SPACESHIP
                 {
                     code = sr.ReadLine();
 
-                    letter = abcCodes[code];
+                    letter = abcCodes[code ?? string.Empty];
 
-                    sw.WriteLine(letter); sw.Flush();
+                    sw.WriteLine(letter);
+                    sw.Flush();
                 }
+
                 sw.Close();
             }
+
             sr.Close();
-        }//FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
+        } //FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
 
         private void btn_SendFiles_Click(object sender, EventArgs e)
         {
+        } //FUNCIO PER ENVIAR L'ARXIU DESCODIFICAT AL PLANETA
 
-        }//FUNCIO PER ENVIAR L'ARXIU DESCODIFICAT AL PLANETA
+        private delegate void SafeCallDelegate(string text);
     }
 }

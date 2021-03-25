@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,9 +9,9 @@ namespace PACS_Utils
     public class RsaKeysService
     {
         private const string Vocab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private readonly CspParameters _cspp = new CspParameters();
 
         private readonly SecureRandom _secureRandom = new SecureRandom();
-        private readonly CspParameters _cspp = new CspParameters();
 
         private DataAccessService _dtb = new DataAccessService();
 
@@ -30,10 +31,9 @@ namespace PACS_Utils
                 var publicKey = _rsa.ToXmlString(false);
                 _rsa.PersistKeyInCsp = true;
 
-                var sqlParams = new Dictionary<string, dynamic>();
+                var sqlParams = new Dictionary<string, dynamic> {{"idplanet", planetId}};
 
                 // GET ID OF TH PLANET FOR PLANETKEYS TABLE
-                sqlParams.Add("idplanet", planetId);
                 var idPlanet = _dtb.GetByQuery("SELECT * FROM dbo.PlanetKeys WHERE idPlanet = @idplanet;",
                     sqlParams);
 
@@ -79,7 +79,7 @@ namespace PACS_Utils
             }
         }
 
-        public string DecryptCode(byte[] encryptedMessage, string planetCode)
+        public static string DecryptCode(byte[] encryptedMessage, string planetCode)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace PACS_Utils
 
                 var rsa = new RSACryptoServiceProvider();
                 rsa.FromXmlString(GetKeyFromContainer(planetCode));
-                
+
                 //var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
 
                 var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptedMessage, false));
@@ -102,9 +102,7 @@ namespace PACS_Utils
 
         private static string GetKeyFromContainer(string containerName)
         {
-            var param = new CspParameters();
-
-            param.KeyContainerName = containerName;
+            var param = new CspParameters {KeyContainerName = containerName};
 
             var rsa = new RSACryptoServiceProvider(param);
 
@@ -131,8 +129,8 @@ namespace PACS_Utils
             var chars = new List<dynamic>();
 
             for (var i = 0; i <= 1; i++)
-                foreach (var letter in Vocab)
-                    chars.Add(i == 0 ? letter : char.Parse(letter.ToString().ToLower()));
+                chars.AddRange(Vocab.Select(letter => i == 0 ? letter : char.Parse(letter.ToString().ToLower()))
+                    .Cast<dynamic>());
 
             for (var i = 0; i <= 9; i++) chars.Add(i);
 

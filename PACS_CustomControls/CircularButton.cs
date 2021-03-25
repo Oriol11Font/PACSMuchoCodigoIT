@@ -15,13 +15,10 @@ namespace PACS_CustomControls
             pictrButton.ImageLocation = _buttonOff;
         }
 
-        public event EventHandler HandleClick;
-
 
         private void pictrButton_Click(object sender, EventArgs e)
         {
             pictrButton.ImageLocation = pictrButton.ImageLocation == _buttonOn ? _buttonOff : _buttonOn;
-            if (HandleClick != null) HandleClick(this, e);
         }
     }
 }
