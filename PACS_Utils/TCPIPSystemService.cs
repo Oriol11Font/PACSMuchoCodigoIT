@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PACS_Objects;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -10,21 +11,8 @@ namespace PACS_Utils
 {
     public class TcpipSystemService
     {
-        /*private TcpListener _listener;
-        private Thread _listenerThread;
-
-        public TcpListener Listener
-        {
-            get => _listener;
-            set => _listener = value;
-        }
-
-        public Thread ListenerThread
-        {
-            get => _listenerThread;
-            set => _listenerThread = value;
-        }*/
-
+        bool code = false;
+        RsaKeysService rsa = new RsaKeysService();
         // FUNCIONES RELACIONADAS CON EL SERVIDOR Y EL CLIENTE EN TCP/IP
 
         public TcpListener StartServer(int numPort, TcpListener listener)
@@ -56,27 +44,49 @@ namespace PACS_Utils
             }
         }
 
-        public string WaitingForResponse(TcpListener Listener)
+        public string WaitingForResponse(TcpListener Listener, Planet planet)
         {
             if (Listener.Pending()) // IF THE SERVER RECIVE A RESPONSE FROM CLIENT
             {
                 var client = Listener.AcceptTcpClient();
                 var ns = client.GetStream();
+                string decryptedCode = string.Empty;
                 if (ns.CanRead)
                 {
                     var buffer = new byte[1024]; // NEW BUFFER
                     var missatge = new StringBuilder();
                     var numberOfBytesRead = 0;
+                    var mssg = string.Empty;
                     // POSSIBLE MESSAGE BIGGER THAN BUFFER
-                    do
+                    if (code)
                     {
-                        numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                        missatge.AppendFormat("{0}",
-                            Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
-                    } while (ns.DataAvailable); // READ ALL MESSAGE
+                        do
+                        {
+                            numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                        } while (ns.DataAvailable);
 
-                    var mssg = "" + missatge;
-                    return mssg;
+                        code = false;
+                        return "VK" + rsa.DecryptCode(buffer, planet.GetCode());
+
+                    } else
+                    {
+                        do
+                        {
+                            numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                            missatge.AppendFormat("{0}",
+                                Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
+                        } while (ns.DataAvailable);
+                    }
+                    // READ ALL MESSAGE
+
+                    
+
+                    if (mssg == "code")
+                    {
+                        code = true;
+                    }
+
+                    return missatge.ToString();
                 }
                 else
                 {
@@ -95,6 +105,22 @@ namespace PACS_Utils
                 var dades = Encoding.ASCII.GetBytes(mssg);
                 var ns = client.GetStream();
                 ns.Write(dades, 0, dades.Length);
+
+                return "[SYSTEM] - Message Succesfully sended!";
+            }
+            catch
+            {
+                return "[ERROR] - Failed to send message!";
+            }
+        }
+
+        public string SendMessageToServer(byte [] mssg, string serverIp, int portIp)
+        {
+            try
+            {
+                var client = new TcpClient(serverIp, portIp);
+                var ns = client.GetStream();
+                ns.Write(mssg, 0, mssg.Length);
 
                 return "[SYSTEM] - Message Succesfully sended!";
             }

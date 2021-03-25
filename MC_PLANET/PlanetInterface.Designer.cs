@@ -56,10 +56,10 @@ namespace MC_PLANET
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.PlanetConsole);
-            this.panel1.Location = new System.Drawing.Point(147, 114);
+            this.panel1.Location = new System.Drawing.Point(124, 93);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(536, 485);
+            this.panel1.Size = new System.Drawing.Size(582, 538);
             this.panel1.TabIndex = 4;
             // 
             // PlanetConsole
@@ -69,10 +69,10 @@ namespace MC_PLANET
             this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.PlanetConsole.FormattingEnabled = true;
             this.PlanetConsole.ItemHeight = 16;
-            this.PlanetConsole.Location = new System.Drawing.Point(12, 16);
+            this.PlanetConsole.Location = new System.Drawing.Point(13, 11);
             this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PlanetConsole.Name = "PlanetConsole";
-            this.PlanetConsole.Size = new System.Drawing.Size(508, 448);
+            this.PlanetConsole.Size = new System.Drawing.Size(550, 512);
             this.PlanetConsole.TabIndex = 1;
             // 
             // planetCmbx

@@ -31,8 +31,8 @@ namespace MC_SPACESHIP
         private delegate void SafeCallDelegate(string text);
         private Point _lastLocation;
         private bool _mouseDown;
-        bool check = false;
-        bool[] validations = {false, false};
+        //bool check = false;
+        bool[] validations = {false, false, false};
 
         Thread t1;
         TcpListener Listener;
@@ -46,7 +46,7 @@ namespace MC_SPACESHIP
             onOffButton.ImageLocation = buttonOFF;
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
             string sqlSpaceShip =
-                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
+                "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1 FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
             DataSet ds1 = dt.GetByQuery(sqlSpaceShip);
 
             printPanel(Application.StartupPath);
@@ -198,7 +198,7 @@ namespace MC_SPACESHIP
 
             while (active)
             {
-                mssg = tcp.WaitingForResponse(Listener);
+                mssg = tcp.WaitingForResponse(Listener, planet);
                 if (mssg != null) { WriteTextSafe(mssg); }
             }
         } //BUSTIA DE MISSATGES PER PART DEL SERVIDOR
@@ -206,8 +206,7 @@ namespace MC_SPACESHIP
         private void RecivedMessage(string message)
         {
             try
-            {
-                //VR12345678901VP          
+            {      
                 string id_message = message.Substring(0, 2);
                 string result = message.Substring(14, 2);
                 switch (id_message)
@@ -239,6 +238,7 @@ namespace MC_SPACESHIP
                         }
                         else if (result.Equals("AG"))
                         {
+                            validations[2] = true;
                             printPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
                         }
 
@@ -248,7 +248,7 @@ namespace MC_SPACESHIP
             catch
             {
                 printPanel(messageRecived.Text.Length.ToString());
-                check = false;
+                //check = false;
             }
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
 
@@ -256,6 +256,16 @@ namespace MC_SPACESHIP
         {
             if (messageRecived.Text.Length > 2)
             {
+                if (messageRecived.Text == "code")
+                {
+                    string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
+                    string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                    byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
+
+                    tcp.SendMessageToServer(encryptedCode, planet.GetIp(), planet.GetPort());
+                }
+
                 RecivedMessage(messageRecived.Text);
                 validationNextStep();
             }
@@ -296,19 +306,8 @@ namespace MC_SPACESHIP
         {
             try
             {
-                string queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + planet.GetId();
-                string code = dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
-                byte[] encryptedCode = rsa.EncryptedCode(code, planet.GetId().ToString());
-
-                UnicodeEncoding ByteConverter = new UnicodeEncoding();
-
-                
-
-                string message = "VK" + ByteConverter.GetString(encryptedCode);
-                messageRecived.Text = message;
-                //printPanel(message);
-                tcp.SendMessageToServer(message, planet.GetIp(), planet.GetPort());
+                tcp.SendMessageToServer("VK", planet.GetIp(), planet.GetPort());
 
                 printPanel("[SYSTEM] - Key validation send it, waiting for response...");
             }
