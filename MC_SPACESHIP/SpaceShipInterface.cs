@@ -89,11 +89,11 @@ namespace MC_SPACESHIP
                 comboPlanet.SelectedItem + "';";
             var ds = _dt.GetByQuery(sql);
 
-            var dr = ds.Tables[0].Rows[0].ItemArray;
+            var dr = ds.Tables[0].Rows[0];
 
-            _planet = new Planet(int.Parse(dr.GetValue(0).ToString()),
-                dr.GetValue(1).ToString(), dr.GetValue(2).ToString(),
-                dr.GetValue(3).ToString(), int.Parse(dr.GetValue(4).ToString()), int.Parse(dr.GetValue(5).ToString()));
+            _planet = new Planet(int.Parse(dr.ItemArray.GetValue(0).ToString()),
+                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
+                dr.ItemArray.GetValue(3).ToString(), int.Parse(dr.ItemArray.GetValue(4).ToString()), int.Parse(dr.ItemArray.GetValue(5).ToString()));
 
             var mssg = "ER" + _spaceShip.GetCode() + "DADAD";
 
@@ -190,16 +190,17 @@ namespace MC_SPACESHIP
                         switch (result)
                         {
                             case "VP":
-                                if (_validations[0])
-                                {
-                                    _validations[1] = true;
-                                }
-                                else
-                                {
-                                    _validations[0] = true;
-                                }
+                            if (_validations[0]){
+                                _validations[1] = true;
+                                PrintPanel("[SYSTEM] - Validation code Accepted - Validation in progress...");
+                            }
+                            else
+                            {
+                                _validations[0] = true;
+                                PrintPanel("[SYSTEM] - Access request accepted - Validation in progress...");
+                            }
 
-                                PrintPanel("[SYSTEM] - Validation in progress...");
+                                
                                 break;
                             case "AD":
                             {
@@ -393,7 +394,7 @@ namespace MC_SPACESHIP
                 String mssg = TcpipSystemService.RecivedFile(_fileListener, Application.StartupPath + "\\Downloads\\");
                 if (mssg != null)
                 {
-                    WriteTextSafe(mssg);
+                    WriteTextSafe("VR"+_spaceShip.GetCode()+"VP");
                 }
             }
         }
@@ -401,35 +402,33 @@ namespace MC_SPACESHIP
         private void btn_SendFiles_Click(object sender, EventArgs e)
         {
             string fileToUnzip = Application.StartupPath + "\\Downloads\\PACS.zip";
-            string fileToSend = Application.StartupPath + "\\Downloads\\PACSSSOL.zip";
+            string fileToSend = Application.StartupPath + "\\PacsFiles\\PACSSOL.zip";
             string fileToJoinTxt = Application.StartupPath + "\\Downloads\\PACS.txt";
-            string fileDecrypted = Application.StartupPath + "\\Downloads\\DecryptedDir\\PACSSol.txt";
+            string fileDecrypted = Application.StartupPath + "\\Downloads\\DecryptedDir\\PACSSOL.txt";
             string fileDecryptedDir = Application.StartupPath + "\\Downloads\\DecryptedDir";
             string extractDirectory = Application.StartupPath + "\\Downloads\\extractFiles";
 
             FileManagement.UnzipFile(fileToUnzip, extractDirectory);
 
-            IEnumerable<string> filePaths =
-                Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
+            IEnumerable<string> filePaths = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
 
             FileManagement.JoinTxtFiles(filePaths, fileToJoinTxt);
 
-            var res = _dt.GetByQuery(
-                "SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " +
-                _planet.GetId() + ";");
-            Dictionary<char, string> abcCodes = new Dictionary<char, string>();
+            var res = _dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " + _planet.GetId() + ";");
+            Dictionary<string, string> abcCodes = new Dictionary<string, string>();
 
             for (int i = 0; i < 24; i++)
             {
                 var dr = res.Tables[0].Rows[i];
-                abcCodes.Add(dr.ItemArray.GetValue(0).ToString()[0], dr.ItemArray.GetValue(1).ToString());
+                abcCodes.Add(dr.ItemArray.GetValue(0).ToString(), dr.ItemArray.GetValue(1).ToString());
             }
 
             FileManagement.DecryptFile(fileToJoinTxt, fileDecrypted, abcCodes);
 
-            FileManagement.ZipFile(fileToSend, fileDecryptedDir);
+            FileManagement.ZipFile(fileDecryptedDir, fileToSend);
 
-            //tcp.SendFile(fileToSend, planet.GetIp());
+            _tcp.SendFile(fileToSend, _planet.GetIp(), _planet.GetPort1());
+
         }
     }
 }

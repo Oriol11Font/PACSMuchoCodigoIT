@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 
 namespace PACS_Utils
 {
@@ -66,8 +67,12 @@ namespace PACS_Utils
                 using (var rsa = new RSACryptoServiceProvider())
                 {
                     var sql = $@"SELECT XMLKey FROM dbo.PlanetKeys WHERE idPlanet = {idPlanet};";
+
+                    
                     var planetKey = _dtb.GetByQuery(sql);
                     var xmlKey = planetKey.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+
+                    //MessageBox.Show(xmlKey);
 
                     rsa.FromXmlString(xmlKey);
                     return rsa.Encrypt(dataToEncrypt, false);
@@ -106,7 +111,12 @@ namespace PACS_Utils
 
             var rsa = new RSACryptoServiceProvider(param);
 
-            return rsa.ToXmlString(true);
+            string key = rsa.ToXmlString(true);
+
+            //MessageBox.Show(key);
+
+            return key;
+
         }
 
         public string GenerateKey(int length)

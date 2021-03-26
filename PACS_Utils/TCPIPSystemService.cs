@@ -58,13 +58,15 @@ namespace PACS_Utils
             // POSSIBLE MESSAGE BIGGER THAN BUFFER
             if (_code)
             {
-                do
-                {
-                    numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                } while (ns.DataAvailable);
+                byte [] bufferCode = new byte [128];
+                //do
+                //{
+                //numberOfBytesRead = ns.Read(bufferCode, 0, bufferCode.Length);
+                ns.Read(bufferCode, 0, bufferCode.Length);
+                //} while (ns.DataAvailable);
 
                 _code = false;
-                return "VK" + RsaKeysService.DecryptCode(buffer, planet.GetCode());
+                return "VK" + RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
             }
 
             do
@@ -75,10 +77,11 @@ namespace PACS_Utils
             } while (ns.DataAvailable);
             // READ ALL MESSAGE
 
+            mssg = missatge.ToString();
 
             if (mssg == "code") _code = true;
 
-            return missatge.ToString();
+            return mssg;
 
         }
 
@@ -103,10 +106,12 @@ namespace PACS_Utils
         {
             try
             {
-                var client = new TcpClient(serverIp, portIp);
-                var ns = client.GetStream();
-                ns.Write(mssg, 0, mssg.Length);
-
+                var client1 = new TcpClient(serverIp, portIp);
+                var ns1 = client1.GetStream();
+                ns1.Write(mssg, 0, mssg.Length);
+                ns1.Flush();
+                ns1.Close();
+                client1.Close();
                 return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
@@ -177,6 +182,9 @@ namespace PACS_Utils
                                 Console.WriteLine("[SYSTEM] - Client connected. Starting to receive the file");
 
                                 // read the file in chunks of 1KB
+                                //byte[] bytes = new byte[client.ReceiveBufferSize + 1];
+                                //stream.Read(bytes, 0, client.ReceiveBufferSize);
+
                                 var buffer = new byte[1024];
                                 int bytesRead;
                                 while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)

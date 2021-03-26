@@ -20,8 +20,8 @@ namespace MC_PLANET
         private bool _active;
 
         private Dictionary<char, string> _encryptedLetters;
-        private TcpListener _listener;
-        private Thread _listenerThread;
+        private TcpListener _listener, _fileListener;
+        private Thread _listenerThread, _t2;
         private Planet _planet;
         private SpaceShip _spaceShip;
 
@@ -39,14 +39,14 @@ namespace MC_PLANET
         {
             CreateZip();
             ComprobarArchivoNave();
-            FileManagement.EncryptFile(
-                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt",
-                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
-                _encryptedLetters);
-            FileManagement.DecryptFile(
-                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
-                @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt",
-                _encryptedLetters);
+            //FileManagement.EncryptFile(
+            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt",
+            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
+            //    _encryptedLetters);
+            //FileManagement.DecryptFile(
+            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
+            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt",
+            //    _encryptedLetters);
             PrintPanel(
                 $"is content equal? should be yes: {FileManagement.IsContentEqual(@"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt", @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt").ToString()}");
         }
@@ -199,8 +199,28 @@ namespace MC_PLANET
 
                         break;
                     }
-                    case "FILE":
+                    case "FS":
                     {
+
+                        string pathFiles = Application.StartupPath + "\\PacsFiles\\decrypted\\";
+                        string[] files = { pathFiles + "\\PACS1.txt", pathFiles + "\\PACS2.txt", pathFiles + "\\PACS3.txt" };
+
+                        FileManagement.SumFiles(files, Application.StartupPath + "\\Downloads\\PACSTotal.txt");
+
+                        FileManagement.UnzipFile(Application.StartupPath + "\\Downloads\\PACS.zip", Application.StartupPath + "\\Downloads");
+
+                        string file1 = pathFiles + "\\PACSTotal.txt";
+                        string file2 = Application.StartupPath + "Downloads\\PACSSol.txt";
+
+                        string hash1 = FileManagement.CreateMD5(file1);
+                        string hash2 = FileManagement.CreateMD5(file2);
+
+                        string mssg = "VR"+_spaceShip.GetCode()+"AD";
+                        
+                        if (hash1.Equals(hash2)) { mssg = "VR" + _spaceShip.GetCode() + "AG"; }
+
+                        TcpipSystemService.SendMessageToServer(mssg, _spaceShip.GetIp(), _spaceShip.GetPort1());
+
                         break;
                     }
                     default:
@@ -210,9 +230,10 @@ namespace MC_PLANET
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                PrintPanel(@"[SYSTEM] - Error on handling entrance petition");
+                PrintPanel(ex.ToString());
+                //@"[SYSTEM] - Error on handling entrance petition"
             }
         }
 
@@ -313,6 +334,11 @@ namespace MC_PLANET
                 };
                 _listenerThread.Start();
 
+                _fileListener = TcpipSystemService.StartServer(_planet.GetPort1(), _fileListener);
+                _t2 = new Thread(RecivedFiles);
+                _t2.IsBackground = true;
+                _t2.Start();
+
                 PrintPanel(
                     $@"[SYSTEM] - Started server for planet {_planet.GetName()}. Listening on port {_planet.GetPort()}");
             }
@@ -345,6 +371,18 @@ namespace MC_PLANET
             {
                 txtb_msg.Text = "";
                 txtb_msg.Text = text;
+            }
+        }
+
+        private void RecivedFiles()
+        {
+            while (_active)
+            {
+                String mssg = TcpipSystemService.RecivedFile(_fileListener, Application.StartupPath + "\\Downloads\\");
+                if (mssg != null)
+                {
+                    WriteTextSafe("FS");
+                }
             }
         }
 

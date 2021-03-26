@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace PACS_Utils
         }
 
         public static void DecryptFile(string encryptedPath, string decryptedPath,
-            Dictionary<char, string> encryptedLetters)
+            Dictionary<string, string> encryptedLetters)
         {
             var iStream = new FileStream(encryptedPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             var sr = new StreamReader(iStream);
@@ -181,17 +182,54 @@ namespace PACS_Utils
             }
         }
 
-        public static bool IsContentEqual(params string[] paths)
+        public static string CreateMD5(string input)
         {
-            try
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
-                return paths.Count(path => File.ReadLines(paths[0]).SequenceEqual(File.ReadLines(path))) ==
-                       paths.Length;
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
             }
-            catch
+        }
+
+        public static void SumFiles (string [] path, string totalFile)
+        {
+            string[] files = new string [3];
+            int i = 0;
+
+            foreach (string p in path)
             {
-                return false;
+                var iStream = new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var sr = new StreamReader(iStream);
+
+                files[i] = sr.ReadToEnd();
+
+                i++;
+
+                sr.Close();
+                iStream.Close();
             }
+
+            //if (File.Exists(totalFile)) { File.Delete(totalFile); }
+            //File.Create(totalFile);
+
+            //File.WriteAllText(totalFile, files[0] + files[1] + files[2]);
+            var rStream = new FileStream(totalFile, FileMode.Open, FileAccess.Write, FileShare.Read);
+            var sw = new StreamWriter(rStream);
+
+            sw.Write(files[0] + files[1] + files[2]);
+
+            //sw.Flush();
+            //sw.Close();
+            //rStream.Close();
         }
     }
 }
