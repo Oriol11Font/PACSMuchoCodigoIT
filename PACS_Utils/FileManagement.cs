@@ -53,7 +53,6 @@ namespace PACS_Utils
                         code = @"";
                     }
 
-                    //sw.Write(encryptedLetters[(char) res]);
                     res = sr.Read();
                 }
 
@@ -84,7 +83,11 @@ namespace PACS_Utils
 
         public static void JoinTxtFiles(IEnumerable<string> filePaths, string finalPath)
         {
-            if (File.Exists(finalPath)) { File.Delete(finalPath); }
+            if (File.Exists(finalPath))
+            {
+                File.Delete(finalPath);
+            }
+
             using (var output = File.Create(finalPath))
             {
                 foreach (var filePath in filePaths)
@@ -133,6 +136,8 @@ namespace PACS_Utils
                 tempFolder = Path.Combine(Application.StartupPath, $@"tempfolder{i}");
             } while (Directory.Exists(tempFolder));
 
+            Directory.CreateDirectory(tempFolder);
+
             foreach (var file in files)
                 if (File.Exists(file))
                     File.Copy(file, tempFolder);
@@ -151,10 +156,16 @@ namespace PACS_Utils
 
         public static void UnzipFile(string fileToUnzip, string extractDirectory)
         {
-            var strFiles = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
-            foreach (var fichero in strFiles) File.Delete(fichero);
+            if (Directory.Exists(extractDirectory))
+            {
+                var strFiles = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
+                foreach (var fichero in strFiles) File.Delete(fichero);
+            }
+            else
+            {
+                Directory.CreateDirectory(extractDirectory);
+            }
 
-            //if (Directory.Exists(extractDirectory)) Directory.Delete(extractDirectory);
             System.IO.Compression.ZipFile.ExtractToDirectory(fileToUnzip, extractDirectory);
         }
 
@@ -162,8 +173,7 @@ namespace PACS_Utils
         {
             try
             {
-                return File.Exists(path1) && File.Exists(path2) &&
-                       File.ReadLines(path1).SequenceEqual(File.ReadLines(path2));
+                return File.ReadLines(path1).SequenceEqual(File.ReadLines(path2));
             }
             catch
             {

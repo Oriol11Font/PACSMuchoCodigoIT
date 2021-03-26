@@ -89,11 +89,11 @@ namespace MC_SPACESHIP
                 comboPlanet.SelectedItem + "';";
             var ds = _dt.GetByQuery(sql);
 
-            var dr = ds.Tables[0].Rows[0];
+            var dr = ds.Tables[0].Rows[0].ItemArray;
 
-            _planet = new Planet(int.Parse(dr.ItemArray.GetValue(0).ToString()),
-                dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(2).ToString(),
-                dr.ItemArray.GetValue(3).ToString(), int.Parse(dr.ItemArray.GetValue(4).ToString()), int.Parse(dr.ItemArray.GetValue(5).ToString()));
+            _planet = new Planet(int.Parse(dr.GetValue(0).ToString()),
+                dr.GetValue(1).ToString(), dr.GetValue(2).ToString(),
+                dr.GetValue(3).ToString(), int.Parse(dr.GetValue(4).ToString()), int.Parse(dr.GetValue(5).ToString()));
 
             var mssg = "ER" + _spaceShip.GetCode() + "DADAD";
 
@@ -190,14 +190,14 @@ namespace MC_SPACESHIP
                         switch (result)
                         {
                             case "VP":
-                            if (_validations[0]){
-                                _validations[1] = true;
-                                
-                            }
-                            else
-                            {
-                                _validations[0] = true;
-                            }
+                                if (_validations[0])
+                                {
+                                    _validations[1] = true;
+                                }
+                                else
+                                {
+                                    _validations[0] = true;
+                                }
 
                                 PrintPanel("[SYSTEM] - Validation in progress...");
                                 break;
@@ -409,11 +409,14 @@ namespace MC_SPACESHIP
 
             FileManagement.UnzipFile(fileToUnzip, extractDirectory);
 
-            IEnumerable<string> filePaths = Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
+            IEnumerable<string> filePaths =
+                Directory.GetFiles(extractDirectory, "*", SearchOption.AllDirectories).ToList();
 
             FileManagement.JoinTxtFiles(filePaths, fileToJoinTxt);
 
-            var res = _dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " + _planet.GetId() + ";");
+            var res = _dt.GetByQuery(
+                "SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " +
+                _planet.GetId() + ";");
             Dictionary<char, string> abcCodes = new Dictionary<char, string>();
 
             for (int i = 0; i < 24; i++)
@@ -427,7 +430,6 @@ namespace MC_SPACESHIP
             FileManagement.ZipFile(fileToSend, fileDecryptedDir);
 
             //tcp.SendFile(fileToSend, planet.GetIp());
-
         }
     }
 }
