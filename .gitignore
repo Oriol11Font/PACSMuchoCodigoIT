@@ -13,6 +13,8 @@ idea/
 .idea/
 
 packages/
-PacsFiles/
 
+[Pp]acs[Ff]iles/
 *.zip
+*.txt
+[Dd]ownloads/
