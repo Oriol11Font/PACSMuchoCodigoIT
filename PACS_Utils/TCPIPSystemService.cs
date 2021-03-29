@@ -66,8 +66,8 @@ namespace PACS_Utils
                 //} while (ns.DataAvailable);
 
                 _code = false;
-                return "VK" + RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
-            }
+                return RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
+            } 
 
             do
             {
@@ -159,12 +159,12 @@ namespace PACS_Utils
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
 
-                return @"[SYSTEM] S'ha enviat correctament el fitxer";
+                return @"[SYSTEM] - S'ha enviat correctament el fitxer";
             }
             catch (Exception e)
             {
                 //Console.WriteLine(e.ToString());
-                return @"[ERROR] No s'ha pogut enviar el fitxer "+ e.ToString();
+                return @"[ERROR] - No s'ha pogut enviar el fitxer "+ e.ToString();
             }
         }
 

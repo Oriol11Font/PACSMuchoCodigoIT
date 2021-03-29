@@ -68,11 +68,8 @@ namespace PACS_Utils
                 {
                     var sql = $@"SELECT XMLKey FROM dbo.PlanetKeys WHERE idPlanet = {idPlanet};";
 
-                    
                     var planetKey = _dtb.GetByQuery(sql);
                     var xmlKey = planetKey.Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
-
-                    //MessageBox.Show(xmlKey);
 
                     rsa.FromXmlString(xmlKey);
                     return rsa.Encrypt(dataToEncrypt, false);
@@ -93,8 +90,6 @@ namespace PACS_Utils
                 var rsa = new RSACryptoServiceProvider();
                 rsa.FromXmlString(GetKeyFromContainer(planetCode));
 
-                //var dataToDecrypt = byteConverter.GetBytes(encryptedMessage);
-
                 var decryptedMessage = byteConverter.GetString(rsa.Decrypt(encryptedMessage, false));
 
                 return decryptedMessage;
@@ -112,8 +107,6 @@ namespace PACS_Utils
             var rsa = new RSACryptoServiceProvider(param);
 
             string key = rsa.ToXmlString(true);
-
-            //MessageBox.Show(key);
 
             return key;
 

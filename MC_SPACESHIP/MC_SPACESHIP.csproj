@@ -102,5 +102,8 @@
   <ItemGroup>
     <None Include="Resources\powerOff.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rblLogo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

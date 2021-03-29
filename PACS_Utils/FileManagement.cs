@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -182,21 +183,16 @@ namespace PACS_Utils
             }
         }
 
-        public static string CreateMD5(string input)
+        public static byte [] CreateMD5(string input)
         {
-            // Use input string to calculate MD5 hash
-            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            using (var md5 = MD5.Create())
             {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                var iStream = new FileStream(input, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
+                using (var stream = iStream)
                 {
-                    sb.Append(hashBytes[i].ToString("X2"));
+                    return md5.ComputeHash(stream);
                 }
-                return sb.ToString();
             }
         }
 
@@ -218,18 +214,13 @@ namespace PACS_Utils
                 iStream.Close();
             }
 
-            //if (File.Exists(totalFile)) { File.Delete(totalFile); }
-            //File.Create(totalFile);
-
-            //File.WriteAllText(totalFile, files[0] + files[1] + files[2]);
             var rStream = new FileStream(totalFile, FileMode.Open, FileAccess.Write, FileShare.Read);
             var sw = new StreamWriter(rStream);
 
             sw.Write(files[0] + files[1] + files[2]);
 
-            //sw.Flush();
-            //sw.Close();
-            //rStream.Close();
+            sw.Close();
+            rStream.Close();
         }
     }
 }

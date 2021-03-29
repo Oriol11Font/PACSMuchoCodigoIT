@@ -17,6 +17,7 @@ namespace MC_PLANET
         private readonly string _buttonOn = $@"{Application.StartupPath}\\imgs\\buttonON.png";
         private readonly DataAccessService _dataAccess = new DataAccessService();
         private readonly RsaKeysService _rsaKeysService = new RsaKeysService();
+        private delegate void SafeCallDelegate(string text);
         private bool _active;
 
         private Dictionary<char, string> _encryptedLetters;
@@ -24,7 +25,6 @@ namespace MC_PLANET
         private Thread _listenerThread, _t2;
         private Planet _planet;
         private SpaceShip _spaceShip;
-
         private Point _lastLocation;
         private bool _mouseDown;
         private TcpipSystemService _tcp;
@@ -33,22 +33,6 @@ namespace MC_PLANET
         public PlanetInterface()
         {
             InitializeComponent();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            CreateZip();
-            ComprobarArchivoNave();
-            //FileManagement.EncryptFile(
-            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt",
-            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
-            //    _encryptedLetters);
-            //FileManagement.DecryptFile(
-            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\EncryptedCombinedFile.txt",
-            //    @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt",
-            //    _encryptedLetters);
-            PrintPanel(
-                $"is content equal? should be yes: {FileManagement.IsContentEqual(@"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\CombinedFile.txt", @"C:\Users\pauco\Documents\Workspace\PACSMuchoCodigoIT\DLL\PacsFiles\DecryptedCombinedFile.txt").ToString()}");
         }
 
         private void GenerateValidationCode(int idPlanet)
@@ -86,7 +70,7 @@ namespace MC_PLANET
                 sqlParams);
 
             PrintPanel(
-                $@"[SYSTEM] Generated Validation Code and encrypted letters for planet {_planet.GetName()}");
+                $@"[SYSTEM] - Generated Validation Code and encrypted letters for planet {_planet.GetName()}");
         }
 
         private void GeneratePlanetKeys(string codePlanet, int idPlanet)
@@ -201,26 +185,30 @@ namespace MC_PLANET
                     }
                     case "FS":
                     {
-
+                        PrintPanel("[SYSTEM] - Files recived, starting validation ...");
                         string pathFiles = Application.StartupPath + "\\PacsFiles\\decrypted\\";
                         string[] files = { pathFiles + "\\PACS1.txt", pathFiles + "\\PACS2.txt", pathFiles + "\\PACS3.txt" };
+                        string downloadsFld = Application.StartupPath + "\\Downloads";
 
-                        FileManagement.SumFiles(files, Application.StartupPath + "\\Downloads\\PACSTotal.txt");
+                        FileManagement.SumFiles(files, downloadsFld + "\\PACSTotal.txt");
 
-                        FileManagement.UnzipFile(Application.StartupPath + "\\Downloads\\PACS.zip", Application.StartupPath + "\\Downloads");
+                        FileManagement.UnzipFile(downloadsFld + "\\PACS.zip", downloadsFld + "\\extractFiles");
 
-                        string file1 = pathFiles + "\\PACSTotal.txt";
-                        string file2 = Application.StartupPath + "Downloads\\PACSSol.txt";
+                        string file1 = downloadsFld + "\\PACSTotal.txt";
+                        string file2 = downloadsFld + "\\extractFiles\\PACSSOL.txt";
 
-                        string hash1 = FileManagement.CreateMD5(file1);
-                        string hash2 = FileManagement.CreateMD5(file2);
+                        byte [] hash1 = FileManagement.CreateMD5(file1);
+                        byte [] hash2 = FileManagement.CreateMD5(file2);
 
                         string mssg = "VR"+_spaceShip.GetCode()+"AD";
-                        
-                        if (hash1.Equals(hash2)) { mssg = "VR" + _spaceShip.GetCode() + "AG"; }
+                        string infomsg = "[SYSTEM] - Incorrect encode, " + _spaceShip.GetCode() + " have to leave the area!";
+                            if (hash1.SequenceEqual(hash2)) { 
+                            mssg = "VR" + _spaceShip.GetCode() + "AG";
+                            infomsg = "[SYSTEM] - Correct encode of files, accepted permission to acces in " + _planet.GetName();
+                        }
 
                         TcpipSystemService.SendMessageToServer(mssg, _spaceShip.GetIp(), _spaceShip.GetPort1());
-
+                        PrintPanel(infomsg);
                         break;
                     }
                     default:
@@ -233,33 +221,8 @@ namespace MC_PLANET
             catch (Exception ex)
             {
                 PrintPanel(ex.ToString());
-                //@"[SYSTEM] - Error on handling entrance petition"
             }
         }
-
-        private static void ComprobarArchivoNave()
-        {
-            // recibe archivo
-
-            var filesDirectory = Path.Combine(Application.StartupPath, @"PacsFiles");
-
-            // filtro archivos que no sean los desencriptados
-
-            /*var fileReg = new Regex(@"DecryptedPACS[0-9]+.txt");
-            var numReg = new Regex(@"\d+");
-            var filePaths = FileManagement.GetFilteredFileList(filesDirectory, fileReg, numReg);*/
-            var filePaths = Directory.EnumerateFiles(Path.Combine(filesDirectory, @"decrypted"));
-
-            //MessageBox.Show(string.Join(", ", filePaths));
-
-            var joinedFilePath = Path.Combine(filesDirectory, @"CombinedFile.txt");
-            FileManagement.JoinTxtFiles(filePaths, joinedFilePath);
-
-            // comparar archivo con el que envía la nave
-            FileManagement.IsContentEqual(joinedFilePath,
-                Path.Combine(filesDirectory, @"DecryptedPACS1.txt"));
-        }
-
 
         private string CreateZip()
         {
@@ -285,9 +248,6 @@ namespace MC_PLANET
             return zipFilePath;
         }
 
-        //LLEGIR CLAU ENVIADA PER LA NAU
-
-        //DESENCRIPTAR LA CLAU
         private void PlanetInterface_Load(object sender, EventArgs e)
         {
             var res = _dataAccess.GetTable(@"Planets");
@@ -334,6 +294,7 @@ namespace MC_PLANET
                 };
                 _listenerThread.Start();
 
+                
                 _fileListener = TcpipSystemService.StartServer(_planet.GetPort1(), _fileListener);
                 _t2 = new Thread(RecivedFiles);
                 _t2.IsBackground = true;
@@ -346,10 +307,9 @@ namespace MC_PLANET
             {
                 _active = false;
                 _listenerThread.Abort();
+                _t2.Abort();
                 _listener = TcpipSystemService.StopServer(_listener);
                 onOffButton.ImageLocation = _buttonOff;
-                //_tcp = null;
-                //_listener = null;
                 PrintPanel(
                     @"[SYSTEM] - Stopped server");
             }
@@ -385,8 +345,6 @@ namespace MC_PLANET
                 }
             }
         }
-
-        private delegate void SafeCallDelegate(string text);
 
         private void OffButton_Click(object sender, EventArgs e)
         {

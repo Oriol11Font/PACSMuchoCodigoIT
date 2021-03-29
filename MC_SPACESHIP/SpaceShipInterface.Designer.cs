@@ -32,6 +32,7 @@ namespace MC_SPACESHIP
             this.comboPlanet = new System.Windows.Forms.ComboBox();
             this.btn_SendCode = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.pictRebel = new System.Windows.Forms.PictureBox();
             this.SpaceShipConsole = new System.Windows.Forms.ListBox();
             this.btn_detectPlanet = new System.Windows.Forms.Button();
             this.messageRecived = new System.Windows.Forms.TextBox();
@@ -41,8 +42,13 @@ namespace MC_SPACESHIP
             this.panel3 = new System.Windows.Forms.Panel();
             this.btn_SendFiles = new System.Windows.Forms.Button();
             this.OffButton = new System.Windows.Forms.PictureBox();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.barPanel = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.panel8 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictRebel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -81,12 +87,24 @@ namespace MC_SPACESHIP
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.pictRebel);
             this.panel1.Controls.Add(this.SpaceShipConsole);
             this.panel1.Location = new System.Drawing.Point(137, 126);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(883, 469);
             this.panel1.TabIndex = 5;
+            // 
+            // pictRebel
+            // 
+            this.pictRebel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictRebel.Location = new System.Drawing.Point(676, 312);
+            this.pictRebel.Name = "pictRebel";
+            this.pictRebel.Size = new System.Drawing.Size(200, 150);
+            this.pictRebel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictRebel.TabIndex = 1;
+            this.pictRebel.TabStop = false;
+            this.pictRebel.Visible = false;
             // 
             // SpaceShipConsole
             // 
@@ -202,16 +220,48 @@ namespace MC_SPACESHIP
             this.OffButton.TabStop = false;
             this.OffButton.Click += new System.EventHandler(this.offButton_Click);
             // 
-            // panel4
+            // barPanel
             // 
-            this.panel4.BackColor = System.Drawing.Color.Transparent;
-            this.panel4.Location = new System.Drawing.Point(-3, 1);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(1353, 26);
-            this.panel4.TabIndex = 1;
-            this.panel4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
-            this.panel4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
-            this.panel4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseUp);
+            this.barPanel.BackColor = System.Drawing.Color.Transparent;
+            this.barPanel.Location = new System.Drawing.Point(-3, 1);
+            this.barPanel.Name = "barPanel";
+            this.barPanel.Size = new System.Drawing.Size(1353, 26);
+            this.barPanel.TabIndex = 1;
+            this.barPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
+            this.barPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
+            this.barPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseUp);
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.Transparent;
+            this.panel5.Location = new System.Drawing.Point(127, 106);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(911, 5);
+            this.panel5.TabIndex = 12;
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.Color.Transparent;
+            this.panel6.Location = new System.Drawing.Point(124, 107);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(5, 507);
+            this.panel6.TabIndex = 13;
+            // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.Color.Transparent;
+            this.panel7.Location = new System.Drawing.Point(1033, 112);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(5, 502);
+            this.panel7.TabIndex = 14;
+            // 
+            // panel8
+            // 
+            this.panel8.BackColor = System.Drawing.Color.Transparent;
+            this.panel8.Location = new System.Drawing.Point(127, 609);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(906, 5);
+            this.panel8.TabIndex = 13;
             // 
             // SpaceShipInterface
             // 
@@ -220,7 +270,11 @@ namespace MC_SPACESHIP
             this.BackgroundImage = global::MC_SPACESHIP.Properties.Resources.BackGroundSpaceShip1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1348, 721);
-            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel8);
+            this.Controls.Add(this.panel7);
+            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.barPanel);
             this.Controls.Add(this.OffButton);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -235,6 +289,7 @@ namespace MC_SPACESHIP
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.SpaceShipInterface_Load);
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictRebel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.onOffButton)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -256,8 +311,13 @@ namespace MC_SPACESHIP
         private System.Windows.Forms.ListBox infoSpaceShip;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox OffButton;
-        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel barPanel;
         private System.Windows.Forms.Button btn_SendFiles;
+        private System.Windows.Forms.PictureBox pictRebel;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Panel panel8;
     }
 }
 

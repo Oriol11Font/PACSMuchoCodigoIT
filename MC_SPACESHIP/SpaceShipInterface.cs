@@ -45,6 +45,14 @@ namespace MC_SPACESHIP
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
             onOffButton.ImageLocation = _buttonOff;
+
+            string totalFile = Application.StartupPath + "\\Downloads\\PACSTotal.txt";
+
+            pictRebel.ImageLocation = Application.StartupPath + "\\imgs\\finalImg.gif";
+
+            if (File.Exists(totalFile)) { File.Delete(totalFile); }
+            File.Create(totalFile);
+
             //COMBOBOX AMB ELS PLANETES A ESCOLLIR
             const string sqlSpaceShip =
                 "SELECT idSpaceShip, CodeSpaceShip, IPSpaceShip, PortSpaceShip1, PortSpaceShip2 FROM SpaceShips WHERE CodeSpaceShip = 'X-Wing R0001';";
@@ -135,6 +143,7 @@ namespace MC_SPACESHIP
                     infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = _buttonOff;
                     _t1.Abort();
+                    _t2.Abort();
                     _listener = TcpipSystemService.StopServer(_listener);
                     PrintPanel("[SYSTEM] - Server OFF");
                 }
@@ -193,11 +202,13 @@ namespace MC_SPACESHIP
                             if (_validations[0]){
                                 _validations[1] = true;
                                 PrintPanel("[SYSTEM] - Validation code Accepted - Validation in progress...");
+                                ledLight("");
                             }
                             else
                             {
                                 _validations[0] = true;
                                 PrintPanel("[SYSTEM] - Access request accepted - Validation in progress...");
+                                ledLight("");
                             }
 
                                 
@@ -210,23 +221,49 @@ namespace MC_SPACESHIP
                                     _validations[0] = false;
 
                                 PrintPanel("[ERROR] - ACCESS DENIED, please leave the security area");
+                                ledLight("red");
                                 break;
                             }
                             case "AG":
                                 _validations[2] = true;
                                 PrintPanel("[SYSTEM] - Validation successfully, enjoy your visit!");
+                                PrintPanel("=======================================================================================");
+                                PrintPanel("================================ WELCOME TO "+ _planet.GetName().ToUpper()+ " ===============================");
+                                pictRebel.Visible = true;
+                                ledLight("green");
                                 break;
                         }
 
                         break;
                 }
-            }
-            catch
-            {
-                //PrintPanel(messageRecived.Text.Length.ToString());
-                //check = false;
-            }
+            } catch {}
         } //DESCODIFICADOR DE MISSATGES DE VERIFICACIO
+
+        private void ledLight (string color)
+        {
+            switch (color)
+            {
+                case "red":
+                    panel5.BackColor = Color.Red;
+                    panel6.BackColor = Color.Red;
+                    panel7.BackColor = Color.Red;
+                    panel8.BackColor = Color.Red;
+                    break;
+                case "green":
+                    panel5.BackColor = Color.Lime;
+                    panel6.BackColor = Color.Lime;
+                    panel7.BackColor = Color.Lime;
+                    panel8.BackColor = Color.Lime;
+                    break;
+                default:
+                    panel5.BackColor = Color.Transparent;
+                    panel6.BackColor = Color.Transparent;
+                    panel7.BackColor = Color.Transparent;
+                    panel8.BackColor = Color.Transparent;
+                    break;
+            }
+
+        }
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
@@ -237,6 +274,9 @@ namespace MC_SPACESHIP
                 var code = _dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
                 var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
+
+                PrintPanel(code);
+                PrintPanel(RsaKeysService.DecryptCode(encryptedCode, _planet.GetCode()));
 
                 TcpipSystemService.SendMessageToServer(encryptedCode, _planet.GetIp(), _planet.GetPort());
             }
@@ -273,12 +313,15 @@ namespace MC_SPACESHIP
         {
             try
             {
-                var sqlParams = new Dictionary<string, dynamic> {{@"planetid", _planet.GetId()}};
-                var code = _dt.GetByQuery("SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = @planetid",
-                        sqlParams)
-                    .Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
+                //var sqlParams = new Dictionary<string, dynamic> {{@"planetid", _planet.GetId()}};
+                //var code = _dt.GetByQuery("SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = @planetid",
+                //        sqlParams)
+                //    .Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
-                var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
+                //var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
+
+                //PrintPanel(code);
+                //PrintPanel(RsaKeysService.DecryptCode(encryptedCode, _planet.GetCode()));
 
                 TcpipSystemService.SendMessageToServer("VK", _planet.GetIp(), _planet.GetPort());
 
@@ -337,56 +380,6 @@ namespace MC_SPACESHIP
             //ChangeBorderColor(Color.Yellow);
         }
 
-        private void DecodeFiles()
-        {
-            var extractPath = Application.StartupPath + "\\ZipFiles";
-            var downloadPath = Application.StartupPath + "\\Downloads";
-
-            var strFiles = Directory.GetFiles(extractPath, "*", SearchOption.AllDirectories).ToList();
-
-            foreach (var fichero in strFiles) File.Delete(fichero);
-
-            ZipFile.ExtractToDirectory(downloadPath, extractPath);
-
-            var res = _dt.GetByQuery(
-                "SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " +
-                _planet.GetId() + ";");
-            var abcCodes = new Dictionary<string, string>();
-
-            for (var i = 0; i < 24; i++)
-            {
-                var dr = res.Tables[0].Rows[i];
-                abcCodes.Add(dr.ItemArray.GetValue(1).ToString(), dr.ItemArray.GetValue(0).ToString());
-            }
-
-            var pathFile = Application.StartupPath + "\\ZipFiles\\PacsSol.txt";
-
-            var iStream = new FileStream(pathFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var sr = new StreamReader(iStream);
-
-            foreach (var sw in strFiles
-                .Select(file => new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Read))
-                .Select(oStream => new StreamWriter(oStream)))
-            {
-                string code;
-                string letter;
-
-                while (sr.Peek() >= 0)
-                {
-                    code = sr.ReadLine();
-
-                    letter = abcCodes[code ?? string.Empty];
-
-                    sw.WriteLine(letter);
-                    sw.Flush();
-                }
-
-                sw.Close();
-            }
-
-            sr.Close();
-        } //FUNCIO A EXECUTAR QUAN LA NAU REP ELS TRES ARXIUS
-
         private void RecivedFiles()
         {
             while (_active)
@@ -417,7 +410,7 @@ namespace MC_SPACESHIP
             var res = _dt.GetByQuery("SELECT Word, Numbers FROM InnerEncryptionData as IED LEFT JOIN InnerEncryption as IE on IE.idInnerEncryption = IED.IdInnerEncryption WHERE IE.idPlanet = " + _planet.GetId() + ";");
             Dictionary<string, string> abcCodes = new Dictionary<string, string>();
 
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 26; i++)
             {
                 var dr = res.Tables[0].Rows[i];
                 abcCodes.Add(dr.ItemArray.GetValue(0).ToString(), dr.ItemArray.GetValue(1).ToString());
