@@ -41,7 +41,6 @@ namespace MC_SPACESHIP
             InitializeComponent();
         }
 
-
         private void SpaceShipInterface_Load(object sender, EventArgs e)
         {
             onOffButton.ImageLocation = _buttonOff;
@@ -73,16 +72,16 @@ namespace MC_SPACESHIP
 
         private void ping_Click(object sender, EventArgs e)
         {
-            if (comboPlanet.SelectedItem == null) return;
             if (TcpipSystemService.CheckXarxa("8.8.8.8", 5))
             {
                 PrintPanel("[SYSTEM] - Stable connection with" + _planet.GetName());
                 TcpipSystemService.SendMessageToServer("ER" + _spaceShip.GetCode() + "DELIVER01TAK", _planet.GetIp(),
                     _planet.GetPort());
+                PrintPanel("[SYSTEM] - Sended request for access to " + _planet.GetName());
             }
             else
             {
-                PrintPanel("[ERROR] - Failed connection to " + _planet.GetName() + " : " + _planet.GetIp());
+                PrintPanel("[ERROR] - Failed connection to " + _planet.GetName() + " --> " + _planet.GetIp());
             }
         } //COMPROVACIO PING AL PLANETA
 
@@ -267,22 +266,19 @@ namespace MC_SPACESHIP
 
         private void messageRecived_TextChanged(object sender, EventArgs e)
         {
-            if (messageRecived.Text.Length <= 2) return;
-            if (messageRecived.Text == @"code")
+            if (messageRecived.Text == "code")
             {
-                var queryCode = $@"SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = {_planet.GetId()}";
+                var queryCode = "SELECT ValidationCode FROM InnerEncryption WHERE idPlanet = " + _planet.GetId();
                 var code = _dt.GetByQuery(queryCode).Tables[0].Rows[0].ItemArray.GetValue(0).ToString();
 
                 var encryptedCode = _rsa.EncryptedCode(code, _planet.GetId().ToString());
 
-                PrintPanel(code);
-                PrintPanel(RsaKeysService.DecryptCode(encryptedCode, _planet.GetCode()));
-
                 TcpipSystemService.SendMessageToServer(encryptedCode, _planet.GetIp(), _planet.GetPort());
+            } else
+            {
+                RecivedMessage(messageRecived.Text);
+                ValidationNextStep();
             }
-
-            RecivedMessage(messageRecived.Text);
-            ValidationNextStep();
         } //DETECTA PER INICIAR LA DESCODIFICACIO
 
         private void ValidationNextStep()

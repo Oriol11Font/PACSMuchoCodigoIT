@@ -49,37 +49,37 @@ namespace PACS_Utils
             if (!listener.Pending()) return null;
             var client = listener.AcceptTcpClient();
             var ns = client.GetStream();
-            var decryptedCode = string.Empty;
             if (!ns.CanRead) return "Ho sento. No puc llegir aquest stream.";
-            var buffer = new byte[1024]; // NEW BUFFER
             var missatge = new StringBuilder();
-            var numberOfBytesRead = 0;
-            var mssg = string.Empty;
+            var buffer = new byte[1024]; // NEW BUFFER
+            var bufferCode = new byte[128];
             // POSSIBLE MESSAGE BIGGER THAN BUFFER
             if (_code)
             {
-                byte [] bufferCode = new byte [128];
-                //do
-                //{
-                //numberOfBytesRead = ns.Read(bufferCode, 0, bufferCode.Length);
-                ns.Read(bufferCode, 0, bufferCode.Length);
-                //} while (ns.DataAvailable);
+                do
+                {
+                    ns.Read(bufferCode, 0, bufferCode.Length);
+                } while (ns.DataAvailable);
 
-                _code = false;
+            _code = false;
+
                 return RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
             } 
 
             do
             {
-                numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                int numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
                 missatge.AppendFormat("{0}",
                     Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
             } while (ns.DataAvailable);
             // READ ALL MESSAGE
 
-            mssg = missatge.ToString();
+            var mssg = missatge.ToString();
 
             if (mssg == "code") _code = true;
+
+            ns.Close();
+            client.Close();
 
             return mssg;
 
@@ -102,16 +102,13 @@ namespace PACS_Utils
             }
         }
 
-        public static string SendMessageToServer(byte[] mssg, string serverIp, int portIp)
+        public static string SendMessageToServer(byte [] mssg, string serverIp, int portIp)
         {
             try
             {
                 var client1 = new TcpClient(serverIp, portIp);
                 var ns1 = client1.GetStream();
                 ns1.Write(mssg, 0, mssg.Length);
-                ns1.Flush();
-                ns1.Close();
-                client1.Close();
                 return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
@@ -159,12 +156,12 @@ namespace PACS_Utils
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
 
-                return @"[SYSTEM] - S'ha enviat correctament el fitxer";
+                return "[SYSTEM] - S'ha enviat correctament el fitxer";
             }
             catch (Exception e)
             {
                 //Console.WriteLine(e.ToString());
-                return @"[ERROR] - No s'ha pogut enviar el fitxer "+ e.ToString();
+                return "[ERROR] - No s'ha pogut enviar el fitxer: "+ e.ToString();
             }
         }
 
@@ -179,12 +176,6 @@ namespace PACS_Utils
                         {
                             using (var output = File.Create(filePath + "PACS.zip"))
                             {
-                                Console.WriteLine("[SYSTEM] - Client connected. Starting to receive the file");
-
-                                // read the file in chunks of 1KB
-                                //byte[] bytes = new byte[client.ReceiveBufferSize + 1];
-                                //stream.Read(bytes, 0, client.ReceiveBufferSize);
-
                                 var buffer = new byte[1024];
                                 int bytesRead;
                                 while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
@@ -193,13 +184,12 @@ namespace PACS_Utils
                                 }
                             }
 
-                            return "[SYSTEM] - File recived!";
+                            return "[SYSTEM] - Client connected. Starting to receive the file!";
                         }
                 return null;
             }
-            catch (Exception e)
+            catch 
             {
-                //Console.WriteLine(e.ToString());
                 return null;
             }
         }
