@@ -46,43 +46,48 @@ namespace PACS_Utils
 
         public string WaitingForResponse(TcpListener listener, Planet planet)
         {
-            if (!listener.Pending()) return null;
-            var client = listener.AcceptTcpClient();
-            var ns = client.GetStream();
-            if (!ns.CanRead) return "Ho sento. No puc llegir aquest stream.";
-            var missatge = new StringBuilder();
-            var buffer = new byte[1024]; // NEW BUFFER
-            var bufferCode = new byte[128];
-            // POSSIBLE MESSAGE BIGGER THAN BUFFER
-            if (_code)
+            if (listener.Pending())
             {
+                var client = listener.AcceptTcpClient();
+                var ns = client.GetStream();
+                if (!ns.CanRead) return "Ho sento. No puc llegir aquest stream.";
+                var missatge = new StringBuilder();
+                var buffer = new byte[1024]; // NEW BUFFER
+                var bufferCode = new byte[128];
+                // POSSIBLE MESSAGE BIGGER THAN BUFFER
+                if (_code)
+                {
+                    //do
+                    //{
+                    ns.Read(bufferCode, 0, bufferCode.Length);
+                    //} while (ns.DataAvailable);
+
+                    _code = false;
+
+                    return RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
+                }
+
                 do
                 {
-                    ns.Read(bufferCode, 0, bufferCode.Length);
+                    int numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
+                    missatge.AppendFormat("{0}",
+                        Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
                 } while (ns.DataAvailable);
+                // READ ALL MESSAGE
 
-            _code = false;
+                var mssg = missatge.ToString();
 
-                return RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
-            } 
+                if (mssg == "code") _code = true;
 
-            do
+                ns.Close();
+                client.Close();
+
+                return mssg;
+            }
+            else
             {
-                int numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                missatge.AppendFormat("{0}",
-                    Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
-            } while (ns.DataAvailable);
-            // READ ALL MESSAGE
-
-            var mssg = missatge.ToString();
-
-            if (mssg == "code") _code = true;
-
-            ns.Close();
-            client.Close();
-
-            return mssg;
-
+                return null;
+            }
         }
 
         public static string SendMessageToServer(string mssg, string serverIp, int portIp)
