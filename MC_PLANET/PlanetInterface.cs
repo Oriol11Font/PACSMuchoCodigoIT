@@ -158,8 +158,8 @@ namespace MC_PLANET
                             var validationCodeRows = _dataAccess.GetByQuery(
                                 "SELECT * FROM dbo.InnerEncryption WHERE ValidationCode = @validationcode", sqlParams);
 
-                                var validated = true;
-                                    //validationCodeRows.Tables[0].Rows.Count >= 1;
+                              // var validated = true;
+                             var validated = validationCodeRows.Tables[0].Rows.Count >= 1;
 
                             TcpipSystemService.SendMessageToServer(
                                 $@"VR{_spaceShip.GetCode()}{(validated ? "VP" : "AD")}",

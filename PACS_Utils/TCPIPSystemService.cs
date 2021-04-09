@@ -44,6 +44,17 @@ namespace PACS_Utils
             }
         }
 
+        public static void PrintByteArray(byte[] bytes)
+        {
+            var sb = new StringBuilder("new byte[] { ");
+            foreach (var b in bytes)
+            {
+                sb.Append(b + ", ");
+            }
+            sb.Append("}");
+            Console.WriteLine(sb.ToString());
+        }
+
         public string WaitingForResponse(TcpListener listener, Planet planet)
         {
             if (listener.Pending())
@@ -51,7 +62,7 @@ namespace PACS_Utils
                 var client = listener.AcceptTcpClient();
                 var ns = client.GetStream();
                 if (!ns.CanRead) return "Ho sento. No puc llegir aquest stream.";
-                var missatge = new StringBuilder();
+                String missatge = "";
                 var buffer = new byte[1024]; // NEW BUFFER
                 var bufferCode = new byte[128];
                 // POSSIBLE MESSAGE BIGGER THAN BUFFER
@@ -59,30 +70,61 @@ namespace PACS_Utils
                 {
                     //do
                     //{
-                    ns.Read(bufferCode, 0, bufferCode.Length);
-                    //} while (ns.DataAvailable);
+                    int j = 0;
+                    byte[] codeFinal = null;
+                    try
+                    {
+                        while ((j = ns.Read(bufferCode, 0, bufferCode.Length)) != 0)
+                        {
+                            //ns.Read(bufferCode, 0, bufferCode.Length);
+                            
+                            string cadena = System.Text.Encoding.ASCII.GetString(bufferCode, 0, j);
+                            Console.WriteLine(cadena);
+
+
+                            //codeFinal = new byte[j];
+                            //for (int l = 0; l < j; l++)
+                            //{
+                            //    codeFinal[l] = bufferCode[l];
+                            //}
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                        Console.WriteLine(e.Message);
+                    }
+
+
+                    Console.WriteLine("SOY PLANETA, RECIBO PARA DESENCRIPTAR");
+                    PrintByteArray(bufferCode);
 
                     _code = false;
 
                     return RsaKeysService.DecryptCode(bufferCode, planet.GetCode());
                 }
 
-                do
+
+
+                int i = 0;
+                while ((i = ns.Read(buffer, 0, buffer.Length)) != 0)
                 {
-                    int numberOfBytesRead = ns.Read(buffer, 0, buffer.Length);
-                    missatge.AppendFormat("{0}",
-                        Encoding.ASCII.GetString(buffer, 0, numberOfBytesRead));
-                } while (ns.DataAvailable);
-                // READ ALL MESSAGE
 
-                var mssg = missatge.ToString();
+                    PrintByteArray(buffer);
+                    missatge = System.Text.Encoding.ASCII.GetString(buffer, 0, i);
+                    Console.WriteLine(missatge);
+                }
 
-                if (mssg == "code") _code = true;
+
+
+
+                if (missatge == "VK") _code = true;
 
                 ns.Close();
+                client.Client.Close();
                 client.Close();
 
-                return mssg;
+                return missatge;
             }
             else
             {
@@ -99,6 +141,11 @@ namespace PACS_Utils
                 var ns = client.GetStream();
                 ns.Write(dades, 0, dades.Length);
 
+                ns.Close();
+                ns.Dispose();
+                client.Client.Close();
+                client.Close();
+
                 return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
@@ -111,9 +158,18 @@ namespace PACS_Utils
         {
             try
             {
-                var client1 = new TcpClient(serverIp, portIp);
-                var ns1 = client1.GetStream();
-                ns1.Write(mssg, 0, mssg.Length);
+                Console.WriteLine("ENVIO SPACESHIP - PLANETA");
+                PrintByteArray(mssg);
+                
+                var client = new TcpClient(serverIp, portIp);
+                var ns = client.GetStream();
+                ns.Write(mssg, 0, mssg.Length);
+
+                ns.Close();
+                ns.Dispose();
+                client.Client.Close();
+                client.Close();
+
                 return "[SYSTEM] - Message Succesfully sended!";
             }
             catch
@@ -121,6 +177,8 @@ namespace PACS_Utils
                 return "[ERROR] - Failed to send message!";
             }
         }
+
+
 
         public static bool CheckXarxa(string ipToPing, int repeat)
         {
