@@ -104,10 +104,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <None Include="Resources\xp.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\splash_xp.gif" />
+=======
+    <None Include="Resources\windows_xp_bliss-wide %281%29.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Untitled.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Papelera-Recicle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Mycompiconxp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Captura de pantalla 2021-04-09 171547.png" />
+>>>>>>> 6e4775fe6e0396b5641ede0e8a6e1d14932dbda5
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

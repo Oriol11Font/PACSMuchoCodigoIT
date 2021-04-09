@@ -63,9 +63,15 @@ namespace PACS_MuchoCodigoIT.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+<<<<<<< HEAD
         internal static System.Drawing.Bitmap splash_xp {
             get {
                 object obj = ResourceManager.GetObject("splash_xp", resourceCulture);
+=======
+        internal static System.Drawing.Bitmap Captura_de_pantalla_2021_04_09_171547 {
+            get {
+                object obj = ResourceManager.GetObject("Captura de pantalla 2021-04-09 171547", resourceCulture);
+>>>>>>> 6e4775fe6e0396b5641ede0e8a6e1d14932dbda5
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +79,45 @@ namespace PACS_MuchoCodigoIT.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+<<<<<<< HEAD
         internal static System.Drawing.Bitmap xp {
             get {
                 object obj = ResourceManager.GetObject("xp", resourceCulture);
+=======
+        internal static System.Drawing.Bitmap Mycompiconxp {
+            get {
+                object obj = ResourceManager.GetObject("Mycompiconxp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Papelera_Recicle {
+            get {
+                object obj = ResourceManager.GetObject("Papelera-Recicle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Untitled {
+            get {
+                object obj = ResourceManager.GetObject("Untitled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap windows_xp_bliss_wide__1_ {
+            get {
+                object obj = ResourceManager.GetObject("windows_xp_bliss-wide (1)", resourceCulture);
+>>>>>>> 6e4775fe6e0396b5641ede0e8a6e1d14932dbda5
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
