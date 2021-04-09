@@ -165,6 +165,7 @@ namespace PACS_MuchoCodigoIT
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(156, 129);
             this.panel6.TabIndex = 11;
+            this.panel6.Visible = false;
             // 
             // label1
             // 
@@ -173,7 +174,7 @@ namespace PACS_MuchoCodigoIT
             this.label1.ForeColor = System.Drawing.Color.Black;
             this.label1.Location = new System.Drawing.Point(18, 80);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(135, 34);
+            this.label1.Size = new System.Drawing.Size(152, 40);
             this.label1.TabIndex = 12;
             this.label1.Text = "Planet Control \r\nAccess - Application";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -187,6 +188,7 @@ namespace PACS_MuchoCodigoIT
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(156, 129);
             this.panel7.TabIndex = 13;
+            this.panel7.Visible = false;
             // 
             // label2
             // 
@@ -195,7 +197,7 @@ namespace PACS_MuchoCodigoIT
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(14, 80);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(139, 34);
+            this.label2.Size = new System.Drawing.Size(159, 40);
             this.label2.TabIndex = 12;
             this.label2.Text = "SpaceShip Interface \r\n- Application";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -217,7 +219,7 @@ namespace PACS_MuchoCodigoIT
             this.label3.ForeColor = System.Drawing.Color.Black;
             this.label3.Location = new System.Drawing.Point(18, 80);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(141, 34);
+            this.label3.Size = new System.Drawing.Size(155, 40);
             this.label3.TabIndex = 12;
             this.label3.Text = "Papelera (ha dejado \r\nde responder)";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -252,7 +254,7 @@ namespace PACS_MuchoCodigoIT
             this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(45, 80);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 17);
+            this.label4.Size = new System.Drawing.Size(47, 20);
             this.label4.TabIndex = 12;
             this.label4.Text = "Mi Pc";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

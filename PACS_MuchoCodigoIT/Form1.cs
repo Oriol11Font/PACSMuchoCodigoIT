@@ -8,15 +8,27 @@ namespace PACS_MuchoCodigoIT
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        bool usuari;
+        public Form1(bool user)
         {
             InitializeComponent();
+            usuari = user;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             PlanetImg.ImageLocation = Path.Combine(Application.StartupPath, "imgs", "Planet.png");
             SpaceShipImg.ImageLocation = Path.Combine(Application.StartupPath, "imgs", "SpaceShip.png");
+
+            if (usuari)
+            {
+                panel6.Visible = true;
+            }
+            else
+            {
+                panel7.Visible = true;
+            }
         }
 
         private void PlanetImg_Click(object sender, EventArgs e)

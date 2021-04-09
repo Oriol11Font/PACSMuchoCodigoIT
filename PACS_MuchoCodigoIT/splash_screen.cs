@@ -22,7 +22,7 @@ namespace PACS_MuchoCodigoIT
         private void timer1_Tick(object sender, EventArgs e)
         {
             
-            Form1 Form1 = new Form1();
+            user_screen Form1 = new user_screen();
             Form1.Show();
             this.Hide();
             timer1.Stop();

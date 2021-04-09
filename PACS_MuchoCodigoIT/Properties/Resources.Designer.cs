@@ -73,6 +73,16 @@ namespace PACS_MuchoCodigoIT.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap login {
+            get {
+                object obj = ResourceManager.GetObject("login", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Mycompiconxp {
             get {
                 object obj = ResourceManager.GetObject("Mycompiconxp", resourceCulture);
@@ -86,6 +96,26 @@ namespace PACS_MuchoCodigoIT.Properties {
         internal static System.Drawing.Bitmap Papelera_Recicle {
             get {
                 object obj = ResourceManager.GetObject("Papelera-Recicle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Planet {
+            get {
+                object obj = ResourceManager.GetObject("Planet", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SpaceShip {
+            get {
+                object obj = ResourceManager.GetObject("SpaceShip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

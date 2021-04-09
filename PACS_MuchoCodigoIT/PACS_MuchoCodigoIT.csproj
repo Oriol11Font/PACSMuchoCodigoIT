@@ -60,6 +60,12 @@
     <Compile Include="splash_screen.Designer.cs">
       <DependentUpon>splash_screen.cs</DependentUpon>
     </Compile>
+    <Compile Include="user_screen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="user_screen.Designer.cs">
+      <DependentUpon>user_screen.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -75,6 +81,9 @@
     </Compile>
     <EmbeddedResource Include="splash_screen.resx">
       <DependentUpon>splash_screen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="user_screen.resx">
+      <DependentUpon>user_screen.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -108,8 +117,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\splash_xp.gif" />
-	</ItemGroup>
-	<ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\windows_xp_bliss-wide %281%29.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +132,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Captura de pantalla 2021-04-09 171547.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Planet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpaceShip.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
