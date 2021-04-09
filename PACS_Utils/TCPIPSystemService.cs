@@ -34,7 +34,10 @@ namespace PACS_Utils
         {
             try
             {
-                listener.Stop();
+                if (listener != null)
+                {
+                    listener.Stop();
+                }
 
                 return listener;
             }
