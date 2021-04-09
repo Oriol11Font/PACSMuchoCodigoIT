@@ -65,6 +65,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -92,6 +93,21 @@
       <Project>{b0a24de8-7f77-420f-b87d-24bd2a15d610}</Project>
       <Name>PACS_CustomControls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\windows_xp_bliss-wide %281%29.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Untitled.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Papelera-Recicle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Mycompiconxp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Captura de pantalla 2021-04-09 171547.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

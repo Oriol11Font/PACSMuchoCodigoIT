@@ -35,5 +35,20 @@ namespace PACS_MuchoCodigoIT
         {
             Application.Exit();
         }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            panel3.Visible = !panel3.Visible;
+        }
+
+        private void Form1_Click(object sender, EventArgs e)
+        {
+            panel3.Visible = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
