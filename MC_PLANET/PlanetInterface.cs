@@ -22,7 +22,7 @@ namespace MC_PLANET
 
         private Dictionary<char, string> _encryptedLetters;
         private TcpListener _listener, _fileListener;
-        private Thread _listenerThread, _t2;
+        private Thread _t1, _t2;
         private Planet _planet;
         private SpaceShip _spaceShip;
         private Point _lastLocation;
@@ -288,11 +288,11 @@ namespace MC_PLANET
                 _tcp = new TcpipSystemService();
                 _listener = TcpipSystemService.StartServer(_planet.GetPort(), _listener);
 
-                _listenerThread = new Thread(ListenerServer)
+                _t1 = new Thread(ListenerServer)
                 {
                     IsBackground = true
                 };
-                _listenerThread.Start();
+                _t1.Start();
 
                 
                 _fileListener = TcpipSystemService.StartServer(_planet.GetPort1(), _fileListener);
@@ -306,9 +306,17 @@ namespace MC_PLANET
             else
             {
                 _active = false;
-                _listenerThread.Abort();
-                _t2.Abort();
+                if (_t1 != null)
+                {
+                    _t1.Abort();
+                }
+                if (_t2 != null)
+                {
+                    _t2.Abort();
+                }
                 _listener = TcpipSystemService.StopServer(_listener);
+                _fileListener = TcpipSystemService.StopServer(_fileListener);
+
                 onOffButton.ImageLocation = _buttonOff;
                 PrintPanel(
                     @"[SYSTEM] - Stopped server");

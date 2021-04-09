@@ -141,9 +141,16 @@ namespace MC_SPACESHIP
                     _active = false;
                     infoSpaceShip.Items.Clear();
                     onOffButton.ImageLocation = _buttonOff;
-                    _t1.Abort();
-                    _t2.Abort();
+                    if (_t1 != null)
+                    {
+                        _t1.Abort();
+                    }
+                    if (_t2 != null)
+                    {
+                        _t2.Abort();
+                    }
                     _listener = TcpipSystemService.StopServer(_listener);
+                    _fileListener = TcpipSystemService.StopServer(_fileListener);
                     PrintPanel("[SYSTEM] - Server OFF");
                 }
                 catch
