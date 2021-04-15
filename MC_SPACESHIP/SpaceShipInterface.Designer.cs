@@ -141,6 +141,7 @@ namespace MC_SPACESHIP
             this.messageRecived.Name = "messageRecived";
             this.messageRecived.Size = new System.Drawing.Size(203, 22);
             this.messageRecived.TabIndex = 8;
+            this.messageRecived.Visible = false;
             this.messageRecived.TextChanged += new System.EventHandler(this.messageRecived_TextChanged);
             // 
             // onOffButton

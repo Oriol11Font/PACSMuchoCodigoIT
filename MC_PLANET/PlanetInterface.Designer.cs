@@ -49,10 +49,10 @@ namespace MC_PLANET
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.PlanetConsole);
-            this.panel1.Location = new System.Drawing.Point(93, 76);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Location = new System.Drawing.Point(124, 94);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(438, 438);
+            this.panel1.Size = new System.Drawing.Size(583, 538);
             this.panel1.TabIndex = 4;
             // 
             // PlanetConsole
@@ -61,28 +61,30 @@ namespace MC_PLANET
             this.PlanetConsole.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.PlanetConsole.ForeColor = System.Drawing.SystemColors.Menu;
             this.PlanetConsole.FormattingEnabled = true;
-            this.PlanetConsole.Location = new System.Drawing.Point(14, 14);
-            this.PlanetConsole.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PlanetConsole.ItemHeight = 16;
+            this.PlanetConsole.Location = new System.Drawing.Point(19, 17);
+            this.PlanetConsole.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PlanetConsole.Name = "PlanetConsole";
-            this.PlanetConsole.Size = new System.Drawing.Size(405, 403);
+            this.PlanetConsole.Size = new System.Drawing.Size(540, 496);
             this.PlanetConsole.TabIndex = 1;
             // 
             // planetCmbx
             // 
             this.planetCmbx.FormattingEnabled = true;
-            this.planetCmbx.Location = new System.Drawing.Point(710, 291);
-            this.planetCmbx.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.planetCmbx.Location = new System.Drawing.Point(947, 358);
+            this.planetCmbx.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.planetCmbx.Name = "planetCmbx";
-            this.planetCmbx.Size = new System.Drawing.Size(174, 21);
+            this.planetCmbx.Size = new System.Drawing.Size(231, 24);
             this.planetCmbx.TabIndex = 5;
             this.planetCmbx.SelectionChangeCommitted += new System.EventHandler(this.planetCmbx_ValueMemberChanged);
             // 
             // onOffButton
             // 
             this.onOffButton.BackColor = System.Drawing.Color.Transparent;
-            this.onOffButton.Location = new System.Drawing.Point(740, 138);
+            this.onOffButton.Location = new System.Drawing.Point(987, 170);
+            this.onOffButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.onOffButton.Name = "onOffButton";
-            this.onOffButton.Size = new System.Drawing.Size(112, 107);
+            this.onOffButton.Size = new System.Drawing.Size(149, 132);
             this.onOffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.onOffButton.TabIndex = 11;
             this.onOffButton.TabStop = false;
@@ -90,11 +92,12 @@ namespace MC_PLANET
             // 
             // txtb_msg
             // 
-            this.txtb_msg.Location = new System.Drawing.Point(742, 444);
-            this.txtb_msg.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtb_msg.Location = new System.Drawing.Point(989, 546);
+            this.txtb_msg.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtb_msg.Name = "txtb_msg";
-            this.txtb_msg.Size = new System.Drawing.Size(110, 20);
+            this.txtb_msg.Size = new System.Drawing.Size(145, 22);
             this.txtb_msg.TabIndex = 12;
+            this.txtb_msg.Visible = false;
             this.txtb_msg.TextChanged += new System.EventHandler(this.txtb_msg_TextChanged);
             // 
             // label1
@@ -102,10 +105,9 @@ namespace MC_PLANET
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft PhagsPa", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(710, 271);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(947, 334);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(173, 18);
+            this.label1.Size = new System.Drawing.Size(231, 22);
             this.label1.TabIndex = 13;
             this.label1.Text = "Planeta Actual";
             // 
@@ -113,10 +115,10 @@ namespace MC_PLANET
             // 
             this.OffButton.BackColor = System.Drawing.Color.Transparent;
             this.OffButton.Image = global::MC_PLANET.Properties.Resources.powerOff;
-            this.OffButton.Location = new System.Drawing.Point(574, 453);
-            this.OffButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OffButton.Location = new System.Drawing.Point(765, 558);
+            this.OffButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OffButton.Name = "OffButton";
-            this.OffButton.Size = new System.Drawing.Size(62, 60);
+            this.OffButton.Size = new System.Drawing.Size(83, 74);
             this.OffButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.OffButton.TabIndex = 15;
             this.OffButton.TabStop = false;
@@ -126,9 +128,9 @@ namespace MC_PLANET
             // 
             this.panel2.BackColor = System.Drawing.Color.Transparent;
             this.panel2.Location = new System.Drawing.Point(1, 1);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1010, 26);
+            this.panel2.Size = new System.Drawing.Size(1347, 32);
             this.panel2.TabIndex = 16;
             this.panel2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
             this.panel2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
@@ -136,12 +138,12 @@ namespace MC_PLANET
             // 
             // PlanetInterface
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1011, 586);
+            this.ClientSize = new System.Drawing.Size(1348, 721);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.OffButton);
             this.Controls.Add(this.label1);
@@ -150,7 +152,7 @@ namespace MC_PLANET
             this.Controls.Add(this.planetCmbx);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "PlanetInterface";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.PlanetInterface_Load);

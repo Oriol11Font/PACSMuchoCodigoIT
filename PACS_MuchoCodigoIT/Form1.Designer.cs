@@ -50,6 +50,8 @@ namespace PACS_MuchoCodigoIT
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panel10 = new System.Windows.Forms.Panel();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.SpaceShipImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PlanetImg)).BeginInit();
             this.panel2.SuspendLayout();
@@ -64,6 +66,7 @@ namespace PACS_MuchoCodigoIT
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panel10.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // SpaceShipImg
@@ -126,6 +129,7 @@ namespace PACS_MuchoCodigoIT
             // 
             this.panel4.BackgroundImage = global::PACS_MuchoCodigoIT.Properties.Resources.Untitled;
             this.panel4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.panel4.Controls.Add(this.panel11);
             this.panel4.Controls.Add(this.panel5);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel4.Location = new System.Drawing.Point(0, 227);
@@ -144,15 +148,18 @@ namespace PACS_MuchoCodigoIT
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.PowderBlue;
+            this.button1.BackColor = System.Drawing.Color.Transparent;
             this.button1.Dock = System.Windows.Forms.DockStyle.Right;
             this.button1.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(163, 0);
+            this.button1.Location = new System.Drawing.Point(166, 0);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(142, 32);
+            this.button1.Size = new System.Drawing.Size(139, 32);
             this.button1.TabIndex = 11;
             this.button1.Text = "Apagar";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -174,7 +181,7 @@ namespace PACS_MuchoCodigoIT
             this.label1.ForeColor = System.Drawing.Color.Black;
             this.label1.Location = new System.Drawing.Point(18, 80);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 40);
+            this.label1.Size = new System.Drawing.Size(135, 34);
             this.label1.TabIndex = 12;
             this.label1.Text = "Planet Control \r\nAccess - Application";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -197,7 +204,7 @@ namespace PACS_MuchoCodigoIT
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(14, 80);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(159, 40);
+            this.label2.Size = new System.Drawing.Size(139, 34);
             this.label2.TabIndex = 12;
             this.label2.Text = "SpaceShip Interface \r\n- Application";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -219,7 +226,7 @@ namespace PACS_MuchoCodigoIT
             this.label3.ForeColor = System.Drawing.Color.Black;
             this.label3.Location = new System.Drawing.Point(18, 80);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(155, 40);
+            this.label3.Size = new System.Drawing.Size(141, 34);
             this.label3.TabIndex = 12;
             this.label3.Text = "Papelera (ha dejado \r\nde responder)";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -254,7 +261,7 @@ namespace PACS_MuchoCodigoIT
             this.label4.ForeColor = System.Drawing.Color.Black;
             this.label4.Location = new System.Drawing.Point(45, 80);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 20);
+            this.label4.Size = new System.Drawing.Size(42, 17);
             this.label4.TabIndex = 12;
             this.label4.Text = "Mi Pc";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -294,6 +301,32 @@ namespace PACS_MuchoCodigoIT
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(895, 64);
             this.panel10.TabIndex = 10;
+            // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.button2);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel11.Location = new System.Drawing.Point(0, 428);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(305, 32);
+            this.panel11.TabIndex = 12;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.Transparent;
+            this.button2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.Color.Black;
+            this.button2.Location = new System.Drawing.Point(166, 0);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(139, 32);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "Cerrar Sesión";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
@@ -337,6 +370,7 @@ namespace PACS_MuchoCodigoIT
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.panel10.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -363,6 +397,8 @@ namespace PACS_MuchoCodigoIT
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Panel panel11;
+        private System.Windows.Forms.Button button2;
     }
 }
 

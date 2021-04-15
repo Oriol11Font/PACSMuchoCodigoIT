@@ -62,5 +62,12 @@ namespace PACS_MuchoCodigoIT
         {
             Application.Exit();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            user_screen Form1 = new user_screen();
+            Form1.Show();
+            this.Close();
+        }
     }
 }
